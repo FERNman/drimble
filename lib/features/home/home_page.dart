@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../add_drink/add_drink_page.dart';
+import '../common/widgets/remove_drink_dialog.dart';
+import '../consumed_drink/consumed_drink_page.dart';
+import '../profile/profile_page.dart';
+import '../todays_drinks/todays_drinks_page.dart';
+import 'home_cubit.dart';
+import 'widgets/blood_alcohol_content_chart.dart';
+import 'widgets/home_app_bar.dart';
+import 'widgets/recent_drinks.dart';
+import 'widgets/todays_statistics.dart';
+
+class HomePage extends StatefulWidget {
+  static Widget create(BuildContext context) {
+    return BlocProvider(
+      create: (context) => HomeCubit(context.read(), context.read()),
+      child: const HomePage(),
+    );
+  }
+
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: HomeAppBar(
+        onTapProfile: () {
+          Navigator.push(context, ProfilePage.route());
+        },
+      ),
+      body: BlocBuilder<HomeCubit, HomeCubitState>(
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                _CurrentBAC(currentBAC: state.currentBAC),
+                const SizedBox(height: 8),
+                BloodAlcoholContentChart(bloodAlcoholContent: state.bloodAlcoholContent),
+                const SizedBox(height: 24),
+                TodaysStatistics(
+                  consumedDrinks: state.todaysDrinks,
+                  unitsOfAlcohol: state.unitsOfAlcohol,
+                  calories: state.calories,
+                ),
+                const SizedBox(height: 24),
+                RecentDrinks(
+                  state.todaysDrinks,
+                  onEdit: (drink) {
+                    Navigator.push(context, ConsumedDrinkPage.editDrinkRoute(drink));
+                  },
+                  onDelete: (drink) {
+                    showDialog(
+                      context: context,
+                      builder: (dialogContext) => RemoveDrinkDialog(
+                        onCancel: () {
+                          Navigator.pop(dialogContext);
+                        },
+                        onRemove: () {
+                          context.read<HomeCubit>().deleteDrink(drink);
+                          Navigator.pop(dialogContext);
+                        },
+                      ),
+                    );
+                  },
+                  onViewAll: () {
+                    Navigator.push(context, TodaysDrinksPage.route());
+                  },
+                )
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(context, AddDrinkPage.route()),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _CurrentBAC extends StatelessWidget {
+  final double currentBAC;
+
+  const _CurrentBAC({required this.currentBAC, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            '${currentBAC.toStringAsFixed(2)}‰',
+            style: theme.textTheme.displaySmall?.copyWith(color: Colors.black87),
+          ),
+          const SizedBox(height: 8),
+          Text('sober at 17:50', style: theme.textTheme.bodyMedium)
+        ],
+      ),
+    );
+  }
+}

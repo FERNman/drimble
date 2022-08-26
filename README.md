@@ -1,16 +1,49 @@
-# drinkaware
+# Drinkaware
 
-A new Flutter project.
+Regain control of your drinking.
 
-## Getting Started
+## Calculation of BAC
 
-This project is a starting point for a Flutter application.
+The calculation of the BAC can be done using the Widmark's formula.
 
-A few resources to get you started if this is your first Flutter project:
+### Rate of absorption
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Multiple factors influence the rate of absorption:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- sex
+- height
+- weight
+- body composition
+- age
+- the concentration of the alcoholic beverage (important: stronger alcohols lead to higher BAC!)
+- the total amount of alcohol ingested
+- the rate of ingestion
+- the fed or fasted state
+  - the nature and composition of food
+- genetic factors
+  - ADH enzyme
+
+### Rate of elimination
+
+Alcohol elimination rates also vary widely, due to differences in the metabolising enzymes, as well as environmental factors. 
+These combined differences result in a 3-4 fold variance in the alcohol elimination rate. 
+
+The factors influencing alcohol eliminiation include:
+
+- Food (independent of the food composition)
+- Genetic variation
+
+Factors that don't influence alcohol elimination rates are:
+
+- Gender
+- Age (probably, since other factors like body composition that correlate with age are more important)
+- Regularity of alcohol consumption
+  - Even though this changes the availability of some of the enzymes and the size of the liver, the overall effect can be neglected 
+
+## Drinks
+
+The drinks that can be added in the app are separated in three categories:
+
+- Popular generic drinks: Generic representations of typical beverages, can be added without searching. 
+- Other generic drinks: Generic representations of beverages that are not so popular, can be added by searching for them
+- Cocktails: Drinks that represent mixtures of the two previous categories. Can be added by searching
