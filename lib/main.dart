@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:isar/isar.dart';
 
 import 'data/auth_repository.dart';
 import 'data/beverages_repository.dart';
 import 'data/consumed_drinks_repository.dart';
 import 'features/home/home_page.dart';
+import 'infra/database/database_consumed_drink.dart';
 
 void main() {
   runApp(const DrinkawareApp());
@@ -30,7 +32,9 @@ class DrinkawareApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => ConsumedDrinksRepository()),
+        // TODO: Check for a better way
+        RepositoryProvider(lazy: false, create: (context) => Isar.openSync([DatabaseConsumedDrinkSchema])),
+        RepositoryProvider(create: (context) => ConsumedDrinksRepository(context.read())),
         RepositoryProvider(create: (context) => BeveragesRepository()),
         RepositoryProvider(create: (context) => AuthRepository()),
       ],

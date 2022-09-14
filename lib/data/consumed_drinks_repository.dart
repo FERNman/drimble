@@ -1,50 +1,44 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:rxdart/subjects.dart';
+import 'package:isar/isar.dart';
 
-import '../domain/drink/beverage.dart';
 import '../domain/drink/consumed_drink.dart';
-import '../domain/drink/stomach_fullness.dart';
+import '../infra/database/database_consumed_drink.dart';
+import '../infra/extensions/floor_date_time.dart';
 
 class ConsumedDrinksRepository {
-  final _drinks = BehaviorSubject.seeded([
-    ConsumedDrink(
-      beverage: Beverage.beer,
-      volume: 500,
-      alcoholByVolume: 0.05,
-      startTime: DateTime.now(),
-      duration: const Duration(minutes: 30),
-      stomachFullness: StomachFullness.full,
-    ),
-  ]);
+  static const oneDay = Duration(days: 1);
+
+  final IsarCollection<DatabaseConsumedDrink> collection;
+
+  ConsumedDrinksRepository(Isar database) : collection = database.consumedDrinks;
 
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
-    return _drinks.map((drinks) => drinks.where((el) => DateUtils.isSameDay(el.startTime, date)).toList(growable: false)
-      ..sort((lhs, rhs) => lhs.startTime.compareTo(rhs.startTime)));
+    return collection
+        .where()
+        .startTimeBetween(date.floorToDay(), date.add(oneDay).floorToDay())
+        .sortByStartTimeDesc()
+        .watch(fireImmediately: true);
   }
 
   Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async {
-    return _drinks.value.where((el) => DateUtils.isSameDay(el.startTime, date)).toList(growable: false)
-      ..sort((a, b) => a.startTime.compareTo(b.startTime))
-      ..take(3);
+    return collection
+        .where()
+        .startTimeBetween(date.floorToDay(), date.add(oneDay).floorToDay())
+        .sortByStartTimeDesc()
+        .limit(3)
+        .findAll();
   }
 
   void save(ConsumedDrink drink) async {
-    final drinks = _drinks.value;
-
-    // Upsert
-    drinks.remove(drink);
-    drinks.add(drink);
-
-    _drinks.add(drinks);
+    await collection.isar.writeTxn(() async {
+      await collection.put(drink.toEntity());
+    });
   }
 
   void removeDrink(ConsumedDrink drink) async {
-    final drinks = _drinks.value;
-
-    drinks.remove(drink);
-
-    _drinks.add(drinks);
+    if (drink.id != null) {
+      await collection.delete(drink.id!);
+    }
   }
 }

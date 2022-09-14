@@ -2,7 +2,9 @@ class BACEntry {
   final DateTime time;
   final double value;
 
-  BACEntry(this.time, this.value);
+  BACEntry(this.time, this.value) {
+    assert(!value.isNaN);
+  }
 }
 
 class BACCalculationResults {

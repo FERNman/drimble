@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/drink/consumed_drink.dart';
-import '../../common/copy_date_time.dart';
-import '../../common/copy_duration.dart';
+import '../../../infra/extensions/copy_date_time.dart';
+import '../../../infra/extensions/copy_duration.dart';
 import 'drink_amount_selection.dart';
 import 'stomach_fullness_selection.dart';
 

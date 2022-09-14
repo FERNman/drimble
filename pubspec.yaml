@@ -11,8 +11,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.5
   flutter_bloc: ^8.1.1
-  isar: ^2.5.0
-  isar_flutter_libs: ^2.5.0
+  isar: 3.0.0-dev.14
+  isar_flutter_libs: 3.0.0-dev.14
   google_fonts: ^3.0.1
   intl: ^0.17.0
   date_time_picker: ^2.1.0
@@ -23,7 +23,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  isar_generator: ^2.5.0
+  isar_generator: 3.0.0-dev.14
   build_runner: ^2.2.0
 
 flutter:

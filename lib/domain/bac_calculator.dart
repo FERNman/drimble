@@ -16,7 +16,7 @@ class BACCalculator {
     final timeOfFirstDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isBefore(first) ? it : first);
     final timeOfLastDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isAfter(first) ? it : first);
 
-    const deltaTime = Duration(minutes: 5); 
+    const deltaTime = Duration(minutes: 5);
 
     final results = <BACEntry>[];
 

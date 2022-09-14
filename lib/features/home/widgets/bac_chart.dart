@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/bac_calulation_results.dart';
-import '../../common/floor_date_time.dart';
+import '../../../infra/extensions/floor_date_time.dart';
 
 class BACChart extends StatefulWidget {
   static const timestep = Duration(minutes: 5);

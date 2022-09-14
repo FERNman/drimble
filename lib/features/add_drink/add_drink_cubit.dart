@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/beverages_repository.dart';
 import '../../data/consumed_drinks_repository.dart';
 import '../../domain/drink/beverage.dart';
+import '../../domain/drink/beverages.dart';
 import '../../domain/drink/consumed_drink.dart';
 
 class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
@@ -28,15 +29,15 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
 
 class AddDrinkCubitState {
   final List<Beverage> commonBeverages = [
-    Beverage.beer,
-    Beverage.ale,
-    Beverage.cider,
-    Beverage.whiteWine,
-    Beverage.redWine,
-    Beverage.champagne,
-    Beverage.whisky,
-    Beverage.rum,
-    Beverage.vodka
+    Beverages.beer,
+    Beverages.ale,
+    Beverages.cider,
+    Beverages.whiteWine,
+    Beverages.redWine,
+    Beverages.champagne,
+    Beverages.whisky,
+    Beverages.rum,
+    Beverages.vodka
   ];
 
   final List<ConsumedDrink> recentlyAddedDrinks;
