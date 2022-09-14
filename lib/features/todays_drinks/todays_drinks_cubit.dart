@@ -17,7 +17,7 @@ class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {
 
   void _subscribeToRepository() {
     addSubscription(_repository
-        .getConsumedDrinksOnDate(DateTime.now())
+        .observeDrinksOnDate(DateTime.now())
         .listen((value) => emit(TodaysDrinksCubitState(drinks: value))));
   }
 }

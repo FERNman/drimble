@@ -1,46 +1,42 @@
 import 'dart:math';
 
-import '../features/common/copy_date_time.dart';
+import 'bac_calulation_results.dart';
 import 'drink/alcohol.dart';
 import 'drink/consumed_drink.dart';
 import 'user/user.dart';
 
-class BacCalculator {
+class BACCalculator {
   final User user;
 
-  BacCalculator._(this.user);
+  BACCalculator(this.user);
 
-  static Map<DateTime, double> calculate(User user, List<ConsumedDrink> drinks, {DateTime? time}) {
-    final calculator = BacCalculator._(user);
-    return calculator._calculate(drinks, time ?? DateTime.now());
-  }
+  BACCalculationResults calculate(List<ConsumedDrink> drinks) {
+    assert(drinks.isNotEmpty);
 
-  Map<DateTime, double> _calculate(List<ConsumedDrink> drinks, DateTime startTime) {
-    final thirtyMinutesAgo = DateTime.now().subtract(const Duration(minutes: 30));
-    final startTime = thirtyMinutesAgo.copyWith(minute: [15, 30, 45, 60][(thirtyMinutesAgo.minute / 15).floor()]);
+    final timeOfFirstDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isBefore(first) ? it : first);
+    final timeOfLastDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isAfter(first) ? it : first);
 
-    final Map<DateTime, double> bloodAlcoholContent = {};
+    const deltaTime = Duration(minutes: 5); 
 
-    const simulationDuration = Duration(hours: 6);
-    const deltaTime = Duration(minutes: 5);
+    final results = <BACEntry>[];
 
     final rhoFactor = _calculateRhoFactorForUser();
 
     var currentBAC = 0.0;
-    for (var minute = 0; minute < simulationDuration.inMinutes; minute += deltaTime.inMinutes) {
-      final timestamp = startTime.add(Duration(minutes: minute));
-
-      final absorbedAlcohol = _calculateAbsorbedAlcohol(drinks, timestamp) -
-          _calculateAbsorbedAlcohol(drinks, timestamp.subtract(deltaTime));
+    for (var time = timeOfFirstDrink;
+        time.isBefore(timeOfLastDrink.add(const Duration(minutes: 30))) || currentBAC >= 0.01;
+        time = time.add(deltaTime)) {
+      final absorbedAlcohol =
+          _calculateAbsorbedAlcohol(drinks, time) - _calculateAbsorbedAlcohol(drinks, time.subtract(deltaTime));
       currentBAC += (absorbedAlcohol / rhoFactor);
 
       final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
 
-      bloodAlcoholContent[timestamp] = currentBAC / (user.weight);
+      results.add(BACEntry(time, currentBAC / (user.weight)));
     }
 
-    return bloodAlcoholContent;
+    return BACCalculationResults(results);
   }
 
   double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
@@ -65,8 +61,8 @@ class BacCalculator {
   }
 
   double _calculateRateOfMetabolism(double currentBAC) {
-    const vmax = 20.0;
-    const km = 8;
+    const vmax = 20.0; // TODO: Adapt to BAC and user
+    const km = 8; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);
   }

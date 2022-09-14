@@ -18,10 +18,11 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
     emit(state.copyWith(search: term));
   }
 
-  void _fetchRecentDrinks() {
-    _consumedDrinksRepository
-        .getRecentDrinks()
-        .then((value) => emit(state.copyWith(recentlyAddedDrinks: value.sublist(0, 3))));
+  void _fetchRecentDrinks() async {
+    final recentDrinks = await _consumedDrinksRepository.getDrinksOnDate(DateTime.now());
+
+    final lastThreeDrinks = recentDrinks.sublist(0, 3 > recentDrinks.length ? recentDrinks.length : 3);
+    emit(state.copyWith(recentlyAddedDrinks: lastThreeDrinks));
   }
 }
 

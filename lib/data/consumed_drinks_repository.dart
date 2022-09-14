@@ -19,14 +19,13 @@ class ConsumedDrinksRepository {
     ),
   ]);
 
-  Stream<List<ConsumedDrink>> getConsumedDrinksOnDate(DateTime date) {
-    return _drinks.map((drinks) =>
-        drinks.where((element) => DateUtils.isSameDay(element.startTime, date)).toList(growable: false)
-          ..sort((lhs, rhs) => lhs.startTime.compareTo(rhs.startTime)));
+  Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
+    return _drinks.map((drinks) => drinks.where((el) => DateUtils.isSameDay(el.startTime, date)).toList(growable: false)
+      ..sort((lhs, rhs) => lhs.startTime.compareTo(rhs.startTime)));
   }
 
-  Future<List<ConsumedDrink>> getRecentDrinks() async {
-    return _drinks.value
+  Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async {
+    return _drinks.value.where((el) => DateUtils.isSameDay(el.startTime, date)).toList(growable: false)
       ..sort((a, b) => a.startTime.compareTo(b.startTime))
       ..take(3);
   }
@@ -34,6 +33,7 @@ class ConsumedDrinksRepository {
   void save(ConsumedDrink drink) async {
     final drinks = _drinks.value;
 
+    // Upsert
     drinks.remove(drink);
     drinks.add(drink);
 

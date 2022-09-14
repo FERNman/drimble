@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
+import '../../domain/bac_calulation_results.dart';
 import '../add_drink/add_drink_page.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../consumed_drink/consumed_drink_page.dart';
 import '../profile/profile_page.dart';
 import '../todays_drinks/todays_drinks_page.dart';
 import 'home_cubit.dart';
-import 'widgets/blood_alcohol_content_chart.dart';
+import 'widgets/bac_chart.dart';
 import 'widgets/home_app_bar.dart';
 import 'widgets/recent_drinks.dart';
 import 'widgets/todays_statistics.dart';
@@ -41,9 +43,13 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                _CurrentBAC(currentBAC: state.currentBAC),
+                _CurrentBAC(
+                  currentBAC: state.calculationResults.getBACAt(DateTime.now()).value,
+                  maxBAC: state.calculationResults.maxBAC,
+                  soberAt: state.calculationResults.soberAt,
+                ),
                 const SizedBox(height: 8),
-                BloodAlcoholContentChart(bloodAlcoholContent: state.bloodAlcoholContent),
+                BACChart(results: state.calculationResults),
                 const SizedBox(height: 24),
                 TodaysStatistics(
                   consumedDrinks: state.todaysDrinks,
@@ -89,8 +95,14 @@ class _HomePageState extends State<HomePage> {
 
 class _CurrentBAC extends StatelessWidget {
   final double currentBAC;
+  final BACEntry maxBAC;
+  final DateTime soberAt;
 
-  const _CurrentBAC({required this.currentBAC, super.key});
+  const _CurrentBAC({
+    required this.currentBAC,
+    required this.maxBAC,
+    required this.soberAt,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +116,22 @@ class _CurrentBAC extends StatelessWidget {
             style: theme.textTheme.displaySmall?.copyWith(color: Colors.black87),
           ),
           const SizedBox(height: 8),
-          Text('sober at 17:50', style: theme.textTheme.bodyMedium)
+          Text(_subtitle(), style: theme.textTheme.bodyMedium)
         ],
       ),
     );
+  }
+
+  String _subtitle() {
+    final dateFormat = DateFormat(DateFormat.HOUR_MINUTE);
+
+    final now = DateTime.now();
+    if (maxBAC.time.isAfter(now)) {
+      return 'reaches ${maxBAC.value.toStringAsFixed(2)}‰ at ${dateFormat.format(maxBAC.time)}';
+    } else if (soberAt.isAfter(now)) {
+      return 'sober at ${dateFormat.format(soberAt)}';
+    } else {
+      return 'you\'re sober! 🎉';
+    }
   }
 }
