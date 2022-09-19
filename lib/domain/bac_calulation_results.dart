@@ -1,3 +1,5 @@
+import 'drink/alcohol.dart';
+
 class BACEntry {
   final DateTime time;
   final double value;
@@ -15,7 +17,7 @@ class BACCalculationResults {
 
   BACCalculationResults(this._results) {
     maxBAC = _findMaxBAC();
-    soberAt = _findFirstSoberEntry();
+    soberAt = _findFirstSoberEntry(maxBAC.time);
   }
 
   BACEntry getBACAt(DateTime time) {
@@ -23,6 +25,7 @@ class BACCalculationResults {
       return BACEntry(time, 0.0);
     }
 
+    // TODO: Interpolate
     return _results.reduce((lhs, rhs) => lhs.time.difference(time).abs() < rhs.time.difference(time).abs() ? lhs : rhs);
   }
 
@@ -34,11 +37,13 @@ class BACCalculationResults {
     return _results.reduce((lhs, rhs) => lhs.value > rhs.value ? lhs : rhs);
   }
 
-  DateTime _findFirstSoberEntry() {
+  DateTime _findFirstSoberEntry(DateTime timeOfMaxBAC) {
     if (_results.isEmpty) {
       return DateTime.now();
     }
 
-    return _results.firstWhere((element) => element.value <= 0.01).time;
+    final firstSoberEntry =
+        _results.firstWhere((el) => el.time.isAfter(timeOfMaxBAC) && el.value <= Alcohol.soberLimit);
+    return firstSoberEntry.time;
   }
 }

@@ -24,7 +24,7 @@ class BACCalculator {
 
     var currentBAC = 0.0;
     for (var time = timeOfFirstDrink;
-        time.isBefore(timeOfLastDrink.add(const Duration(minutes: 30))) || currentBAC >= 0.01;
+        time.isBefore(timeOfLastDrink.add(const Duration(minutes: 30))) || currentBAC >= Alcohol.soberLimit;
         time = time.add(deltaTime)) {
       final absorbedAlcohol =
           _calculateAbsorbedAlcohol(drinks, time) - _calculateAbsorbedAlcohol(drinks, time.subtract(deltaTime));
