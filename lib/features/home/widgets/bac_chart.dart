@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -20,10 +22,31 @@ class BACChart extends StatefulWidget {
 }
 
 class _BACChartState extends State<BACChart> {
-  final DateTime displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
   final int currentBacIndex = (BACChart.timeOffset.inMinutes / BACChart.timestep.inMinutes).floor();
+  DateTime displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
 
   List<LineBarSpot> touchedSpots = [];
+
+  late final Timer refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    refreshTimer = Timer.periodic(
+      const Duration(minutes: 1),
+      (t) => setState(() {
+        displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
+      }),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    refreshTimer.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,64 +61,64 @@ class _BACChartState extends State<BACChart> {
         ),
         const SizedBox(height: 8),
         AspectRatio(
-        aspectRatio: 2.25,
-        child: LineChart(
-          LineChartData(
-            lineBarsData: [
-              LineChartBarData(
-                spots: _getSpots(),
-                dotData: FlDotData(show: false),
-                belowBarData: BarAreaData(
-                  show: true,
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary.withOpacity(0.1),
-                      colorScheme.primary.withOpacity(0.0),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+          aspectRatio: 2.25,
+          child: LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: _getSpots(),
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary.withOpacity(0.1),
+                        colorScheme.primary.withOpacity(0.0),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  color: colorScheme.primary,
+                  showingIndicators: [currentBacIndex, ...touchedSpots.map((e) => e.spotIndex)],
+                  isCurved: false,
+                )
+              ],
+              titlesData: FlTitlesData(
+                show: true,
+                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: _constructTitle,
+                    reservedSize: 28,
+                    interval: 1.0 / BACChart.displayRange.inMinutes,
                   ),
                 ),
-                color: colorScheme.primary,
-                showingIndicators: [currentBacIndex, ...touchedSpots.map((e) => e.spotIndex)],
-                isCurved: false,
-              )
-            ],
-            titlesData: FlTitlesData(
-              show: true,
-              leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: _constructTitle,
-                  reservedSize: 28,
-                  interval: 1.0 / BACChart.displayRange.inMinutes,
+              ),
+              borderData: FlBorderData(show: false),
+              gridData: FlGridData(show: false),
+              showingTooltipIndicators: [ShowingTooltipIndicators(touchedSpots)],
+              lineTouchData: LineTouchData(
+                enabled: true,
+                touchTooltipData: LineTouchTooltipData(
+                  getTooltipItems: _constructTooltips,
+                  tooltipBgColor: Colors.black54,
                 ),
+                getTouchedSpotIndicator: (barData, indicators) => _constructTouchIndicator(
+                  colorScheme,
+                  barData,
+                  indicators,
+                ),
+                handleBuiltInTouches: false,
+                touchCallback: _touchCallback,
               ),
             ),
-            borderData: FlBorderData(show: false),
-            gridData: FlGridData(show: false),
-            showingTooltipIndicators: [ShowingTooltipIndicators(touchedSpots)],
-            lineTouchData: LineTouchData(
-              enabled: true,
-              touchTooltipData: LineTouchTooltipData(
-                getTooltipItems: _constructTooltips,
-                tooltipBgColor: Colors.black54,
-              ),
-              getTouchedSpotIndicator: (barData, indicators) => _constructTouchIndicator(
-                colorScheme,
-                barData,
-                indicators,
-              ),
-              handleBuiltInTouches: false,
-              touchCallback: _touchCallback,
-            ),
+            swapAnimationDuration: const Duration(milliseconds: 500),
           ),
-          swapAnimationDuration: const Duration(milliseconds: 500),
         ),
-      ),
       ],
     );
   }
