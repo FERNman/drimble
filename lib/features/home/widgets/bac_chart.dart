@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../domain/bac_calulation_results.dart';
 import '../../../infra/extensions/floor_date_time.dart';
+import 'bac_chart_title.dart';
 
 class BACChart extends StatefulWidget {
   static const timestep = Duration(minutes: 5);
@@ -28,9 +29,15 @@ class _BACChartState extends State<BACChart> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: AspectRatio(
+    return Column(
+      children: [
+        BACChartTitle(
+          currentBAC: widget.results.getBACAt(DateTime.now()).value,
+          maxBAC: widget.results.maxBAC,
+          soberAt: widget.results.soberAt,
+        ),
+        const SizedBox(height: 8),
+        AspectRatio(
         aspectRatio: 2.25,
         child: LineChart(
           LineChartData(
@@ -89,6 +96,7 @@ class _BACChartState extends State<BACChart> {
           swapAnimationDuration: const Duration(milliseconds: 500),
         ),
       ),
+      ],
     );
   }
 
