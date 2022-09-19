@@ -11,6 +11,8 @@ class ConsumedDrinksRepository {
 
   final IsarCollection<DatabaseConsumedDrink> collection;
 
+  Isar get database => collection.isar;
+
   ConsumedDrinksRepository(Isar database) : collection = database.consumedDrinks;
 
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
@@ -31,14 +33,16 @@ class ConsumedDrinksRepository {
   }
 
   void save(ConsumedDrink drink) async {
-    await collection.isar.writeTxn(() async {
+    await database.writeTxn(() async {
       await collection.put(drink.toEntity());
     });
   }
 
   void removeDrink(ConsumedDrink drink) async {
     if (drink.id != null) {
-      await collection.delete(drink.id!);
+      await database.writeTxn(() async {
+        await collection.delete(drink.id!);
+      });
     }
   }
 }
