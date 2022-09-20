@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,14 +7,14 @@ import 'widgets/consumed_drink_form.dart';
 import 'widgets/consumed_drink_summary.dart';
 
 class ConsumedDrinkPage extends StatefulWidget {
-  static Route<void> editDrinkRoute(ConsumedDrink drink) => CupertinoPageRoute(
+  static Route<void> editDrinkRoute(ConsumedDrink drink) => MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => ConsumedDrinkCubit.editDrink(context.read(), drink: drink),
           child: const ConsumedDrinkPage(),
         ),
       );
 
-  static Route<void> createDrinkRoute(ConsumedDrink drink) => CupertinoPageRoute(
+  static Route<void> createDrinkRoute(ConsumedDrink drink) => MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => ConsumedDrinkCubit.createDrink(context.read(), drink: drink),
           child: const ConsumedDrinkPage(),
