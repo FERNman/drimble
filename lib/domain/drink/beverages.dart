@@ -3,7 +3,7 @@ import 'beverage.dart';
 abstract class Beverages {
   static Beverage beer = const Beverage(
     name: 'Beer',
-    icon: 'icons/beer_small.png',
+    icon: 'assets/icons/beer_small.png',
     standardServings: [330, 500],
     defaultABV: 0.05,
     defaultDuration: Duration(minutes: 30),
@@ -11,7 +11,7 @@ abstract class Beverages {
 
   static Beverage ale = const Beverage(
     name: 'Ale',
-    icon: 'icons/ale.png',
+    icon: 'assets/icons/ale.png',
     standardServings: [330, 500],
     defaultABV: 0.05,
     defaultDuration: Duration(minutes: 30),
@@ -19,7 +19,7 @@ abstract class Beverages {
 
   static Beverage cider = const Beverage(
     name: 'Cider',
-    icon: 'icons/cider.png',
+    icon: 'assets/icons/cider.png',
     standardServings: [330, 500],
     defaultABV: 0.05,
     defaultDuration: Duration(minutes: 30),
@@ -27,7 +27,7 @@ abstract class Beverages {
 
   static Beverage whiteWine = const Beverage(
     name: 'White Wine',
-    icon: 'icons/white_wine.png',
+    icon: 'assets/icons/white_wine.png',
     standardServings: [125, 250],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 20),
@@ -35,7 +35,7 @@ abstract class Beverages {
 
   static Beverage redWine = const Beverage(
     name: 'Red Wine',
-    icon: 'icons/red_wine.png',
+    icon: 'assets/icons/red_wine.png',
     standardServings: [125, 250],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 20),
@@ -43,7 +43,7 @@ abstract class Beverages {
 
   static Beverage champagne = const Beverage(
     name: 'Champagne',
-    icon: 'icons/champagne.png',
+    icon: 'assets/icons/champagne.png',
     standardServings: [125, 250],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 20),
@@ -51,7 +51,7 @@ abstract class Beverages {
 
   static Beverage whisky = const Beverage(
     name: 'Whisky',
-    icon: 'icons/whisky.png',
+    icon: 'assets/icons/whisky.png',
     standardServings: [20, 40],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 5),
@@ -59,7 +59,7 @@ abstract class Beverages {
 
   static Beverage rum = const Beverage(
     name: 'Rum',
-    icon: 'icons/rum.png',
+    icon: 'assets/icons/rum.png',
     standardServings: [20, 40],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 5),
@@ -67,7 +67,7 @@ abstract class Beverages {
 
   static Beverage vodka = const Beverage(
     name: 'Vodka',
-    icon: 'icons/vodka.png',
+    icon: 'assets/icons/vodka.png',
     standardServings: [20, 40],
     defaultABV: 0.12,
     defaultDuration: Duration(minutes: 5),
