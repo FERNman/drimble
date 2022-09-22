@@ -8,15 +8,17 @@ import 'package:isar/isar.dart';
 import 'data/auth_repository.dart';
 import 'data/beverages_repository.dart';
 import 'data/consumed_drinks_repository.dart';
-import 'features/home/home_page.dart';
 import 'infra/database/database_consumed_drink.dart';
+import 'router.dart';
 
 void main() {
-  runApp(const DrinkawareApp());
+  runApp(DrinkawareApp());
 }
 
 class DrinkawareApp extends StatelessWidget {
-  const DrinkawareApp({super.key});
+  final _router = DrinkawareRouter();
+
+  DrinkawareApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class DrinkawareApp extends StatelessWidget {
       background: Colors.white,
       shadow: Colors.black,
     );
+
     final textTheme = GoogleFonts.poppinsTextTheme();
 
     return MultiRepositoryProvider(
@@ -39,7 +42,7 @@ class DrinkawareApp extends StatelessWidget {
         RepositoryProvider(create: (context) => BeveragesRepository()),
         RepositoryProvider(create: (context) => AuthRepository()),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: colorScheme,
@@ -77,7 +80,8 @@ class DrinkawareApp extends StatelessWidget {
           Locale('en'),
         ],
         title: 'Drinkaware',
-        home: HomePage.create(context),
+        routerDelegate: _router.delegate(),
+        routeInformationParser: _router.defaultRouteParser(),
       ),
     );
   }

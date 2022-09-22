@@ -21,18 +21,21 @@ dependencies:
   fl_chart: ^0.55.1
   shared_preferences: ^2.0.15
   rxdart: ^0.27.5
+  auto_route: ^5.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   isar_generator: 3.0.0-dev.14
   build_runner: ^2.2.0
+  auto_route_generator: ^5.0.2
 
 flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/
+    - assets/icons/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

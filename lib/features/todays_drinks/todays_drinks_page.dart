@@ -1,26 +1,23 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../router.dart';
 import '../common/widgets/consumed_drink_list_item.dart';
 import '../common/widgets/remove_drink_dialog.dart';
-import '../consumed_drink/consumed_drink_page.dart';
 import 'todays_drinks_cubit.dart';
 
-class TodaysDrinksPage extends StatefulWidget {
-  static Route<void> route() => MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => TodaysDrinksCubit(context.read()),
-          child: const TodaysDrinksPage(),
-        ),
-      );
-
+class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
   const TodaysDrinksPage({super.key});
 
   @override
-  State<TodaysDrinksPage> createState() => _TodaysDrinksPageState();
-}
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TodaysDrinksCubit(context.read()),
+      child: const TodaysDrinksPage(),
+    );
+  }
 
-class _TodaysDrinksPageState extends State<TodaysDrinksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +25,7 @@ class _TodaysDrinksPageState extends State<TodaysDrinksPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pop(context);
+            context.router.pop();
           },
         ),
         title: const Text('History'),
@@ -43,7 +40,7 @@ class _TodaysDrinksPageState extends State<TodaysDrinksPage> {
               return ConsumedDrinkListItem(
                 drink,
                 onEdit: () {
-                  Navigator.push(context, ConsumedDrinkPage.editDrinkRoute(drink));
+                  context.router.push(ConsumedDrinkRoute(isEditing: true, drink: drink));
                 },
                 onDelete: () {
                   showDialog(

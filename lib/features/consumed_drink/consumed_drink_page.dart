@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,29 +7,32 @@ import 'consumed_drink_cubit.dart';
 import 'widgets/consumed_drink_form.dart';
 import 'widgets/consumed_drink_summary.dart';
 
-class ConsumedDrinkPage extends StatefulWidget {
-  static Route<void> editDrinkRoute(ConsumedDrink drink) => MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => ConsumedDrinkCubit.editDrink(context.read(), drink: drink),
-          child: const ConsumedDrinkPage(),
-        ),
-      );
+class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
+  final ConsumedDrink drink;
+  final bool isEditing;
 
-  static Route<void> createDrinkRoute(ConsumedDrink drink) => MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => ConsumedDrinkCubit.createDrink(context.read(), drink: drink),
-          child: const ConsumedDrinkPage(),
-        ),
-      );
+  final _formKey = GlobalKey<FormState>();
 
-  const ConsumedDrinkPage({super.key});
+  ConsumedDrinkPage({
+    required this.drink,
+    this.isEditing = false,
+    super.key,
+  });
 
   @override
-  State<ConsumedDrinkPage> createState() => _ConsumedDrinkPageState();
-}
-
-class _ConsumedDrinkPageState extends State<ConsumedDrinkPage> {
-  final _formKey = GlobalKey<FormState>();
+  Widget wrappedRoute(BuildContext context) {
+    if (isEditing) {
+      return BlocProvider(
+        create: (context) => ConsumedDrinkCubit.editDrink(context.read(), drink: drink),
+        child: this,
+      );
+    } else {
+      return BlocProvider(
+        create: (context) => ConsumedDrinkCubit.createDrink(context.read(), drink: drink),
+        child: this,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class _ConsumedDrinkPageState extends State<ConsumedDrinkPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.router.pop(),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -48,7 +52,7 @@ class _ConsumedDrinkPageState extends State<ConsumedDrinkPage> {
               padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
               child: Column(
                 children: [
-                  ConsumedDrinkSummary(state.drink.beverage),
+                  ConsumedDrinkSummary(state.beverage),
                   ConsumedDrinkForm(
                     formKey: _formKey,
                     initialValue: state.drink,
@@ -65,13 +69,13 @@ class _ConsumedDrinkPageState extends State<ConsumedDrinkPage> {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Done'),
         icon: const Icon(Icons.done),
-        onPressed: _saveAndNavigate,
+        onPressed: () => _saveAndNavigate(context),
       ),
     );
   }
 
-  void _saveAndNavigate() {
+  void _saveAndNavigate(BuildContext context) {
     context.read<ConsumedDrinkCubit>().save();
-    Navigator.popUntil(context, (route) => route.isFirst);
+    context.router.popUntilRoot();
   }
 }

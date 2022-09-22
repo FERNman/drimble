@@ -1,38 +1,30 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../add_drink/add_drink_page.dart';
+import '../../router.dart';
 import '../common/widgets/remove_drink_dialog.dart';
-import '../consumed_drink/consumed_drink_page.dart';
-import '../profile/profile_page.dart';
-import '../todays_drinks/todays_drinks_page.dart';
 import 'home_cubit.dart';
 import 'widgets/bac_chart.dart';
 import 'widgets/home_app_bar.dart';
 import 'widgets/recent_drinks.dart';
 import 'widgets/todays_statistics.dart';
 
-class HomePage extends StatefulWidget {
-  static Widget create(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeCubit(context.read(), context.read()),
-      child: const HomePage(),
-    );
-  }
-
+class HomePage extends StatelessWidget implements AutoRouteWrapper {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+        create: (context) => HomeCubit(context.read(), context.read()),
+        child: const HomePage(),
+      );
 
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HomeAppBar(
         onTapProfile: () {
-          Navigator.push(context, ProfilePage.route());
+          context.router.push(const ProfileRoute());
         },
       ),
       body: BlocBuilder<HomeCubit, HomeCubitState>(
@@ -49,39 +41,42 @@ class _HomePageState extends State<HomePage> {
                   calories: state.calories,
                 ),
                 const SizedBox(height: 24),
-                RecentDrinks(
-                  state.todaysDrinks,
-                  onEdit: (drink) {
-                    Navigator.push(context, ConsumedDrinkPage.editDrinkRoute(drink));
-                  },
-                  onDelete: (drink) {
-                    showDialog(
-                      context: context,
-                      builder: (dialogContext) => RemoveDrinkDialog(
-                        onCancel: () {
-                          Navigator.pop(dialogContext);
-                        },
-                        onRemove: () {
-                          context.read<HomeCubit>().deleteDrink(drink);
-                          Navigator.pop(dialogContext);
-                        },
-                      ),
-                    );
-                  },
-                  onViewAll: () {
-                    Navigator.push(context, TodaysDrinksPage.route());
-                  },
-                )
+                _buildRecentDrinks(state, context)
               ],
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, AddDrinkPage.route()),
+        onPressed: () => context.router.push(const AddDrinkRoute()),
         child: const Icon(Icons.add),
       ),
     );
   }
-}
 
+  RecentDrinks _buildRecentDrinks(HomeCubitState state, BuildContext context) {
+    return RecentDrinks(
+      state.todaysDrinks,
+      onEdit: (drink) {
+        context.router.push(ConsumedDrinkRoute(drink: drink, isEditing: true));
+      },
+      onDelete: (drink) {
+        showDialog(
+          context: context,
+          builder: (dialogContext) => RemoveDrinkDialog(
+            onCancel: () {
+              Navigator.pop(dialogContext);
+            },
+            onRemove: () {
+              context.read<HomeCubit>().deleteDrink(drink);
+              Navigator.pop(dialogContext);
+            },
+          ),
+        );
+      },
+      onViewAll: () {
+        context.router.push(const TodaysDrinksRoute());
+      },
+    );
+  }
+}
