@@ -6,7 +6,7 @@ class User {
 
   String name;
   Gender gender;
-  int age; // In years
+  int age;
   int height; // In centimeters
   int weight; // In kilograms
   BodyComposition bodyComposition;
@@ -37,4 +37,21 @@ class User {
     required this.weight,
     required this.bodyComposition,
   });
+
+  User.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        gender = Gender.values.firstWhere((el) => el.name == json['gender']),
+        age = json['age'],
+        height = json['height'],
+        weight = json['weight'],
+        bodyComposition = BodyComposition.values.firstWhere((el) => el.name == json['bodyComposition']);
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'gender': gender.name,
+        'age': age,
+        'height': height,
+        'weight': weight,
+        'bodyComposition': bodyComposition.name
+      };
 }

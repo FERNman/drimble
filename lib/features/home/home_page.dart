@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (context) => HomeCubit(context.read(), context.read()),
-        child: const HomePage(),
+        child: this,
       );
 
   @override
@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  RecentDrinks _buildRecentDrinks(HomeCubitState state, BuildContext context) {
+  Widget _buildRecentDrinks(HomeCubitState state, BuildContext context) {
     return RecentDrinks(
       state.todaysDrinks,
       onEdit: (drink) {

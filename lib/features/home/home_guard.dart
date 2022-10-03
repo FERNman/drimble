@@ -1,0 +1,19 @@
+import 'package:auto_route/auto_route.dart';
+
+import '../../data/user_repository.dart';
+import '../../router.dart';
+
+class HomeGuard extends AutoRouteGuard {
+  final UserRepository _userRepository;
+
+  HomeGuard(this._userRepository);
+
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) async {
+    if (await _userRepository.isSignedIn()) {
+      resolver.next();
+    } else {
+      router.replaceAll([const OnboardingRoute()]);
+    }
+  }
+}

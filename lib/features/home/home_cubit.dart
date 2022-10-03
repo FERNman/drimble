@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/auth_repository.dart';
 import '../../data/consumed_drinks_repository.dart';
+import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
 import '../../domain/drink/consumed_drink.dart';
 import '../common/disposable.dart';
 
 class HomeCubit extends Cubit<HomeCubitState> with Disposable {
-  final AuthRepository _authRepository;
+  final UserRepository _userRepository;
   final ConsumedDrinksRepository _consumedDrinksRepository;
 
-  HomeCubit(this._authRepository, this._consumedDrinksRepository)
+  HomeCubit(this._userRepository, this._consumedDrinksRepository)
       : super(HomeCubitState(todaysDrinks: [], calculationResults: BACCalculationResults([]))) {
     _subscribeToRepository();
   }
@@ -26,7 +26,7 @@ class HomeCubit extends Cubit<HomeCubitState> with Disposable {
   }
 
   void _calculateBAC(List<ConsumedDrink> drinks) async {
-    final user = await _authRepository.getUser();
+    final user = await _userRepository.user;
 
     if (drinks.isNotEmpty) {
       final calculator = BACCalculator(user!);

@@ -3,42 +3,36 @@ import 'dart:convert';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/user/body_composition.dart';
-import '../domain/user/gender.dart';
 import '../domain/user/user.dart';
 
-class AuthRepository {
+class UserRepository {
   static const userKey = 'user';
 
-  final BehaviorSubject<User?> _user = BehaviorSubject.seeded(User(
-    name: 'Gabriel',
-    age: 23,
-    gender: Gender.male,
-    weight: 83,
-    height: 180,
-    bodyComposition: BodyComposition.athletic,
-  ));
+  final BehaviorSubject<User?> _user = BehaviorSubject();
 
-  AuthRepository() {
-    // _tryLoadUser().then((value) => _user.add(value));
+  Future<User?> get user async => _user.hasValue ? _user.value : await _user.first;
+
+  UserRepository() {
+    _tryLoadUser().then((value) => _user.add(value));
   }
 
-  Future<bool> isSignedIn() async => await _user.first != null;
+  Future<bool> isSignedIn() async => await user != null;
 
-  Future<User?> getUser() {
-    return _user.first;
-  }
-
-  void setUser(User user) async {
+  void signIn(User user) async {
     _user.add(user);
     await _persistUser(user);
+  }
+
+  void signOut() async {
+    _user.add(null);
+    await _unsetUser();
   }
 
   Future<User?> _tryLoadUser() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final encodedUser = sharedPreferences.getString(userKey);
     if (encodedUser != null) {
-      return jsonDecode(encodedUser);
+      return User.fromJson(jsonDecode(encodedUser));
     }
 
     return null;
@@ -46,7 +40,12 @@ class AuthRepository {
 
   Future<void> _persistUser(User user) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    final encodedUser = jsonEncode(user);
+    final encodedUser = jsonEncode(user.toJson());
     await sharedPreferences.setString(userKey, encodedUser);
+  }
+
+  Future<void> _unsetUser() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.remove(userKey);
   }
 }
