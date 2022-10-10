@@ -12,28 +12,35 @@ class OnboardingWelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Spacer(),
-              Text(
-                context.l18n.onboarding_welcomeToDrinkaware,
-                style: context.textTheme.headlineLarge?.copyWith(color: Colors.black87),
+        child: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Spacer(),
+                    Text(
+                      context.l18n.onboarding_welcomeToDrinkaware,
+                      style: context.textTheme.headlineLarge?.copyWith(color: Colors.black87),
+                    ),
+                    const SizedBox(height: 24),
+                    const Center(child: Image(image: AssetImage('assets/images/onboarding_welcome.png'))),
+                    const Spacer(),
+                    Text(context.l18n.onboarding_howCanICallYou, style: context.textTheme.bodyLarge),
+                    const SizedBox(height: 4),
+                    _enterFirstNameTextField(context),
+                    const SizedBox(height: 24),
+                    BlocBuilder<OnboardingCubit, OnboardingCubitState>(builder: (context, state) {
+                      return Center(child: _getStartedButton(context, enabled: state.firstName.isNotEmpty));
+                    })
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
-              const Center(child: Image(image: AssetImage('assets/images/onboarding_welcome.png'))),
-              const Spacer(),
-              Text(context.l18n.onboarding_howCanICallYou, style: context.textTheme.bodyLarge),
-              const SizedBox(height: 4),
-              _enterFirstNameTextField(context),
-              const SizedBox(height: 24),
-              BlocBuilder<OnboardingCubit, OnboardingCubitState>(builder: (context, state) {
-                return Center(child: _getStartedButton(context, enabled: state.firstName.isNotEmpty));
-              })
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
