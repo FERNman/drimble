@@ -4,18 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../router.dart';
 import '../common/widgets/remove_drink_dialog.dart';
-import 'home_cubit.dart';
+import '../diary_calendar/diary_calendar.dart';
+import 'diary_cubit.dart';
 import 'widgets/bac_chart.dart';
-import 'widgets/home_app_bar.dart';
+import 'widgets/diary_app_bar.dart';
 import 'widgets/recent_drinks.dart';
 import 'widgets/todays_statistics.dart';
 
-class HomePage extends StatelessWidget implements AutoRouteWrapper {
-  const HomePage({super.key});
+class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
+  const DiaryPage({super.key});
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => HomeCubit(context.read(), context.read()),
+        create: (context) => DiaryCubit(context.read(), context.read(), context.read()),
         child: this,
       );
 
@@ -27,21 +28,27 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
           context.router.push(const ProfileRoute());
         },
       ),
-      body: BlocBuilder<HomeCubit, HomeCubitState>(
+      body: BlocBuilder<DiaryCubit, DiaryCubitState>(
         builder: (context, state) {
           return SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(height: 16),
+                DiaryCalendar(
+                  selectedDay: state.date,
+                  onSelectedDayChanged: (value) {
+                    context.read<DiaryCubit>().switchDate(value);
+                  },
+                ),
+                const SizedBox(height: 24),
                 BACChart(results: state.calculationResults),
                 const SizedBox(height: 24),
                 TodaysStatistics(
-                  consumedDrinks: state.todaysDrinks,
+                  consumedDrinks: state.drinks,
                   unitsOfAlcohol: state.unitsOfAlcohol,
                   calories: state.calories,
                 ),
                 const SizedBox(height: 24),
-                _buildRecentDrinks(state, context)
+                _buildRecentDrinks(state, context),
               ],
             ),
           );
@@ -54,9 +61,9 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildRecentDrinks(HomeCubitState state, BuildContext context) {
+  Widget _buildRecentDrinks(DiaryCubitState state, BuildContext context) {
     return RecentDrinks(
-      state.todaysDrinks,
+      state.drinks,
       onEdit: (drink) {
         context.router.push(ConsumedDrinkRoute(drink: drink, isEditing: true));
       },
@@ -68,7 +75,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
               Navigator.pop(dialogContext);
             },
             onRemove: () {
-              context.read<HomeCubit>().deleteDrink(drink);
+              context.read<DiaryCubit>().deleteDrink(drink);
               Navigator.pop(dialogContext);
             },
           ),

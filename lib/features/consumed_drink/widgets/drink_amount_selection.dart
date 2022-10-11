@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/milliliter.dart';
+import '../../../domain/alcohol/milliliter.dart';
 
 class AmountSelection extends StatefulWidget {
   final List<Milliliter> standardServings;

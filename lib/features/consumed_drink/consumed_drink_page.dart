@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/drink/consumed_drink.dart';
+import '../../domain/diary/consumed_drink.dart';
 import 'consumed_drink_cubit.dart';
 import 'widgets/consumed_drink_form.dart';
 import 'widgets/consumed_drink_summary.dart';

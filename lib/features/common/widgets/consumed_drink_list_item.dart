@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/drink/consumed_drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 
 class ConsumedDrinkListItem extends StatelessWidget {
   final ConsumedDrink drink;

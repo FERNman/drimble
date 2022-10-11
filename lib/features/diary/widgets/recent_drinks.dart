@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/consumed_drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 import '../../common/widgets/consumed_drink_list_item.dart';
 
 typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink drink);

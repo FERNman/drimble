@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/stomach_fullness.dart';
+import '../../../domain/diary/stomach_fullness.dart';
 
 class StomachFullnessSelection extends StatefulWidget {
   final StomachFullness initialValue;

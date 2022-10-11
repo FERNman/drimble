@@ -23,6 +23,8 @@ dependencies:
   rxdart: ^0.27.5
   auto_route: ^5.0.1
   numberpicker: ^2.1.1
+  collection: ^1.16.0
+  dotted_border: ^2.0.0+2
 
 dev_dependencies:
   flutter_test:

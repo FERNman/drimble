@@ -1,11 +1,10 @@
 import 'package:isar/isar.dart';
 
-import 'alcohol.dart';
-import 'beverage.dart';
-import 'milliliter.dart';
-import 'percentage.dart';
+import '../alcohol/alcohol.dart';
+import '../alcohol/beverage.dart';
+import '../alcohol/milliliter.dart';
+import '../alcohol/percentage.dart';
 import 'stomach_fullness.dart';
-
 
 class ConsumedDrink {
   Id? id;

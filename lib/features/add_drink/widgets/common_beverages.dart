@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/beverage.dart';
+import '../../../domain/alcohol/beverage.dart';
 
 typedef CommonBeverageTapCallback = void Function(Beverage);
 

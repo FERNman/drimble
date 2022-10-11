@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'alcohol/alcohol.dart';
 import 'bac_calulation_results.dart';
-import 'drink/alcohol.dart';
-import 'drink/consumed_drink.dart';
+import 'diary/consumed_drink.dart';
 import 'user/user.dart';
 
 class BACCalculator {

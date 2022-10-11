@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/consumed_drinks_repository.dart';
-import '../../domain/drink/consumed_drink.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../common/disposable.dart';
 
 class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {

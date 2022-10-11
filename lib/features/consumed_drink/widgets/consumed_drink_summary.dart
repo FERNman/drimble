@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/beverage.dart';
+import '../../../domain/alcohol/beverage.dart';
 
 class ConsumedDrinkSummary extends StatelessWidget {
   final Beverage beverage;

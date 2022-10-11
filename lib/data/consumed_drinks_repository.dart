@@ -2,47 +2,68 @@ import 'dart:async';
 
 import 'package:isar/isar.dart';
 
-import '../domain/drink/consumed_drink.dart';
+import '../domain/diary/consumed_drink.dart';
 import '../infra/database/database_consumed_drink.dart';
+import '../infra/database/database_diary_entry.dart';
 import '../infra/extensions/floor_date_time.dart';
 
 class ConsumedDrinksRepository {
   static const oneDay = Duration(days: 1);
 
-  final IsarCollection<DatabaseConsumedDrink> collection;
+  final IsarCollection<DatabaseConsumedDrink> _collection;
 
-  Isar get database => collection.isar;
+  Isar get _database => _collection.isar;
 
-  ConsumedDrinksRepository(Isar database) : collection = database.consumedDrinks;
+  ConsumedDrinksRepository(Isar database) : _collection = database.consumedDrinks;
 
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
-    return collection
-        .where()
-        .startTimeBetween(date.floorToDay(), date.add(oneDay).floorToDay())
-        .sortByStartTimeDesc()
-        .watch(fireImmediately: true);
+    return _collection.where().startTimeOnSameDate(date).sortByStartTimeDesc().watch(fireImmediately: true);
   }
 
   Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async {
-    return collection
-        .where()
-        .startTimeBetween(date.floorToDay(), date.add(oneDay).floorToDay())
-        .sortByStartTimeDesc()
-        .limit(3)
-        .findAll();
+    return _collection.where().startTimeOnSameDate(date).sortByStartTimeDesc().limit(3).findAll();
   }
 
   void save(ConsumedDrink drink) async {
-    await database.writeTxn(() async {
-      await collection.put(drink.toEntity());
+    await _database.writeTxn(() async {
+      await _collection.put(drink.toEntity());
+
+      await _markAsNonDrinkFree(drink.startTime.floorToDay());
     });
   }
 
   void removeDrink(ConsumedDrink drink) async {
-    if (drink.id != null) {
-      await database.writeTxn(() async {
-        await collection.delete(drink.id!);
-      });
+    assert(drink.id != null);
+
+    await _database.writeTxn(() async {
+      await _collection.delete(drink.id!);
+
+      final remainingDrinksOnThisDay = await _collection.where().startTimeOnSameDate(drink.startTime).count();
+
+      if (remainingDrinksOnThisDay == 0) {
+        await _markAsUntracked(drink.startTime.floorToDay());
+      }
+    });
+  }
+
+  Future<void> _markAsNonDrinkFree(DateTime date) async {
+    final diaryEntry = await _database.diary.where().dateEqualTo(date).findFirst() ??
+        DatabaseDiaryEntry(date: date, isDrinkFreeDay: false);
+
+    diaryEntry.isDrinkFreeDay = false;
+
+    _database.diary.put(diaryEntry);
+  }
+
+  Future<void> _markAsUntracked(DateTime date) async {
+    final diaryEntry = await _database.diary.where().dateEqualTo(date).findFirst();
+    if (diaryEntry != null) {
+      await _database.diary.delete(diaryEntry.id!);
     }
   }
+}
+
+extension _DrinksQueryBuilder on QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QWhere> {
+  QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QAfterWhereClause> startTimeOnSameDate(DateTime date) =>
+      startTimeBetween(date.floorToDay(), date.floorToDay().add(const Duration(days: 1)));
 }

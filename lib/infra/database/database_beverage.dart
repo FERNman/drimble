@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 
-import '../../domain/drink/beverage.dart';
+import '../../domain/alcohol/beverage.dart';
 
 part 'database_beverage.g.dart';
 

@@ -2,9 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/beverages_repository.dart';
 import '../../data/consumed_drinks_repository.dart';
-import '../../domain/drink/beverage.dart';
-import '../../domain/drink/beverages.dart';
-import '../../domain/drink/consumed_drink.dart';
+import '../../domain/alcohol/beverage.dart';
+import '../../domain/alcohol/beverages.dart';
+import '../../domain/diary/consumed_drink.dart';
 
 class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
   final ConsumedDrinksRepository _consumedDrinksRepository;

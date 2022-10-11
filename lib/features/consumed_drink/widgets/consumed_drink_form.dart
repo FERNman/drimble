@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/drink/consumed_drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 import '../../../infra/extensions/copy_date_time.dart';
 import '../../../infra/extensions/copy_duration.dart';
 import 'drink_amount_selection.dart';

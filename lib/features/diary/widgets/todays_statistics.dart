@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/drink/consumed_drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 
 class TodaysStatistics extends StatelessWidget {
   final List<ConsumedDrink> consumedDrinks;

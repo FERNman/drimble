@@ -1,4 +1,4 @@
-import 'drink/alcohol.dart';
+import 'alcohol/alcohol.dart';
 
 class BACEntry {
   final DateTime time;

@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 
-import '../../domain/drink/consumed_drink.dart';
-import '../../domain/drink/stomach_fullness.dart';
+import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/stomach_fullness.dart';
 import 'database_beverage.dart';
 import 'database_duration.dart';
 
@@ -26,7 +26,7 @@ class DatabaseConsumedDrink extends ConsumedDrink {
   }) : super(beverage: dbBeverage, duration: dbDuration.duration);
 }
 
-extension Database on ConsumedDrink {
+extension ConsumedDrinkDatabaseConveresions on ConsumedDrink {
   DatabaseConsumedDrink toEntity() => DatabaseConsumedDrink(
         id: id,
         dbBeverage: beverage.toEntity(),

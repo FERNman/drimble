@@ -8,9 +8,11 @@ import 'package:isar/isar.dart';
 
 import 'data/beverages_repository.dart';
 import 'data/consumed_drinks_repository.dart';
+import 'data/diary_repository.dart';
 import 'data/user_repository.dart';
-import 'features/home/home_guard.dart';
+import 'features/diary/diary_guard.dart';
 import 'infra/database/database_consumed_drink.dart';
+import 'infra/database/database_diary_entry.dart';
 import 'router.dart';
 
 void main() {
@@ -46,15 +48,22 @@ class _DrinkawareAppState extends State<DrinkawareApp> {
     return MultiRepositoryProvider(
       providers: [
         // TODO: Check for a better way
-        RepositoryProvider(lazy: false, create: (context) => Isar.openSync([DatabaseConsumedDrinkSchema])),
+        RepositoryProvider(
+          lazy: false,
+          create: (context) => Isar.openSync([
+            DatabaseConsumedDrinkSchema,
+            DatabaseDiaryEntrySchema,
+          ]),
+        ),
         RepositoryProvider(create: (context) => ConsumedDrinksRepository(context.read())),
+        RepositoryProvider(create: (context) => DiaryRepository(context.read())),
         RepositoryProvider(create: (context) => BeveragesRepository()),
         RepositoryProvider(create: (context) => UserRepository()),
       ],
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrinkawareRouter(homeGuard: HomeGuard(context.read()));
+          _router ??= DrinkawareRouter(diaryGuard: DiaryGuard(context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
