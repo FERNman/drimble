@@ -19,7 +19,7 @@ class BACChartTitle extends StatelessWidget {
         children: [
           Text(
             '${currentBAC.toStringAsFixed(2)}‰',
-            style: theme.textTheme.displaySmall?.copyWith(color: Colors.black87),
+            style: theme.textTheme.headlineMedium?.copyWith(color: Colors.black87),
           ),
           const SizedBox(height: 8),
           Text(_subtitle(), style: theme.textTheme.bodyMedium)

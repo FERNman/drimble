@@ -5,6 +5,7 @@ import '../domain/diary/diary_entry.dart';
 import '../infra/database/database_consumed_drink.dart';
 import '../infra/database/database_diary_entry.dart';
 import '../infra/extensions/floor_date_time.dart';
+import 'consumed_drinks_repository.dart';
 
 class DiaryRepository {
   final IsarCollection<DatabaseDiaryEntry> _collection;
@@ -20,7 +21,7 @@ class DiaryRepository {
   Stream<DiaryEntry?> overserveEntryOnDate(DateTime date) {
     return _collection
         .where()
-        .dateOnSameDate(date)
+        .dateEqualTo(date.floorToDay())
         .limit(1)
         .watch(fireImmediately: true)
         .map((results) => results.firstOrNull);
@@ -39,17 +40,9 @@ class DiaryRepository {
   }
 
   Future<void> _deleteDrinksOnDate(DateTime date) async {
-    const oneDay = Duration(days: 1);
-    final consumedDrinks = await _database.consumedDrinks
-        .where()
-        .startTimeBetween(date.floorToDay(), date.floorToDay().add(oneDay))
-        .findAll();
+    final drinks = await _database.consumedDrinks.where().startTimeOnSameDate(date).findAll();
+    final idsToDelete = drinks.map((e) => e.id!).toList();
 
-    await _database.consumedDrinks.deleteAll(consumedDrinks.map((e) => e.id!).toList());
+    await _database.consumedDrinks.deleteAll(idsToDelete);
   }
-}
-
-extension _DiaryQueryBuilder on QueryBuilder<DatabaseDiaryEntry, DatabaseDiaryEntry, QWhere> {
-  QueryBuilder<DatabaseDiaryEntry, DatabaseDiaryEntry, QAfterWhereClause> dateOnSameDate(DateTime date) =>
-      dateBetween(date.floorToDay(), date.floorToDay().add(const Duration(days: 1)));
 }

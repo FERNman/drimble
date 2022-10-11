@@ -10,6 +10,7 @@ import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../infra/extensions/floor_date_time.dart';
 import '../common/disposable.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
@@ -23,8 +24,8 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   void switchDate(DateTime date) {
-    if (!DateUtils.isSameDay(date, state.date)) {
-      emit(DiaryCubitState.initial(date: date));
+    if (!DateUtils.isSameDay(date.floorToDay(), state.date)) {
+      emit(DiaryCubitState.initial(date: date.floorToDay()));
     }
   }
 
@@ -37,13 +38,14 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   void _subscribeToRepository() {
-    addSubscription(stream
-        .distinct((previous, next) => previous.date.isAtSameMomentAs(next.date))
+    final dateChangedStream =
+        stream.distinct((previous, next) => previous.date.isAtSameMomentAs(next.date)).startWith(state);
+
+    addSubscription(dateChangedStream
         .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.date))
         .listen(_calculateBAC));
 
-    addSubscription(stream
-        .distinct((previous, next) => previous.date.isAtSameMomentAs(next.date))
+    addSubscription(dateChangedStream
         .flatMap((value) => _diaryRepository.overserveEntryOnDate(value.date))
         .listen((item) => emit(state.copyWith(diaryEntry: item))));
   }
@@ -79,8 +81,9 @@ class DiaryCubitState {
     required this.calculationResults,
   });
 
-  DiaryCubitState.initial({required this.date})
-      : diaryEntry = null,
+  DiaryCubitState.initial({required DateTime date})
+      : date = date.floorToDay(),
+        diaryEntry = null,
         drinks = [],
         calculationResults = BACCalculationResults([]);
 
@@ -91,7 +94,7 @@ class DiaryCubitState {
     BACCalculationResults? calculationResults,
   }) =>
       DiaryCubitState(
-        date: date ?? this.date,
+        date: date?.floorToDay() ?? this.date,
         diaryEntry: diaryEntry ?? this.diaryEntry,
         drinks: drinks ?? this.drinks,
         calculationResults: calculationResults ?? this.calculationResults,

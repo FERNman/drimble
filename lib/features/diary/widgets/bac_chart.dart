@@ -59,7 +59,7 @@ class _BACChartState extends State<BACChart> {
           maxBAC: widget.results.maxBAC,
           soberAt: widget.results.soberAt,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         AspectRatio(
           aspectRatio: 2.25,
           child: LineChart(

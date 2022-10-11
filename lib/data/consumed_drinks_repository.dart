@@ -63,7 +63,7 @@ class ConsumedDrinksRepository {
   }
 }
 
-extension _DrinksQueryBuilder on QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QWhere> {
+extension DrinksQueryBuilder on QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QWhere> {
   QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QAfterWhereClause> startTimeOnSameDate(DateTime date) =>
-      startTimeBetween(date.floorToDay(), date.floorToDay().add(const Duration(days: 1)));
+      startTimeBetween(date.floorToDay(), date.floorToDay().add(const Duration(days: 1)), includeUpper: false);
 }
