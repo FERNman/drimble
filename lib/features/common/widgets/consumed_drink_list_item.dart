@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/diary/consumed_drink.dart';
+import '../build_context_extensions.dart';
 
 class ConsumedDrinkListItem extends StatelessWidget {
   final ConsumedDrink drink;
@@ -12,7 +13,7 @@ class ConsumedDrinkListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final labelTextStyle = context.textTheme.labelSmall?.copyWith(color: Colors.black87);
 
     return InkWell(
       onTap: onEdit,
@@ -22,19 +23,19 @@ class ConsumedDrinkListItem extends StatelessWidget {
           children: [
             Image(
               image: AssetImage(drink.beverage.icon),
-              width: 32,
-              height: 32,
+              width: 42,
+              height: 42,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(drink.beverage.name, style: textTheme.bodyLarge),
-                Text('${drink.volume}ml - ${(drink.alcoholByVolume * 100).round()}%', style: textTheme.bodySmall),
+                Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: labelTextStyle),
+                Text(drink.beverage.name, style: context.textTheme.titleMedium),
+                Text('${drink.volume}ml - ${(drink.alcoholByVolume * 100).round()}%', style: labelTextStyle),
               ],
             ),
             const Spacer(),
-            Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: textTheme.bodyMedium),
             IconButton(onPressed: onDelete, icon: const Icon(Icons.delete_outline))
           ],
         ),
