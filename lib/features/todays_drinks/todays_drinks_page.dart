@@ -14,7 +14,7 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
       create: (context) => TodaysDrinksCubit(context.read()),
-      child: const TodaysDrinksPage(),
+      child: this,
     );
   }
 

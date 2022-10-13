@@ -49,9 +49,12 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.router.push(const AddDrinkRoute()),
-        child: const Icon(Icons.add),
+      floatingActionButton: BlocBuilder<DiaryCubit, DiaryCubitState>(
+        buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
+        builder: (context, state) => FloatingActionButton(
+          onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

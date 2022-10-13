@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import '../../../domain/alcohol/percentage.dart';
 import '../../../domain/diary/consumed_drink.dart';
 import '../../../infra/extensions/copy_date_time.dart';
 import '../../../infra/extensions/copy_duration.dart';
@@ -10,7 +11,6 @@ import 'drink_amount_selection.dart';
 import 'stomach_fullness_selection.dart';
 
 class ConsumedDrinkForm extends StatelessWidget {
-  static final _percentageRegex = RegExp(r'^\d{1,2}$');
   static final _timespanRegex = RegExp(r'^(([0|1]\d)|(2[0-3])):[0-5]\d$');
 
   final GlobalKey<FormState> formKey;
@@ -51,17 +51,9 @@ class ConsumedDrinkForm extends StatelessWidget {
           const _SectionTitle('Strenth'),
           Row(children: [
             Expanded(
-              child: TextFormField(
-                initialValue: '${(value.alcoholByVolume * 100).round()}',
-                onChanged: (it) {
-                  if (_percentageRegex.hasMatch(it)) {
-                    value.alcoholByVolume = double.parse(it) / 100.0;
-                    onChanged(value);
-                  }
-                },
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: const InputDecoration(prefixIcon: Icon(Icons.percent_outlined)),
+              child: _AlcoholTextField(
+                value: value.alcoholByVolume,
+                onChanged: (abv) => onChanged(value.copyWith(alcoholByVolume: abv)),
               ),
             ),
             const SizedBox(width: 8),
@@ -162,5 +154,34 @@ class _SectionSubtitle extends StatelessWidget {
       Text(text, style: textTheme.bodySmall),
       const SizedBox(height: 4),
     ]);
+  }
+}
+
+class _AlcoholTextField extends StatelessWidget {
+  static final _percentageRegex = RegExp(r'^\d{1,2}$');
+
+  final Percentage value;
+  final ValueChanged<Percentage> onChanged;
+
+  const _AlcoholTextField({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: '${(value * 100).round()}',
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      decoration: const InputDecoration(prefixIcon: Icon(Icons.percent_outlined)),
+      onChanged: _onChanged,
+    );
+  }
+
+  void _onChanged(String value) {
+    if (_percentageRegex.hasMatch(value)) {
+      onChanged(double.parse(value) / 100.0);
+    }
   }
 }

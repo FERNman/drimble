@@ -11,7 +11,7 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
   final BeveragesRepository _beveragesRepository;
 
   AddDrinkCubit(this._beveragesRepository, this._consumedDrinksRepository)
-      : super(AddDrinkCubitState(recentlyAddedDrinks: [], search: '')) {
+      : super(AddDrinkCubitState()) {
     _fetchRecentDrinks();
   }
 
@@ -41,10 +41,9 @@ class AddDrinkCubitState {
   ];
 
   final List<ConsumedDrink> recentlyAddedDrinks;
-
   final String search;
 
-  AddDrinkCubitState({required this.recentlyAddedDrinks, required this.search});
+  AddDrinkCubitState({this.recentlyAddedDrinks = const [], this.search = ''});
 
   AddDrinkCubitState copyWith({List<ConsumedDrink>? recentlyAddedDrinks, String? search}) => AddDrinkCubitState(
         recentlyAddedDrinks: recentlyAddedDrinks ?? this.recentlyAddedDrinks,
