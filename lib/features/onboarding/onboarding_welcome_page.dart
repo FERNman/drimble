@@ -17,7 +17,7 @@ class OnboardingWelcomePage extends StatelessWidget {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -33,9 +33,11 @@ class OnboardingWelcomePage extends StatelessWidget {
                     const SizedBox(height: 4),
                     _enterFirstNameTextField(context),
                     const SizedBox(height: 24),
-                    BlocBuilder<OnboardingCubit, OnboardingCubitState>(builder: (context, state) {
-                      return Center(child: _getStartedButton(context, enabled: state.firstName.isNotEmpty));
-                    })
+                    BlocBuilder<OnboardingCubit, OnboardingCubitState>(
+                      builder: (context, state) => Center(
+                        child: _getStartedButton(context, enabled: state.firstName.isNotEmpty),
+                      ),
+                    )
                   ],
                 ),
               ),

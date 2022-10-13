@@ -20,7 +20,7 @@ class OnboardingSelectWeightPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Text(context.l18n.onboarding_weightSelectionDescription),
@@ -35,7 +35,7 @@ class OnboardingSelectWeightPage extends StatelessWidget {
                   axis: Axis.horizontal,
                   textMapper: (numberText) => '${numberText}kg',
                   onChanged: (value) {
-                    context.read<OnboardingCubit>().setHeight(value);
+                    context.read<OnboardingCubit>().setWeight(value);
                   },
                 ),
               ),

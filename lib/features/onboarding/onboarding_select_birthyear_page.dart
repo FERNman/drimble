@@ -20,7 +20,7 @@ class OnboardingSelectBirthyearPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Text(context.l18n.onboarding_birthyearSelectionDescription),

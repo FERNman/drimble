@@ -20,7 +20,7 @@ class OnboardingSelectGenderPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(16),
           child: Column(children: [
             Text(context.l18n.onboarding_genderSelectionDescription, style: context.textTheme.bodyMedium),
             const SizedBox(height: 24),
