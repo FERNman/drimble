@@ -70,22 +70,27 @@ class DiaryCubitState {
   final List<ConsumedDrink> drinks;
   final BACCalculationResults calculationResults;
 
-  double get unitsOfAlcohol => drinks.fold(0.0, (total, it) => total + it.unitsOfAlcohol);
-
-  int get calories => drinks.fold(0, (calories, it) => calories + it.calories);
+  final bool shouldShowChart;
+  final double unitsOfAlcohol;
+  final int calories;
 
   DiaryCubitState({
     required this.date,
     required this.diaryEntry,
     required this.drinks,
     required this.calculationResults,
-  });
+  })  : shouldShowChart = DateUtils.isSameDay(DateTime.now(), date),
+        unitsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.unitsOfAlcohol),
+        calories = drinks.fold(0, (calories, it) => calories + it.calories);
 
   DiaryCubitState.initial({required DateTime date})
       : date = date.floorToDay(),
+        shouldShowChart = DateUtils.isSameDay(DateTime.now(), date),
         diaryEntry = null,
         drinks = [],
-        calculationResults = BACCalculationResults([]);
+        calculationResults = BACCalculationResults([]),
+        unitsOfAlcohol = 0,
+        calories = 0;
 
   DiaryCubitState copyWith({
     DateTime? date,

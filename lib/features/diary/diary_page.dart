@@ -85,10 +85,13 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   Widget _buildDrunkPage(DiaryCubitState state, BuildContext context) {
+    final chart = (state.shouldShowChart
+        ? [const SizedBox(height: 24), BACChart(results: state.calculationResults)]
+        : [const SizedBox()]);
+
     return Column(
       children: [
-        const SizedBox(height: 24),
-        BACChart(results: state.calculationResults),
+        ...chart,
         const SizedBox(height: 24),
         TodaysStatistics(
           consumedDrinks: state.drinks,
