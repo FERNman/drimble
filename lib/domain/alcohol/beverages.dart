@@ -53,7 +53,7 @@ abstract class Beverages {
     name: 'Whisky',
     icon: 'assets/icons/whisky.png',
     standardServings: [20, 40],
-    defaultABV: 0.12,
+    defaultABV: 0.4,
     defaultDuration: Duration(minutes: 5),
   );
 
@@ -61,7 +61,7 @@ abstract class Beverages {
     name: 'Rum',
     icon: 'assets/icons/rum.png',
     standardServings: [20, 40],
-    defaultABV: 0.12,
+    defaultABV: 0.4,
     defaultDuration: Duration(minutes: 5),
   );
 
@@ -69,7 +69,7 @@ abstract class Beverages {
     name: 'Vodka',
     icon: 'assets/icons/vodka.png',
     standardServings: [20, 40],
-    defaultABV: 0.12,
+    defaultABV: 0.4,
     defaultDuration: Duration(minutes: 5),
   );
 }
