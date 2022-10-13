@@ -7,7 +7,8 @@ import '../common/disposable.dart';
 class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {
   final ConsumedDrinksRepository _repository;
 
-  TodaysDrinksCubit(this._repository) : super(const TodaysDrinksCubitState(drinks: [])) {
+  TodaysDrinksCubit(this._repository, {required DateTime date})
+      : super(TodaysDrinksCubitState(date: date, drinks: [])) {
     _subscribeToRepository();
   }
 
@@ -16,14 +17,16 @@ class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {
   }
 
   void _subscribeToRepository() {
-    addSubscription(_repository
-        .observeDrinksOnDate(DateTime.now())
-        .listen((value) => emit(TodaysDrinksCubitState(drinks: value))));
+    addSubscription(_repository.observeDrinksOnDate(state.date).listen((value) => emit(state.copyWith(drinks: value))));
   }
 }
 
 class TodaysDrinksCubitState {
+  final DateTime date;
   final List<ConsumedDrink> drinks;
 
-  const TodaysDrinksCubitState({required this.drinks});
+  const TodaysDrinksCubitState({required this.date, required this.drinks});
+
+  TodaysDrinksCubitState copyWith({List<ConsumedDrink>? drinks}) =>
+      TodaysDrinksCubitState(date: date, drinks: drinks ?? this.drinks);
 }

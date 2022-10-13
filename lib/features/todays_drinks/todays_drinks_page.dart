@@ -8,12 +8,14 @@ import '../common/widgets/remove_drink_dialog.dart';
 import 'todays_drinks_cubit.dart';
 
 class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
-  const TodaysDrinksPage({super.key});
+  final DateTime date;
+
+  const TodaysDrinksPage({required this.date, super.key});
 
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (context) => TodaysDrinksCubit(context.read()),
+      create: (context) => TodaysDrinksCubit(context.read(), date: date),
       child: this,
     );
   }

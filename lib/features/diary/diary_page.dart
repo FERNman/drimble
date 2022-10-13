@@ -128,7 +128,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
         );
       },
       onViewAll: () {
-        context.router.push(const TodaysDrinksRoute());
+        context.router.push(TodaysDrinksRoute(date: state.date));
       },
     );
   }
