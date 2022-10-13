@@ -2,10 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/user/body_composition.dart';
 import '../../router.dart';
 import '../common/build_context_extensions.dart';
+import '../common/l18n/body_composition_translations.dart';
 import 'onboarding_cubit.dart';
-import 'widgets/body_composition_selection.dart';
 import 'widgets/onboarding_app_bar.dart';
 
 class OnboardingSelectBodyCompositionPage extends StatelessWidget {
@@ -27,10 +28,17 @@ class OnboardingSelectBodyCompositionPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             BlocBuilder<OnboardingCubit, OnboardingCubitState>(
-              builder: (context, state) => BodyCompositionSelection(
-                selection: state.bodyComposition,
-                onSelectionChange: (selection) {
-                  context.read<OnboardingCubit>().setBodyComposition(selection);
+              builder: (context, state) => DropdownButtonFormField(
+                decoration: InputDecoration(
+                  label: Text(context.l18n.onboarding_bodyCompositionSelectionLabel),
+                ),
+                items: BodyComposition.values
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e.translate(context))))
+                    .toList(),
+                onChanged: (value) {
+                  if (value is BodyComposition) {
+                    context.read<OnboardingCubit>().setBodyComposition(value);
+                  }
                 },
               ),
             ),

@@ -26,5 +26,14 @@
   "onboarding_weightSelectionDescription": "Combined with your height and body composition, your weight changes amount of alcohol you can tolerate without getting drunk.",
   "onboarding_bodyCompositionSelectionTitle": "Choose your body composition",
   "onboarding_bodyCompositionSelectionDescription": "The amount of muscle and fat you carry influences the amount of alcohol you can metabolize at once.",
-  "onboarding_finish": "Finish"
+  "onboarding_bodyCompositionSelectionLabel": "Body composition",
+  "onboarding_finish": "Finish",
+  "profile_title": "Profile",
+  "profile_signOut": "Sign out",
+  "profile_birthyear": "Birthyear",
+  "profile_birthyear_errorEmpty": "Please enter the year you were born",
+  "profile_birthyear_errorInvalid": "Please enter a valid year",
+  "profile_height": "Height",
+  "profile_weight": "Weight",
+  "profile_bodyComposition": "Body composition"
 }

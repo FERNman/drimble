@@ -58,7 +58,7 @@ class _DrinkawareAppState extends State<DrinkawareApp> {
         RepositoryProvider(create: (context) => ConsumedDrinksRepository(context.read())),
         RepositoryProvider(create: (context) => DiaryRepository(context.read())),
         RepositoryProvider(create: (context) => BeveragesRepository()),
-        RepositoryProvider(create: (context) => UserRepository()),
+        RepositoryProvider(create: (context) => UserRepository(context.read())),
       ],
       child: Builder(
         builder: (context) {

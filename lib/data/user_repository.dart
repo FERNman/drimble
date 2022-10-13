@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,12 +10,15 @@ class UserRepository {
   static const userKey = 'user';
 
   final BehaviorSubject<User?> _user = BehaviorSubject();
+  final Isar _database;
 
   Future<User?> get user async => _user.hasValue ? _user.value : await _user.first;
 
-  UserRepository() {
+  UserRepository(this._database) {
     _tryLoadUser().then((value) => _user.add(value));
   }
+
+  Stream<User?> observeUser() => _user.stream;
 
   Future<bool> isSignedIn() async => await user != null;
 
@@ -26,6 +30,10 @@ class UserRepository {
   void signOut() async {
     _user.add(null);
     await _unsetUser();
+
+    await _database.txn(() async {
+      await _database.clear();
+    });
   }
 
   Future<User?> _tryLoadUser() async {
