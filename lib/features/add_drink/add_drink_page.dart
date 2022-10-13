@@ -19,7 +19,7 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddDrinkCubit(context.read(), context.read()),
+      create: (context) => AddDrinkCubit(context.read()),
       child: this,
     );
   }
@@ -56,11 +56,6 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         }),
       ),
     );
-  }
-
-  void _search(BuildContext context, String term) {
-    final cubit = context.read<AddDrinkCubit>();
-    cubit.search(term);
   }
 
   void _addRecentDrink(BuildContext context, ConsumedDrink drink) {

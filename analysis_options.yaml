@@ -6,3 +6,7 @@ linter:
     prefer_final_in_for_each: true
     prefer_final_locals: true
     prefer_relative_imports: true
+
+analyzer:
+  exclude:
+    - lib/**/*.g.dart
