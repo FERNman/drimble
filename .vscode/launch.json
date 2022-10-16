@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "drinkaware",
+      "name": "drimble",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "drinkaware (profile mode)",
+      "name": "drimble (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "drinkaware (release mode)",
+      "name": "drimble (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

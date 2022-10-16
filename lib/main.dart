@@ -16,18 +16,18 @@ import 'infra/database/database_diary_entry.dart';
 import 'router.dart';
 
 void main() {
-  runApp(const DrinkawareApp());
+  runApp(const DrimbleApp());
 }
 
-class DrinkawareApp extends StatefulWidget {
-  const DrinkawareApp({super.key});
+class DrimbleApp extends StatefulWidget {
+  const DrimbleApp({super.key});
 
   @override
-  State<DrinkawareApp> createState() => _DrinkawareAppState();
+  State<DrimbleApp> createState() => _DrimbleAppState();
 }
 
-class _DrinkawareAppState extends State<DrinkawareApp> {
-  DrinkawareRouter? _router;
+class _DrimbleAppState extends State<DrimbleApp> {
+  DrimbleRouter? _router;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _DrinkawareAppState extends State<DrinkawareApp> {
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrinkawareRouter(diaryGuard: DiaryGuard(context.read()));
+          _router ??= DrimbleRouter(diaryGuard: DiaryGuard(context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
@@ -104,7 +104,7 @@ class _DrinkawareAppState extends State<DrinkawareApp> {
             supportedLocales: const [
               Locale('en'),
             ],
-            title: 'Drinkaware',
+            title: 'Drimble',
             routerDelegate: _router!.delegate(),
             routeInformationParser: _router!.defaultRouteParser(),
           );

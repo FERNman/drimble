@@ -1,4 +1,4 @@
-import 'package:drinkaware/features/common/time_text_input_formatter.dart';
+import 'package:drimble/features/common/time_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

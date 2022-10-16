@@ -40,6 +40,6 @@ part 'router.gr.dart';
     )
   ],
 )
-class DrinkawareRouter extends _$DrinkawareRouter {
-  DrinkawareRouter({required super.diaryGuard});
+class DrimbleRouter extends _$DrimbleRouter {
+  DrimbleRouter({required super.diaryGuard});
 }

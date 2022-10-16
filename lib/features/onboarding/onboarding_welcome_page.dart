@@ -23,7 +23,7 @@ class OnboardingWelcomePage extends StatelessWidget {
                   children: [
                     const Spacer(),
                     Text(
-                      context.l18n.onboarding_welcomeToDrinkaware,
+                      context.l18n.onboarding_welcomeToDrimble,
                       style: context.textTheme.headlineLarge?.copyWith(color: Colors.black87),
                     ),
                     const SizedBox(height: 24),

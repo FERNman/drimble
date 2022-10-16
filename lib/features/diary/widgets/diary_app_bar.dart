@@ -16,7 +16,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         child: Row(
           children: [
-            Text('drinkaware', style: titleStyle),
+            Text('drimble', style: titleStyle),
             const Spacer(),
             IconButton(onPressed: onTapProfile, icon: const Icon(Icons.account_circle_outlined)),
           ],
