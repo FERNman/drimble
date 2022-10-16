@@ -4,8 +4,9 @@ import '../../data/consumed_drinks_repository.dart';
 import '../../domain/alcohol/beverage.dart';
 import '../../domain/alcohol/beverages.dart';
 import '../../domain/diary/consumed_drink.dart';
+import '../common/disposable.dart';
 
-class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
+class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
   final ConsumedDrinksRepository _consumedDrinksRepository;
 
   AddDrinkCubit(this._consumedDrinksRepository) : super(AddDrinkCubitState()) {
@@ -17,10 +18,11 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> {
   }
 
   void _fetchRecentDrinks() async {
-    final recentDrinks = await _consumedDrinksRepository.getDrinksOnDate(DateTime.now());
-
-    final lastThreeDrinks = recentDrinks.sublist(0, 3 > recentDrinks.length ? recentDrinks.length : 3);
-    emit(state.copyWith(recentlyAddedDrinks: lastThreeDrinks));
+    // TODO: This should be done differently
+    addSubscription(_consumedDrinksRepository.observeLatestDrinks().listen((items) {
+      final lastThreeDrinks = items.sublist(0, 3 > items.length ? items.length : 3);
+      emit(state.copyWith(recentlyAddedDrinks: lastThreeDrinks));
+    }));
   }
 }
 
@@ -42,7 +44,11 @@ class AddDrinkCubitState {
 
   AddDrinkCubitState({this.recentlyAddedDrinks = const [], this.search = ''});
 
-  AddDrinkCubitState copyWith({List<ConsumedDrink>? recentlyAddedDrinks, String? search}) => AddDrinkCubitState(
+  AddDrinkCubitState copyWith({
+    List<ConsumedDrink>? recentlyAddedDrinks,
+    String? search,
+  }) =>
+      AddDrinkCubitState(
         recentlyAddedDrinks: recentlyAddedDrinks ?? this.recentlyAddedDrinks,
         search: search ?? this.search,
       );

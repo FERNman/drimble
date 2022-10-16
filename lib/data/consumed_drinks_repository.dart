@@ -24,6 +24,10 @@ class ConsumedDrinksRepository {
     return _collection.where().startTimeOnSameDate(date).sortByStartTimeDesc().limit(3).findAll();
   }
 
+  Stream<List<ConsumedDrink>> observeLatestDrinks() {
+    return _collection.where().sortByStartTimeDesc().limit(3).watch(fireImmediately: true);
+  }
+
   void save(ConsumedDrink drink) async {
     await _database.writeTxn(() async {
       await _collection.put(drink.toEntity());
