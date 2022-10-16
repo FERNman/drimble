@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../router.dart';
+import '../common/build_context_extensions.dart';
 import '../common/widgets/consumed_drink_list_item.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import 'todays_drinks_cubit.dart';
@@ -30,7 +31,7 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
             context.router.pop();
           },
         ),
-        title: const Text('History'),
+        title: Text(context.l18n.todays_drinks_history),
       ),
       body: BlocBuilder<TodaysDrinksCubit, TodaysDrinksCubitState>(
         builder: (context, state) {

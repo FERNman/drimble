@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../build_context_extensions.dart';
+
 class RemoveDrinkDialog extends StatelessWidget {
   final GestureTapCallback onCancel;
   final GestureTapCallback onRemove;
@@ -9,16 +11,16 @@ class RemoveDrinkDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Remove drink'),
-      content: const Text('Are you sure you want to remove this drink?'),
+      title: Text(context.l18n.remove_drink_title),
+      content: Text(context.l18n.remove_drink_description),
       actions: [
         TextButton(
           onPressed: onCancel,
-          child: const Text('Cancel'),
+          child: Text(context.l18n.remove_drink_cancel),
         ),
         TextButton(
           onPressed: onRemove,
-          child: const Text('Yes'),
+          child: Text(context.l18n.remove_drink_yes),
         ),
       ],
     );

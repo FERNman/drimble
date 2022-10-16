@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../domain/user/body_composition.dart';
+import '../../../infra/l18n/body_composition_translations.dart';
 import '../../common/build_context_extensions.dart';
-import '../../common/l18n/body_composition_translations.dart';
 import '../profile_form_value.dart';
 
 class ProfileForm extends StatelessWidget {

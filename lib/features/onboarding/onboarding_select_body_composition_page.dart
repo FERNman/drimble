@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/user/body_composition.dart';
+import '../../infra/l18n/body_composition_translations.dart';
 import '../../router.dart';
 import '../common/build_context_extensions.dart';
-import '../common/l18n/body_composition_translations.dart';
 import 'onboarding_cubit.dart';
 import 'widgets/onboarding_app_bar.dart';
 

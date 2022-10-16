@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/alcohol/beverage.dart';
+import '../../common/build_context_extensions.dart';
 
 typedef CommonBeverageTapCallback = void Function(Beverage);
 
@@ -19,10 +20,7 @@ class CommonBeverages extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Common',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(context.l18n.add_drink_common, style: context.textTheme.titleMedium),
           const SizedBox(height: 8),
           GridView.count(
             crossAxisCount: 3,
@@ -46,16 +44,13 @@ class _CommonBeverage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(color: context.colorScheme.outline),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -65,7 +60,7 @@ class _CommonBeverage extends StatelessWidget {
             Text(
               beverage.name,
               overflow: TextOverflow.ellipsis,
-              style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+              style: context.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),

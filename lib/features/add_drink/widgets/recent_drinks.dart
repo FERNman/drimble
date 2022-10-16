@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/diary/consumed_drink.dart';
+import '../../common/build_context_extensions.dart';
 
 typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink);
 
@@ -19,10 +20,7 @@ class RecentDrinks extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-            child: Text(
-              'Recently added',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            child: Text(context.l18n.add_drink_recentlyAdded, style: context.textTheme.titleMedium),
           ),
           ListView.builder(
             shrinkWrap: true,

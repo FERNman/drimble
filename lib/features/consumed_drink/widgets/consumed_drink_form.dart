@@ -7,6 +7,7 @@ import '../../../domain/alcohol/percentage.dart';
 import '../../../domain/diary/consumed_drink.dart';
 import '../../../infra/extensions/copy_date_time.dart';
 import '../../../infra/extensions/copy_duration.dart';
+import '../../common/build_context_extensions.dart';
 import 'drink_amount_selection.dart';
 import 'stomach_fullness_selection.dart';
 
@@ -39,7 +40,7 @@ class ConsumedDrinkForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _SectionTitle('Amount'),
+          _SectionTitle(context.l18n.consumed_drink_amount),
           AmountSelection(
             standardServings: value.beverage.standardServings,
             initialValue: value.volume,
@@ -48,7 +49,7 @@ class ConsumedDrinkForm extends StatelessWidget {
               onChanged(value);
             },
           ),
-          const _SectionTitle('Strenth'),
+          _SectionTitle(context.l18n.consumed_drink_strength),
           Row(children: [
             Expanded(
               child: _AlcoholTextField(
@@ -59,8 +60,8 @@ class ConsumedDrinkForm extends StatelessWidget {
             const SizedBox(width: 8),
             const Spacer()
           ]),
-          const _SectionTitle('Stomach fullness'),
-          const _SectionSubtitle('Prior to consumption'),
+          _SectionTitle(context.l18n.consumed_drink_stomachFullness),
+          _SectionSubtitle(context.l18n.consumed_drink_priorToConsumption),
           StomachFullnessSelection(
             initialValue: value.stomachFullness,
             onChanged: (it) {
@@ -68,7 +69,7 @@ class ConsumedDrinkForm extends StatelessWidget {
               onChanged(value);
             },
           ),
-          const _SectionTitle('Timinig'),
+          _SectionTitle(context.l18n.consumed_drink_timing),
           Row(
             children: [
               Expanded(
@@ -76,9 +77,9 @@ class ConsumedDrinkForm extends StatelessWidget {
                   type: DateTimePickerType.time,
                   initialValue: _formatDateTimeAsTime(value.startTime),
                   onChanged: _setStartTime,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.access_time_outlined),
-                    label: Text('Start time'),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.access_time_outlined),
+                    label: Text(context.l18n.consumed_drink_startTime),
                   ),
                 ),
               ),
@@ -88,9 +89,9 @@ class ConsumedDrinkForm extends StatelessWidget {
                   type: DateTimePickerType.time,
                   initialValue: _formatDurationAsTime(value.duration),
                   onChanged: _setDuration,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.hourglass_empty_outlined),
-                    label: Text('Duration'),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.hourglass_empty_outlined),
+                    label: Text(context.l18n.consumed_drink_duration),
                   ),
                 ),
               )

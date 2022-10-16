@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/alcohol/milliliter.dart';
+import '../../common/build_context_extensions.dart';
 
 class AmountSelection extends StatefulWidget {
   final List<Milliliter> standardServings;
@@ -57,7 +58,7 @@ class _AmountSelectionState extends State<AmountSelection> {
       child: ChoiceChip(
         avatar: const Icon(Icons.edit_outlined),
         label: TextField(
-          decoration: _getInputDecoration(),
+          decoration: _getInputDecoration(context),
           keyboardType: TextInputType.number,
           controller: _customAmountTextController,
           onChanged: (it) {
@@ -84,8 +85,8 @@ class _AmountSelectionState extends State<AmountSelection> {
     super.dispose();
   }
 
-  InputDecoration _getInputDecoration() {
-    const inputDecoration = InputDecoration.collapsed(hintText: 'enter');
+  InputDecoration _getInputDecoration(BuildContext context) {
+    final inputDecoration = InputDecoration.collapsed(hintText: context.l18n.consumed_drink_enterAmount);
     if (_customAmountTextController.text.isNotEmpty) {
       return inputDecoration.copyWith(suffix: const Text('ml'));
     }

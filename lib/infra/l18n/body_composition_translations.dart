@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/user/body_composition.dart';
-import '../build_context_extensions.dart';
+import '../../domain/user/body_composition.dart';
+import '../../features/common/build_context_extensions.dart';
 
 extension BodyCompositionTranslations on BodyComposition {
   String translate(BuildContext context) {

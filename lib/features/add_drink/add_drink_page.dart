@@ -6,6 +6,7 @@ import '../../domain/alcohol/beverage.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../infra/extensions/set_date.dart';
 import '../../router.dart';
+import '../common/build_context_extensions.dart';
 import '../common/widgets/extended_app_bar.dart';
 import 'add_drink_cubit.dart';
 import 'widgets/common_beverages.dart';
@@ -32,7 +33,7 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           onPressed: () => context.router.pop(),
           icon: const Icon(Icons.close),
         ),
-        title: const Text('Add a drink'),
+        title: Text(context.l18n.add_drink_addADrink),
       ),
       body: SingleChildScrollView(
         child: BlocBuilder<AddDrinkCubit, AddDrinkCubitState>(builder: (context, state) {
@@ -43,10 +44,12 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
               //   padding: const EdgeInsets.symmetric(horizontal: 16),
               //   child: SearchField(onChange: _search),
               // ),
-              RecentDrinks(
-                state.recentlyAddedDrinks,
-                onTap: (drink) => _addRecentDrink(context, drink),
-              ),
+              state.recentlyAddedDrinks.isNotEmpty
+                  ? RecentDrinks(
+                      state.recentlyAddedDrinks,
+                      onTap: (drink) => _addRecentDrink(context, drink),
+                    )
+                  : const SizedBox(),
               CommonBeverages(
                 state.commonBeverages,
                 onTap: (beverage) => _addCommonBeverage(context, beverage),

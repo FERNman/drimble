@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/diary/consumed_drink.dart';
+import '../common/build_context_extensions.dart';
 import 'consumed_drink_cubit.dart';
 import 'widgets/consumed_drink_form.dart';
 import 'widgets/consumed_drink_summary.dart';
@@ -67,7 +68,7 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text('Done'),
+        label: Text(context.l18n.consumed_drink_done),
         icon: const Icon(Icons.done),
         onPressed: () => _saveAndNavigate(context),
       ),

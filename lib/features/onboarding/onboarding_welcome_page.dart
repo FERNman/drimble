@@ -73,7 +73,7 @@ class OnboardingWelcomePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 48.0),
       ),
       onPressed: enabled ? () => context.router.push(const OnboardingSelectGenderRoute()) : null,
-      child: const Text('Get started'),
+      child: Text(context.l18n.onboarding_getStarted),
     );
   }
 }

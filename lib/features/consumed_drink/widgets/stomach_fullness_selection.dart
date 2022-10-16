@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/diary/stomach_fullness.dart';
+import '../../../infra/l18n/stomach_fullness_translations.dart';
 
 class StomachFullnessSelection extends StatefulWidget {
   final StomachFullness initialValue;
@@ -28,11 +29,9 @@ class _StomachFullnessSelectionState extends State<StomachFullnessSelection> {
         // ignore: unnecessary_cast
         .map((e) => Expanded(
               child: ChoiceChip(
-                label: SizedBox(width: double.infinity, child: Text(e.name)),
+                label: SizedBox(width: double.infinity, child: Text(e.translate(context))),
                 selected: _stomachFullness == e,
-                onSelected: (selected) {
-                  _setValue(e);
-                },
+                onSelected: (selected) => _setValue(e),
               ),
             ) as Widget)
         .toList();
