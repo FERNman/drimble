@@ -10,8 +10,8 @@ import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../infra/disposable.dart';
 import '../../infra/extensions/floor_date_time.dart';
-import '../common/disposable.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final UserRepository _userRepository;

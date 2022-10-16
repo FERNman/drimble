@@ -4,7 +4,7 @@ import '../../data/consumed_drinks_repository.dart';
 import '../../domain/alcohol/beverage.dart';
 import '../../domain/alcohol/beverages.dart';
 import '../../domain/diary/consumed_drink.dart';
-import '../common/disposable.dart';
+import '../../infra/disposable.dart';
 
 class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
   final ConsumedDrinksRepository _consumedDrinksRepository;

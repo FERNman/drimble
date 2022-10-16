@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/user_repository.dart';
 import '../../domain/user/user.dart';
-import '../common/disposable.dart';
+import '../../infra/disposable.dart';
 import 'profile_form_value.dart';
 
 class ProfileCubit extends Cubit<ProfileCubitState> with Disposable {
