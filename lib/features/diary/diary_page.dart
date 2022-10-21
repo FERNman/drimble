@@ -25,15 +25,15 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: HomeAppBar(
-        onTapProfile: () {
-          context.router.push(const ProfileRoute());
-        },
-      ),
       body: BlocBuilder<DiaryCubit, DiaryCubitState>(
         builder: (context, state) => SingleChildScrollView(
           child: Column(
             children: [
+              HomeAppBar(
+                onTapProfile: () {
+                  context.router.push(const ProfileRoute());
+                },
+              ),
               DiaryCalendar(
                 selectedDay: state.date,
                 onSelectedDayChanged: (value) {

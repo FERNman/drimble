@@ -30,6 +30,7 @@ class DiaryConsumedDrinks extends StatelessWidget {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(0),
           itemCount: min(drinks.length, recentItemCount + 1),
           itemBuilder: (context, index) {
             if (index < recentItemCount) {
