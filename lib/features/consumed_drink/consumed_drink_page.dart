@@ -43,7 +43,6 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => context.router.pop(),
         ),
-        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(

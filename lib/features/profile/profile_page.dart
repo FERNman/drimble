@@ -26,7 +26,6 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
           onPressed: () => context.router.pop(),
         ),
         title: Text(context.l18n.profile_title),
-        backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         child: Padding(

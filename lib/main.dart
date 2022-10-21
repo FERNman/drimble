@@ -73,9 +73,10 @@ class _DrimbleAppState extends State<DrimbleApp> {
               scaffoldBackgroundColor: colorScheme.background,
               textTheme: textTheme,
               appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.transparent,
                 systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarColor: Colors.black,
+                  statusBarBrightness: Brightness.light,
+                  statusBarIconBrightness: Brightness.light,
                 ),
               ),
               inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
