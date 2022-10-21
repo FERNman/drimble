@@ -8,7 +8,7 @@ import '../../common/widgets/consumed_drink_list_item.dart';
 
 typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink drink);
 
-class TodaysDrinks extends StatelessWidget {
+class DiaryConsumedDrinks extends StatelessWidget {
   static const recentItemCount = 3;
 
   final List<ConsumedDrink> drinks;
@@ -16,7 +16,7 @@ class TodaysDrinks extends StatelessWidget {
   final ConsumedDrinkTapCallback onDelete;
   final GestureTapCallback onViewAll;
 
-  const TodaysDrinks(this.drinks, {required this.onEdit, required this.onDelete, required this.onViewAll, super.key});
+  const DiaryConsumedDrinks(this.drinks, {required this.onEdit, required this.onDelete, required this.onViewAll, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class TodaysDrinks extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-          child: Text(context.l18n.diary_todaysDrinks, style: context.textTheme.titleSmall),
+          child: Text(context.l18n.diary_consumedDrinksTitle, style: context.textTheme.titleSmall),
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -68,8 +68,8 @@ class _ViewAllRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('+$remainingItemCount ${context.l18n.diary_todaysDrinksMore}', style: textTheme.bodyMedium),
-          TextButton(onPressed: onTap, child: Text(context.l18n.diary_todaysDrinksSeeAll)),
+          Text('+$remainingItemCount ${context.l18n.diary_consumedDrinksMore}', style: textTheme.bodyMedium),
+          TextButton(onPressed: onTap, child: Text(context.l18n.diary_consumedDrinksSeeAll)),
         ],
       ),
     );

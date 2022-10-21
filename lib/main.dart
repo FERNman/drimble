@@ -91,6 +91,9 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 pressElevation: 0,
                 showCheckmark: false,
               ),
+              dividerTheme: const DividerThemeData(
+                color: Colors.black54,
+              ),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: colorScheme.tertiaryContainer,
                 foregroundColor: colorScheme.onTertiaryContainer,

@@ -10,8 +10,8 @@ import '../diary_calendar/diary_calendar.dart';
 import 'diary_cubit.dart';
 import 'widgets/bac_chart.dart';
 import 'widgets/diary_app_bar.dart';
-import 'widgets/todays_drinks.dart';
-import 'widgets/todays_statistics.dart';
+import 'widgets/diary_consumed_drinks.dart';
+import 'widgets/diary_statistics.dart';
 
 class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   const DiaryPage({super.key});
@@ -95,9 +95,9 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     return Column(
       children: [
         ...chart,
-        const SizedBox(height: 24),
-        TodaysStatistics(
-          consumedDrinks: state.drinks,
+        const SizedBox(height: 12),
+        DiaryStatistics(
+          numberOfConsumedDrinks: state.drinks.length,
           unitsOfAlcohol: state.unitsOfAlcohol,
           calories: state.calories,
         ),
@@ -108,7 +108,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   Widget _buildRecentDrinks(DiaryCubitState state, BuildContext context) {
-    return TodaysDrinks(
+    return DiaryConsumedDrinks(
       state.drinks,
       onEdit: (drink) {
         context.router.push(ConsumedDrinkRoute(drink: drink, isEditing: true));
