@@ -43,7 +43,7 @@ class _AmountSelectionState extends State<AmountSelection> {
 
     for (final serving in widget.standardServings) {
       servingSelectionChoices.add(Expanded(
-        child: ChoiceChip(
+        child: InputChip(
           avatar: const Icon(Icons.abc_outlined),
           label: SizedBox(width: double.infinity, child: Text('${serving}ml')),
           selected: !_isCustomAmount && _internalValue == serving,
@@ -55,7 +55,7 @@ class _AmountSelectionState extends State<AmountSelection> {
     }
 
     final customInput = Expanded(
-      child: ChoiceChip(
+      child: InputChip(
         avatar: const Icon(Icons.edit_outlined),
         label: TextField(
           decoration: _getInputDecoration(context),

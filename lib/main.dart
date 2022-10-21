@@ -89,6 +89,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 backgroundColor: Colors.transparent,
                 selectedColor: colorScheme.primaryContainer,
                 pressElevation: 0,
+                showCheckmark: false,
               ),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: colorScheme.tertiaryContainer,

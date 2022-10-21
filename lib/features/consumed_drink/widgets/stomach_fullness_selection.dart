@@ -28,7 +28,7 @@ class _StomachFullnessSelectionState extends State<StomachFullnessSelection> {
     final children = StomachFullness.values
         // ignore: unnecessary_cast
         .map((e) => Expanded(
-              child: ChoiceChip(
+              child: InputChip(
                 label: SizedBox(width: double.infinity, child: Text(e.translate(context))),
                 selected: _stomachFullness == e,
                 onSelected: (selected) => _setValue(e),
