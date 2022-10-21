@@ -14,9 +14,9 @@ class LineChart extends StatelessWidget {
   final List<ChartLabelData> labels;
   final double height;
   final Color? color;
+  final int indexForSpotIndicator;
 
   final double _valueRange;
-  final int indexForSpotIndicator;
 
   LineChart(
     this.data, {
@@ -25,7 +25,10 @@ class LineChart extends StatelessWidget {
     this.color,
     this.height = 110,
     super.key,
-  }) : _valueRange = data.reduce(max).ceilToNiceDouble();
+  })  : assert(data.isNotEmpty),
+        _valueRange = _notNull(data.reduce(max).ceilToNiceDouble());
+
+  static double _notNull(double number) => number == 0.0 ? 1.0 : number;
 
   @override
   Widget build(BuildContext context) {
