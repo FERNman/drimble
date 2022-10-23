@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../infra/extensions/to_string_as_float.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryStatistics extends StatelessWidget {
@@ -48,7 +49,7 @@ class DiaryStatistics extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: '$unitsOfAlcohol ',
+                text: '${unitsOfAlcohol.toStringAsFloat(1)} ',
                 style: context.textTheme.headlineLarge?.copyWith(color: context.colorScheme.primary),
               ),
               TextSpan(text: context.l18n.diary_statisticsUnitsOfAlcohol, style: context.textTheme.bodyLarge),
