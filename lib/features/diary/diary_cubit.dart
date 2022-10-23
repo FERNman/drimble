@@ -47,7 +47,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 
     addSubscription(dateChangedStream
         .flatMap((value) => _diaryRepository.overserveEntryOnDate(value.date))
-        .listen((item) => emit(state.copyWith(diaryEntry: item))));
+        .listen((item) => emit(state.updateDiaryEntry(item))));
   }
 
   void _calculateBAC(List<ConsumedDrink> drinks) async {
@@ -93,15 +93,20 @@ class DiaryCubitState {
         calories = 0;
 
   DiaryCubitState copyWith({
-    DateTime? date,
-    DiaryEntry? diaryEntry,
     List<ConsumedDrink>? drinks,
     BACCalculationResults? calculationResults,
   }) =>
       DiaryCubitState(
-        date: date?.floorToDay() ?? this.date,
-        diaryEntry: diaryEntry ?? this.diaryEntry,
+        date: date,
+        diaryEntry: diaryEntry,
         drinks: drinks ?? this.drinks,
         calculationResults: calculationResults ?? this.calculationResults,
+      );
+
+  DiaryCubitState updateDiaryEntry(DiaryEntry? entry) => DiaryCubitState(
+        date: date,
+        diaryEntry: entry,
+        drinks: drinks,
+        calculationResults: calculationResults,
       );
 }
