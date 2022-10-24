@@ -62,13 +62,12 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   void _addRecentDrink(BuildContext context, ConsumedDrink drink) {
-    context.router.push(
-      ConsumedDrinkRoute(drink: drink.copyWith(startTime: DateTime.now().setDate(date))),
-    );
+    final newDrink = ConsumedDrink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date));
+    context.router.push(ConsumedDrinkRoute(drink: newDrink));
   }
 
   void _addCommonBeverage(BuildContext context, Beverage beverage) {
-    final drink = ConsumedDrink.fromBeverage(beverage).copyWith(startTime: DateTime.now().setDate(date));
+    final drink = ConsumedDrink.fromBeverage(beverage, startTime: DateTime.now().setDate(date));
     context.router.push(ConsumedDrinkRoute(drink: drink));
   }
 }

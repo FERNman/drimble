@@ -10,10 +10,8 @@ part 'database_consumed_drink.g.dart';
 @Collection(accessor: 'consumedDrinks')
 class DatabaseConsumedDrink extends ConsumedDrink {
   DatabaseBeverage get dbBeverage => beverage.toEntity();
-  set dbBeverage(DatabaseBeverage it) => beverage = it;
 
   DatabaseDuration get dbDuration => duration.toEntity();
-  set dbDuration(DatabaseDuration it) => duration = it.duration;
 
   DatabaseConsumedDrink({
     super.id,

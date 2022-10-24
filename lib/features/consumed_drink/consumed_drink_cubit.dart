@@ -2,7 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/consumed_drinks_repository.dart';
 import '../../domain/alcohol/beverage.dart';
+import '../../domain/alcohol/milliliter.dart';
+import '../../domain/alcohol/percentage.dart';
 import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/stomach_fullness.dart';
 
 class ConsumedDrinkCubit extends Cubit<ConsumedDrinkCubitState> {
   final ConsumedDrinksRepository repository;
@@ -13,29 +16,45 @@ class ConsumedDrinkCubit extends Cubit<ConsumedDrinkCubitState> {
   ConsumedDrinkCubit.editDrink(this.repository, {required ConsumedDrink drink})
       : super(ConsumedDrinkCubitState.edit(drink));
 
-  void update(ConsumedDrink drink) {
-    // Drinks that were consumed before 0600 count to the previous day
-    drink = _shiftDate(drink);
+  void updateVolume(Milliliter volume) {
+    emit(state.copyWith(drink: state.drink.copyWith(volume: volume)));
+  }
 
-    emit(state.copyWith(drink: drink));
+  void updatePercentage(Percentage abv) {
+    emit(state.copyWith(drink: state.drink.copyWith(alcoholByVolume: abv)));
+  }
+
+  void updateStartTime(DateTime startTime) {
+    // Drinks that were consumed before 0600 count to the previous day
+    final shiftedTime = _shiftDate(startTime, state.drink.startTime);
+
+    emit(state.copyWith(drink: state.drink.copyWith(startTime: shiftedTime)));
+  }
+
+  void updateDuration(Duration duration) {
+    emit(state.copyWith(drink: state.drink.copyWith(duration: duration)));
+  }
+
+  void updateStomachFullness(StomachFullness value) {
+    emit(state.copyWith(drink: state.drink.copyWith(stomachFullness: value)));
   }
 
   void save() {
     repository.save(state.drink);
   }
 
-  ConsumedDrink _shiftDate(ConsumedDrink drink) {
-    if (drink.startTime.hour < 6) {
-      if (state.drink.startTime.hour >= 6) {
-        drink.startTime = drink.startTime.add(const Duration(days: 1));
+  DateTime _shiftDate(DateTime newTime, DateTime previousTime) {
+    if (newTime.hour < 6) {
+      if (previousTime.hour >= 6) {
+        return newTime.add(const Duration(days: 1));
       }
     } else {
-      if (state.drink.startTime.hour < 6) {
-        drink.startTime = drink.startTime.subtract(const Duration(days: 1));
+      if (previousTime.hour < 6) {
+        return newTime.subtract(const Duration(days: 1));
       }
     }
 
-    return drink;
+    return newTime;
   }
 }
 

@@ -5,16 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../common/build_context_extensions.dart';
 import 'consumed_drink_cubit.dart';
-import 'widgets/consumed_drink_form.dart';
+import 'consumed_drink_form.dart';
 import 'widgets/consumed_drink_summary.dart';
 
 class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   final ConsumedDrink drink;
   final bool isEditing;
 
-  final _formKey = GlobalKey<FormState>();
-
-  ConsumedDrinkPage({
+  const ConsumedDrinkPage({
     required this.drink,
     this.isEditing = false,
     super.key,
@@ -45,26 +43,19 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         ),
         elevation: 0,
       ),
-      body: BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-              child: Column(
-                children: [
-                  ConsumedDrinkSummary(state.beverage),
-                  ConsumedDrinkForm(
-                    formKey: _formKey,
-                    initialValue: state.drink,
-                    onChanged: (drink) {
-                      context.read<ConsumedDrinkCubit>().update(drink);
-                    },
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
+          child: Column(
+            children: [
+              BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+                buildWhen: (previous, current) => previous.beverage != current.beverage,
+                builder: (context, state) => ConsumedDrinkSummary(state.beverage),
               ),
-            ),
-          );
-        },
+              const ConsumedDrinkForm(),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: Text(context.l18n.consumed_drink_done),

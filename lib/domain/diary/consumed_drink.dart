@@ -10,19 +10,19 @@ class ConsumedDrink {
   Id? id;
 
   @ignore
-  Beverage beverage;
+  final Beverage beverage;
 
-  Milliliter volume;
-  Percentage alcoholByVolume;
+  final Milliliter volume;
+  final Percentage alcoholByVolume;
 
   @Enumerated(EnumType.name)
-  StomachFullness stomachFullness;
+  final StomachFullness stomachFullness;
 
   @Index()
-  DateTime startTime;
+  final DateTime startTime;
 
   @ignore
-  Duration duration;
+  final Duration duration;
 
   @ignore
   double get unitsOfAlcohol => (volume * alcoholByVolume) / 10;
@@ -54,14 +54,20 @@ class ConsumedDrink {
     required this.startTime,
     required this.duration,
     required this.stomachFullness,
-  });
+  }) : assert(alcoholByVolume > 0.0 && alcoholByVolume <= 1.0);
 
-  ConsumedDrink.fromBeverage(this.beverage)
+  ConsumedDrink.fromBeverage(this.beverage, {required this.startTime})
       : volume = beverage.standardServings.first,
         alcoholByVolume = beverage.defaultABV,
         stomachFullness = StomachFullness.empty,
-        startTime = DateTime.now(),
         duration = beverage.defaultDuration;
+
+  ConsumedDrink.fromExistingDrink(ConsumedDrink drink, {required this.startTime})
+      : beverage = drink.beverage,
+        volume = drink.volume,
+        alcoholByVolume = drink.alcoholByVolume,
+        duration = drink.duration,
+        stomachFullness = drink.stomachFullness;
 
   ConsumedDrink copyWith({
     Beverage? beverage,
@@ -72,6 +78,7 @@ class ConsumedDrink {
     StomachFullness? stomachFullness,
   }) =>
       ConsumedDrink(
+        id: id,
         beverage: beverage ?? this.beverage,
         volume: volume ?? this.volume,
         alcoholByVolume: alcoholByVolume ?? this.alcoholByVolume,
