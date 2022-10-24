@@ -1,43 +1,101 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../domain/bac_calulation_results.dart';
+import '../../../domain/diary/diary_entry.dart';
+import '../../common/build_context_extensions.dart';
+import '../../common/widgets/filled_button.dart';
 
 class BACChartTitle extends StatelessWidget {
-  final double currentBAC;
-  final BACEntry maxBAC;
-  final DateTime soberAt;
+  final DateTime dateTime;
+  final BACCalculationResults results;
+  final DiaryEntry? diaryEntry;
 
-  const BACChartTitle({required this.currentBAC, required this.maxBAC, required this.soberAt, super.key});
+  final GestureTapCallback onMarkAsDrinkFreeDay;
+
+  const BACChartTitle({
+    required this.dateTime,
+    required this.results,
+    required this.diaryEntry,
+    required this.onMarkAsDrinkFreeDay,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            '${currentBAC.toStringAsFixed(2)}‰',
-            style: theme.textTheme.headlineMedium?.copyWith(color: Colors.black87),
-          ),
+          _buildTitle(context),
           const SizedBox(height: 8),
-          Text(_subtitle(), style: theme.textTheme.bodyMedium)
+          _buildSubtitle(context),
         ],
       ),
     );
   }
 
-  String _subtitle() {
-    final dateFormat = DateFormat(DateFormat.HOUR_MINUTE);
+  Widget _buildTitle(BuildContext context) {
+    if (_isDrunk()) {
+      return Text(
+        '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
+        style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
+      );
+    }
 
-    final now = DateTime.now();
-    if (maxBAC.time.isAfter(now)) {
-      return 'reaches ${maxBAC.value.toStringAsFixed(2)}‰ at ${dateFormat.format(maxBAC.time)}';
-    } else if (soberAt.isAfter(now)) {
-      return 'sober at ${dateFormat.format(soberAt)}';
+    if (diaryEntry == null) {
+      return Text(
+        context.l18n.diary_notDrinkingToday,
+        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
+      );
+    } else if (diaryEntry!.isDrinkFreeDay) {
+      return Text(
+        context.l18n.diary_drinkFreeDay,
+        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
+      );
     } else {
-      return 'you\'re sober! 🎉';
+      return Text(
+        '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
+        style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
+      );
+    }
+  }
+
+  Widget _buildSubtitle(BuildContext context) {
+    if (_isDrunk()) {
+      return Text(_drunkSubtitle(context), style: context.textTheme.bodyMedium);
+    }
+
+    if (diaryEntry == null) {
+      return FilledButton(
+        onPressed: onMarkAsDrinkFreeDay,
+        child: Text(context.l18n.diary_markAsDrinkFreeDay),
+      );
+    } else if (diaryEntry!.isDrinkFreeDay) {
+      return Text(context.l18n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium);
+    } else {
+      return Text(context.l18n.diary_youreSober, style: context.textTheme.bodyMedium);
+    }
+  }
+
+  bool _isDrunk() => results.soberAt.isAfter(DateTime.now());
+
+  String _drunkSubtitle(BuildContext context) {
+    final now = DateTime.now();
+    final soberAt = results.soberAt;
+    final maxBAC = results.findMaxEntryAfter(now);
+    final currentBAC = results.getEntryAt(now);
+
+    if (maxBAC.value > currentBAC.value && maxBAC.time.isAfter(now)) {
+      return context.l18n.diary_reachesMaxBACAt(maxBAC.value.toStringAsFixed(2), maxBAC.time);
+    } else if (soberAt.isAfter(now)) {
+      if (soberAt.day > now.day) {
+        return context.l18n.diary_soberTomorrowAt(soberAt);
+      } else {
+        return context.l18n.diary_soberAt(soberAt);
+      }
+    } else {
+      // This should never happen
+      return context.l18n.diary_youreSober;
     }
   }
 }

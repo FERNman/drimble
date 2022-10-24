@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:isar/isar.dart';
@@ -13,6 +12,7 @@ import 'data/user_repository.dart';
 import 'features/diary/diary_guard.dart';
 import 'infra/database/database_consumed_drink.dart';
 import 'infra/database/database_diary_entry.dart';
+import 'infra/l18n/l10n.dart';
 import 'router.dart';
 
 void main() {

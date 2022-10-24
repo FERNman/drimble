@@ -15,17 +15,20 @@ class LineChart extends StatelessWidget {
   final double height;
   final Color? color;
   final int indexForSpotIndicator;
+  final bool showSpotIndicator;
 
   final double _valueRange;
 
   LineChart(
     this.data, {
+    required this.height,
     required this.labels,
     required this.indexForSpotIndicator,
+    required this.showSpotIndicator,
     this.color,
-    this.height = 110,
     super.key,
   })  : assert(data.isNotEmpty),
+        assert(indexForSpotIndicator > 0 && indexForSpotIndicator < data.length),
         _valueRange = _notNull(data.reduce(max).ceilToNiceDouble());
 
   static double _notNull(double number) => number == 0.0 ? 1.0 : number;
@@ -42,40 +45,52 @@ class LineChart extends StatelessWidget {
               height: height,
               range: _valueRange,
             ),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 8, // TODO: Remove hard-coded offsets, they are basecd on the labels' size
-              bottom: 8,
-              child: CustomPaint(
-                size: Size(double.infinity, height),
-                painter: _ChartPainter(
-                  data: data.normalize(_valueRange),
-                  color: color,
-                  gradient: [color.withOpacity(0.1), color.withOpacity(0.0)],
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 8,
-              bottom: 8,
-              child: CustomPaint(
-                size: Size(double.infinity, height),
-                painter: _ChartDotPainter(
-                  center: Offset(indexForSpotIndicator / data.length, data[indexForSpotIndicator] / _valueRange),
-                  fillColor: context.colorScheme.primary,
-                  borderColor: Colors.white,
-                  shadowColor: context.colorScheme.shadow,
-                ),
-              ),
-            ),
+            _buildChart(color),
+            _buildSpotIndicator(context),
           ],
         ),
         HorizontalLineChartLabels(items: labels),
       ],
     );
+  }
+
+  Widget _buildChart(ui.Color color) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      top: 8, // TODO: Remove hard-coded offsets, they are basecd on the labels' size
+      bottom: 8,
+      child: CustomPaint(
+        size: Size(double.infinity, height),
+        painter: _ChartPainter(
+          data: data.normalize(_valueRange),
+          color: color,
+          gradient: [color.withOpacity(0.1), color.withOpacity(0.0)],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSpotIndicator(BuildContext context) {
+    if (showSpotIndicator) {
+      return Positioned(
+        left: 0,
+        right: 0,
+        top: 8,
+        bottom: 8,
+        child: CustomPaint(
+          size: Size(double.infinity, height),
+          painter: _ChartDotPainter(
+            center: Offset(indexForSpotIndicator / data.length, data[indexForSpotIndicator] / _valueRange),
+            fillColor: context.colorScheme.primary,
+            borderColor: Colors.white,
+            shadowColor: context.colorScheme.shadow,
+          ),
+        ),
+      );
+    } else {
+      return const Positioned(child: SizedBox());
+    }
   }
 }
 

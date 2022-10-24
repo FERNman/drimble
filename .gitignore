@@ -33,7 +33,13 @@ migrate_working_dir/
 /build/
 *.g.dart
 *.gr.dart
+
+# Testing related
 *.mocks.dart
+
+# Localization related
+**/l18n/l10n.dart
+**/l18n/intl/*
 
 # Web related
 lib/generated_plugin_registrant.dart

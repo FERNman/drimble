@@ -19,13 +19,13 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final DiaryRepository _diaryRepository;
 
   DiaryCubit(this._userRepository, this._diaryRepository, this._consumedDrinksRepository)
-      : super(DiaryCubitState.initial(date: DateTime.now())) {
+      : super(DiaryCubitState.initial(time: DateTime.now())) {
     _subscribeToRepository();
   }
 
   void switchDate(DateTime date) {
-    if (!DateUtils.isSameDay(date.floorToDay(), state.date)) {
-      emit(DiaryCubitState.initial(date: date.floorToDay()));
+    if (!DateUtils.isSameDay(date, state.date)) {
+      emit(DiaryCubitState.initial(time: date));
     }
   }
 
@@ -75,27 +75,28 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 }
 
 class DiaryCubitState {
-  final DateTime date;
+  final DateTime time;
   final DiaryEntry? diaryEntry;
   final List<ConsumedDrink> drinks;
   final BACCalculationResults calculationResults;
 
-  final bool shouldShowChart;
+  final bool shouldShowCurrentBACIndicator;
   final double unitsOfAlcohol;
   final int calories;
 
+  DateTime get date => time.floorToDay();
+
   DiaryCubitState({
-    required this.date,
+    required this.time,
     required this.diaryEntry,
     required this.drinks,
     required this.calculationResults,
-  })  : shouldShowChart = DateUtils.isSameDay(DateTime.now(), date),
+  })  : shouldShowCurrentBACIndicator = DateUtils.isSameDay(DateTime.now(), time),
         unitsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.unitsOfAlcohol),
         calories = drinks.fold(0, (calories, it) => calories + it.calories);
 
-  DiaryCubitState.initial({required DateTime date})
-      : date = date.floorToDay(),
-        shouldShowChart = DateUtils.isSameDay(DateTime.now(), date),
+  DiaryCubitState.initial({required this.time})
+      : shouldShowCurrentBACIndicator = DateUtils.isSameDay(DateTime.now(), time),
         diaryEntry = null,
         drinks = [],
         calculationResults = BACCalculationResults([]),
@@ -103,21 +104,21 @@ class DiaryCubitState {
         calories = 0;
 
   DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(
-        date: date,
+        time: time,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
       );
 
   DiaryCubitState updateDrinks(List<ConsumedDrink> drinks) => DiaryCubitState(
-        date: date,
+        time: time,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
       );
 
   DiaryCubitState updateBAC(BACCalculationResults calculationResults) => DiaryCubitState(
-        date: date,
+        time: time,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,

@@ -33,6 +33,37 @@
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
   "diary_drinkFreeDayGreatJob": "Great job!",
+  "diary_reachesMaxBACAt": "reaches {value}‰ at {time}",
+  "@diary_reachesMaxBACAt": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "diary_soberAt": "sober at {time}",
+  "@diary_soberAt": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "diary_soberTomorrowAt": "sober tomorrow at {time}",
+  "@diary_soberTomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "diary_youreSober": "you're sober! 🎉",
   "diary_statisticsUnitsOfAlcohol": "units of alcohol",
   "diary_statisticsUnitsOfAlcoholGuidelines": "Aim for less than 3-5 units of alcohol in one session to stay healthy.",
   "diary_statisticsConsumedDrinks": "drinks consumed",

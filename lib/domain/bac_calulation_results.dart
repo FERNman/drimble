@@ -6,6 +6,7 @@ class BACEntry {
 
   BACEntry(this.time, this.value) {
     assert(!value.isNaN);
+    assert(value >= 0.0);
   }
 
   BACEntry.sober(this.time) : value = 0.0;
@@ -16,15 +17,13 @@ class BACEntry {
 class BACCalculationResults {
   final List<BACEntry> _results;
 
-  late final BACEntry maxBAC;
   late final DateTime soberAt;
 
   BACCalculationResults(this._results) {
-    maxBAC = _findMaxBAC();
     soberAt = _findFirstSoberEntry();
   }
 
-  BACEntry getBACAt(DateTime time) {
+  BACEntry getEntryAt(DateTime time) {
     if (_results.isEmpty) {
       return BACEntry.sober(time);
     }
@@ -42,12 +41,14 @@ class BACCalculationResults {
         .copyWith(time: time);
   }
 
-  BACEntry _findMaxBAC() {
-    if (_results.isEmpty) {
-      return BACEntry.sober(DateTime.now());
-    }
+  BACEntry findMaxEntryAfter(DateTime time) {
+    return _results.fold(BACEntry.sober(time), (max, el) {
+      if (el.time.isBefore(time)) {
+        return max;
+      }
 
-    return _results.reduce((lhs, rhs) => lhs.value > rhs.value ? lhs : rhs);
+      return max.value > el.value ? max : el;
+    });
   }
 
   DateTime _findFirstSoberEntry() {
@@ -56,7 +57,7 @@ class BACCalculationResults {
     }
 
     // Go through results from last to first
-    // Return first entry where the next entry is no longer sober
+    // Return first entry where the next entry is not sober
     for (var i = _results.length - 1; i > 0; i--) {
       final nextEntry = _results[i - 1];
       if (nextEntry.value >= Alcohol.soberLimit) {

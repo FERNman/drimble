@@ -40,3 +40,9 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+flutter_intl:
+  enabled: true
+  arb_dir: assets/l10n
+  class_name: AppLocalizations
+  output_dir: lib/infra/l18n

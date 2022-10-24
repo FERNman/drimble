@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('BAC calculation results', () {
-    group('getBACAt', () {
+    group('getEntryAt', () {
       test('should return a sober entry if the entries are empty ', () {
         final when = DateTime(2022);
 
         final results = BACCalculationResults([]);
 
-        final entry = results.getBACAt(when);
+        final entry = results.getEntryAt(when);
         expect(entry.time, when);
         expect(entry.value, 0.0);
       });
@@ -22,7 +22,7 @@ void main() {
         final entries = [BACEntry(when, value)];
         final results = BACCalculationResults(entries);
 
-        final entry = results.getBACAt(when);
+        final entry = results.getEntryAt(when);
         expect(entry.time, when);
         expect(entry.value, value);
       });
@@ -34,7 +34,7 @@ void main() {
 
         final results = BACCalculationResults([firstEntry, lastEntry]);
 
-        final entry = results.getBACAt(timestamp);
+        final entry = results.getEntryAt(timestamp);
 
         expect(entry.time, timestamp);
         expect(entry.value, firstEntry.value);
@@ -47,7 +47,7 @@ void main() {
 
         final results = BACCalculationResults([firstEntry, lastEntry]);
 
-        final entry = results.getBACAt(timestamp);
+        final entry = results.getEntryAt(timestamp);
 
         expect(entry.time, timestamp);
         expect(entry.value, lastEntry.value);
@@ -60,7 +60,7 @@ void main() {
 
         final results = BACCalculationResults([firstEntry, secondEntry]);
 
-        final entry = results.getBACAt(timestamp);
+        final entry = results.getEntryAt(timestamp);
 
         final interpolatedValue = (secondEntry.value + firstEntry.value) / 2.0;
 
@@ -69,11 +69,11 @@ void main() {
       }, skip: 'TODO: Interpolate');
     });
 
-    group('maxBAC', () {
+    group('findMaxEntryAfter', () {
       test('should be a sober entry if the entries are empty', () {
         final results = BACCalculationResults([]);
 
-        final maxBAC = results.maxBAC;
+        final maxBAC = results.findMaxEntryAfter(DateTime(2020));
         expect(maxBAC.value, 0.0);
       });
 
@@ -85,8 +85,20 @@ void main() {
 
         final results = BACCalculationResults([firstEntry, secondEntry, thirdEntry]);
 
-        final maxBAC = results.maxBAC;
+        final maxBAC = results.findMaxEntryAfter(timestamp);
         expect(maxBAC.value, secondEntry.value);
+      });
+
+      test('should ignore entries that are earlier than the given timestamp', () {
+        final timestamp = DateTime(2022, 1, 1);
+        final highestEntry = BACEntry(timestamp.copyWith(hour: 9), 5.0);
+        final lowEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
+        final desiredEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
+
+        final results = BACCalculationResults([highestEntry, lowEntry, desiredEntry]);
+
+        final maxBAC = results.findMaxEntryAfter(timestamp.copyWith(hour: 10));
+        expect(maxBAC.value, desiredEntry.value);
       });
     });
 

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../router.dart';
-import '../common/build_context_extensions.dart';
-import '../common/widgets/filled_button.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../diary_calendar/diary_calendar.dart';
 import 'diary_cubit.dart';
 import 'widgets/bac_chart.dart';
+import 'widgets/bac_chart_title.dart';
 import 'widgets/diary_app_bar.dart';
 import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_statistics.dart';
@@ -40,11 +39,27 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
                   context.read<DiaryCubit>().switchDate(value);
                 },
               ),
-              state.diaryEntry == null
-                  ? _buildEmptyPage(context)
-                  : state.diaryEntry!.isDrinkFreeDay
-                      ? _buildDrinkFreePage(context)
-                      : _buildDrunkPage(state, context),
+              const SizedBox(height: 24),
+              BACChartTitle(
+                dateTime: state.date,
+                results: state.calculationResults,
+                diaryEntry: state.diaryEntry,
+                onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+              ),
+              const SizedBox(height: 18),
+              BACChart(
+                dateTime: state.time,
+                results: state.calculationResults,
+                showCurrentBACIndicator: state.shouldShowCurrentBACIndicator,
+              ),
+              const SizedBox(height: 12),
+              DiaryStatistics(
+                numberOfConsumedDrinks: state.drinks.length,
+                unitsOfAlcohol: state.unitsOfAlcohol,
+                calories: state.calories,
+              ),
+              const SizedBox(height: 24),
+              _buildRecentDrinks(state, context),
             ],
           ),
         ),
@@ -59,55 +74,11 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildEmptyPage(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(height: 56),
-        Text(context.l18n.diary_notDrinkingToday, style: context.textTheme.headlineSmall),
-        const SizedBox(height: 8),
-        FilledButton(
-          onPressed: () {
-            context.read<DiaryCubit>().markAsDrinkFreeDay();
-          },
-          child: Text(context.l18n.diary_markAsDrinkFreeDay),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDrinkFreePage(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 56),
-        Text(context.l18n.diary_drinkFreeDay, style: context.textTheme.headlineSmall),
-        const SizedBox(height: 14),
-        Text(context.l18n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium),
-      ],
-    );
-  }
-
-  Widget _buildDrunkPage(DiaryCubitState state, BuildContext context) {
-    final chart = (state.shouldShowChart
-        ? [const SizedBox(height: 24), BACChart(results: state.calculationResults)]
-        : [const SizedBox()]);
-
-    return Column(
-      children: [
-        ...chart,
-        const SizedBox(height: 12),
-        DiaryStatistics(
-          numberOfConsumedDrinks: state.drinks.length,
-          unitsOfAlcohol: state.unitsOfAlcohol,
-          calories: state.calories,
-        ),
-        const SizedBox(height: 24),
-        _buildRecentDrinks(state, context),
-      ],
-    );
-  }
-
   Widget _buildRecentDrinks(DiaryCubitState state, BuildContext context) {
+    if (state.drinks.isEmpty) {
+      return const SizedBox();
+    }
+
     return DiaryConsumedDrinks(
       state.drinks,
       onEdit: (drink) {
