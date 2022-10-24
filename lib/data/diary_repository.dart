@@ -40,7 +40,7 @@ class DiaryRepository {
   }
 
   Future<void> _deleteDrinksOnDate(DateTime date) async {
-    final drinks = await _database.consumedDrinks.where().startTimeOnSameDate(date).findAll();
+    final drinks = await _database.consumedDrinks.where().onSameDate(date).findAll();
     final idsToDelete = drinks.map((e) => e.id!).toList();
 
     await _database.consumedDrinks.deleteAll(idsToDelete);

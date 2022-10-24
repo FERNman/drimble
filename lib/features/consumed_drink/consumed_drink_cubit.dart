@@ -14,11 +14,28 @@ class ConsumedDrinkCubit extends Cubit<ConsumedDrinkCubitState> {
       : super(ConsumedDrinkCubitState.edit(drink));
 
   void update(ConsumedDrink drink) {
+    // Drinks that were consumed before 0600 count to the previous day
+    drink = _shiftDate(drink);
+
     emit(state.copyWith(drink: drink));
   }
 
   void save() {
     repository.save(state.drink);
+  }
+
+  ConsumedDrink _shiftDate(ConsumedDrink drink) {
+    if (drink.startTime.hour < 6) {
+      if (state.drink.startTime.hour >= 6) {
+        drink.startTime = drink.startTime.add(const Duration(days: 1));
+      }
+    } else {
+      if (state.drink.startTime.hour < 6) {
+        drink.startTime = drink.startTime.subtract(const Duration(days: 1));
+      }
+    }
+
+    return drink;
   }
 }
 

@@ -17,11 +17,11 @@ class ConsumedDrinksRepository {
   ConsumedDrinksRepository(Isar database) : _collection = database.consumedDrinks;
 
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
-    return _collection.where().startTimeOnSameDate(date).sortByStartTimeDesc().watch(fireImmediately: true);
+    return _collection.where().onSameDate(date).sortByStartTimeDesc().watch(fireImmediately: true);
   }
 
   Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async {
-    return _collection.where().startTimeOnSameDate(date).sortByStartTimeDesc().limit(3).findAll();
+    return _collection.where().onSameDate(date).sortByStartTimeDesc().limit(3).findAll();
   }
 
   Stream<List<ConsumedDrink>> observeLatestDrinks() {
@@ -42,7 +42,7 @@ class ConsumedDrinksRepository {
     await _database.writeTxn(() async {
       await _collection.delete(drink.id!);
 
-      final remainingDrinksOnThisDay = await _collection.where().startTimeOnSameDate(drink.startTime).count();
+      final remainingDrinksOnThisDay = await _collection.where().onSameDate(drink.startTime).count();
 
       if (remainingDrinksOnThisDay == 0) {
         await _markAsUntracked(drink.startTime.floorToDay());
@@ -68,6 +68,7 @@ class ConsumedDrinksRepository {
 }
 
 extension DrinksQueryBuilder on QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QWhere> {
-  QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QAfterWhereClause> startTimeOnSameDate(DateTime date) =>
-      startTimeBetween(date.floorToDay(), date.floorToDay().add(const Duration(days: 1)), includeUpper: false);
+  QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QAfterWhereClause> onSameDate(DateTime date) =>
+      startTimeBetween(date.floorToDay(hour: 6), date.floorToDay(hour: 6).add(const Duration(days: 1)),
+          includeUpper: false);
 }
