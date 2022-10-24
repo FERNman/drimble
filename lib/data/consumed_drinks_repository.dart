@@ -16,6 +16,14 @@ class ConsumedDrinksRepository {
 
   ConsumedDrinksRepository(Isar database) : _collection = database.consumedDrinks;
 
+  Stream<List<ConsumedDrink>> observeDrinksBetween(DateTime startDate, DateTime endDate) {
+    return _collection
+        .where()
+        .startTimeBetween(startDate, endDate)
+        .sortByStartTimeDesc()
+        .watch(fireImmediately: true);
+  }
+
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
     return _collection.where().onSameDate(date).sortByStartTimeDesc().watch(fireImmediately: true);
   }

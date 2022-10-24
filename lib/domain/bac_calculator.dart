@@ -5,17 +5,24 @@ import 'bac_calulation_results.dart';
 import 'diary/consumed_drink.dart';
 import 'user/user.dart';
 
+class BACCalculationArgs {
+  final List<ConsumedDrink> drinks;
+  final DateTime startTime;
+  final DateTime endTime;
+
+  const BACCalculationArgs({
+    required this.drinks,
+    required this.startTime,
+    required this.endTime,
+  });
+}
+
 class BACCalculator {
   final User user;
 
   BACCalculator(this.user);
 
-  BACCalculationResults calculate(List<ConsumedDrink> drinks) {
-    assert(drinks.isNotEmpty);
-
-    final timeOfFirstDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isBefore(first) ? it : first);
-    final timeOfLastDrink = drinks.map((e) => e.startTime).reduce((first, it) => it.isAfter(first) ? it : first);
-
+  BACCalculationResults calculate(BACCalculationArgs args) {
     const deltaTime = Duration(minutes: 5);
 
     final results = <BACEntry>[];
@@ -23,12 +30,15 @@ class BACCalculator {
     final rhoFactor = _calculateRhoFactorForUser();
 
     var currentBAC = 0.0;
-    for (var time = timeOfFirstDrink;
-        time.isBefore(timeOfLastDrink.add(const Duration(minutes: 30))) || currentBAC >= Alcohol.soberLimit;
+    var previousAbsorbedAlcohol = 0.0;
+    for (var time = args.startTime;
+        time.isBefore(args.endTime) || currentBAC >= Alcohol.soberLimit;
         time = time.add(deltaTime)) {
-      final absorbedAlcohol =
-          _calculateAbsorbedAlcohol(drinks, time) - _calculateAbsorbedAlcohol(drinks, time.subtract(deltaTime));
-      currentBAC += (absorbedAlcohol / rhoFactor);
+      final absorbedAlcohol = _calculateAbsorbedAlcohol(args.drinks, time);
+      final deltaAbsorbedAlcohol = absorbedAlcohol - previousAbsorbedAlcohol;
+      currentBAC += (deltaAbsorbedAlcohol / rhoFactor);
+
+      previousAbsorbedAlcohol = absorbedAlcohol;
 
       final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;

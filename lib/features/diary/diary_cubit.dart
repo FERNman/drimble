@@ -42,25 +42,35 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         stream.distinct((previous, next) => previous.date.isAtSameMomentAs(next.date)).startWith(state);
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.date))
-        .listen(_calculateBAC));
-
-    addSubscription(dateChangedStream
         .flatMap((value) => _diaryRepository.overserveEntryOnDate(value.date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
+
+    addSubscription(dateChangedStream
+        .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.date))
+        .listen((drinks) => emit(state.updateDrinks(drinks))));
+
+    addSubscription(dateChangedStream
+        .flatMap((value) => _consumedDrinksRepository.observeDrinksBetween(
+            value.date.floorToDay(hour: 6).subtract(const Duration(days: 1)),
+            value.date.floorToDay(hour: 6).add(const Duration(days: 1))))
+        .listen(_calculateBAC));
   }
 
   void _calculateBAC(List<ConsumedDrink> drinks) async {
     final user = await _userRepository.user;
 
-    if (drinks.isNotEmpty) {
-      final calculator = BACCalculator(user!);
-      final results = await compute(calculator.calculate, drinks);
+    final calculator = BACCalculator(user!);
 
-      emit(state.copyWith(drinks: drinks, calculationResults: results));
-    } else {
-      emit(state.copyWith(drinks: drinks, calculationResults: BACCalculationResults([])));
-    }
+    final startTime = state.date.floorToDay(hour: 6);
+    final args = BACCalculationArgs(
+      drinks: drinks,
+      startTime: startTime,
+      endTime: startTime.add(const Duration(days: 1)),
+    );
+
+    final results = await compute(calculator.calculate, args);
+
+    emit(state.updateBAC(results));
   }
 }
 
@@ -92,20 +102,23 @@ class DiaryCubitState {
         unitsOfAlcohol = 0,
         calories = 0;
 
-  DiaryCubitState copyWith({
-    List<ConsumedDrink>? drinks,
-    BACCalculationResults? calculationResults,
-  }) =>
-      DiaryCubitState(
+  DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(
         date: date,
         diaryEntry: diaryEntry,
-        drinks: drinks ?? this.drinks,
-        calculationResults: calculationResults ?? this.calculationResults,
+        drinks: drinks,
+        calculationResults: calculationResults,
       );
 
-  DiaryCubitState updateDiaryEntry(DiaryEntry? entry) => DiaryCubitState(
+  DiaryCubitState updateDrinks(List<ConsumedDrink> drinks) => DiaryCubitState(
         date: date,
-        diaryEntry: entry,
+        diaryEntry: diaryEntry,
+        drinks: drinks,
+        calculationResults: calculationResults,
+      );
+
+  DiaryCubitState updateBAC(BACCalculationResults calculationResults) => DiaryCubitState(
+        date: date,
+        diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
       );
