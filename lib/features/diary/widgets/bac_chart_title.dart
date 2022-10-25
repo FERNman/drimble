@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/bac_calulation_results.dart';
 import '../../../domain/diary/diary_entry.dart';
-import '../../../infra/extensions/floor_date_time.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/widgets/filled_button.dart';
 
@@ -59,7 +58,7 @@ class BACChartTitle extends StatelessWidget {
         style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
       );
     } else {
-      final maxBAC = results.findMaxEntryAfter(dateTime.floorToDay(hour: 6));
+      final maxBAC = results.maxBAC;
       return Text(
         '${maxBAC.value.toStringAsFixed(2)}‰ max',
         style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class LineChart extends StatelessWidget {
   final double height;
   final Color? color;
   final int indexForSpotIndicator;
-  final bool showSpotIndicator;
+  final bool _showSpotIndicator;
 
   final double _valueRange;
 
@@ -24,14 +23,14 @@ class LineChart extends StatelessWidget {
     required this.height,
     required this.labels,
     required this.indexForSpotIndicator,
-    required this.showSpotIndicator,
+    required double maxValue,
     this.color,
     super.key,
   })  : assert(data.isNotEmpty),
-        assert(indexForSpotIndicator > 0 && indexForSpotIndicator < data.length),
-        _valueRange = _notNull(data.reduce(max).ceilToNiceDouble());
+        _valueRange = _oneIfZero(maxValue.ceilToNiceDouble()),
+        _showSpotIndicator = indexForSpotIndicator >= 0 && indexForSpotIndicator < data.length;
 
-  static double _notNull(double number) => number == 0.0 ? 1.0 : number;
+  static double _oneIfZero(double number) => number == 0.0 ? 1.0 : number;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,7 @@ class LineChart extends StatelessWidget {
   }
 
   Widget _buildSpotIndicator(BuildContext context) {
-    if (showSpotIndicator) {
+    if (_showSpotIndicator) {
       return Positioned(
         left: 0,
         right: 0,

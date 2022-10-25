@@ -43,19 +43,22 @@ class BACCalculationResults {
   final List<BACEntry> _results;
   final DateTime? timeOfFirstDrink;
   final DateTime soberAt;
+  final BACEntry maxBAC;
 
   BACCalculationResults(this._results)
       : assert(_results.isNotEmpty),
+        timeOfFirstDrink = _findTimeOfFirstDrink(_results),
         soberAt = _findFirstSoberEntry(_results),
-        timeOfFirstDrink = _findTimeOfFirstDrink(_results);
+        maxBAC = _results.reduce((max, el) => max.value > el.value ? max : el);
 
   BACCalculationResults.empty({
     required DateTime startTime,
     required DateTime endTime,
     required Duration timestep,
   })  : _results = _generateEmptyResults(startTime, endTime, timestep),
+        timeOfFirstDrink = null,
         soberAt = startTime,
-        timeOfFirstDrink = null;
+        maxBAC = BACEntry.sober(startTime);
 
   BACEntry getEntryAt(DateTime time) {
     if (time.isBefore(_results.first.time)) {

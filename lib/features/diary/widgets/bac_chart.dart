@@ -31,10 +31,27 @@ class BACChart extends StatefulWidget {
 }
 
 class _BACChartState extends State<BACChart> {
-  static final _currentBacIndex = (BACChart.timeOffset.inMinutes / BACChart.timestep.inMinutes).floor();
+  DateTime __displayStart = DateTime.now();
+  DateTime get _displayStart => __displayStart;
 
-  late DateTime _displayStart;
+  set _displayStart(DateTime value) {
+    final startTime = widget.currentDate.floorToDay(hour: 6);
+    final endTime = widget.currentDate.floorToDay(hour: 6).add(const Duration(days: 1)).subtract(BACChart.displayRange);
+    if (value.isBefore(startTime)) {
+      value = startTime;
+    } else if (value.isAfter(endTime)) {
+      value = endTime;
+    }
+
+    setState(() {
+      __displayStart = value;
+    });
+  }
+
   Timer? refreshTimer;
+
+  int get _currentBacIndex =>
+      (DateTime.now().difference(_displayStart).inMinutes / BACChart.timestep.inMinutes).floor();
 
   @override
   void initState() {
@@ -57,39 +74,17 @@ class _BACChartState extends State<BACChart> {
     refreshTimer?.cancel();
   }
 
-  void _initializeDisplayStart() {
-    if (widget.isShowingToday) {
-      setState(() {
-        _displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
-      });
-
-      _startRedrawTimer();
-    } else {
-      setState(() {
-        _displayStart =
-            widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset).floorToMinute() ?? widget.currentDate;
-      });
-    }
-  }
-
-  void _startRedrawTimer() {
-    const refreshRate = Duration(minutes: 1);
-    refreshTimer = Timer.periodic(
-      refreshRate,
-      (t) => setState(() {
-        _displayStart = _displayStart.add(const Duration(minutes: 1));
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      _getChartData(),
-      height: 140,
-      labels: _buildLabels(context),
-      indexForSpotIndicator: _currentBacIndex,
-      showSpotIndicator: widget.isShowingToday,
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) => _updateAfterScrolling(details.delta.dx),
+      child: LineChart(
+        _getChartData(),
+        height: 140,
+        labels: _buildLabels(context),
+        indexForSpotIndicator: _currentBacIndex,
+        maxValue: widget.results.maxBAC.value,
+      ),
     );
   }
 
@@ -123,5 +118,33 @@ class _BACChartState extends State<BACChart> {
     }
 
     return data;
+  }
+
+  void _initializeDisplayStart() {
+    if (widget.isShowingToday) {
+      _displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
+
+      _startRedrawTimer();
+    } else {
+      _displayStart =
+          widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset).floorToMinute() ?? widget.currentDate;
+    }
+  }
+
+  void _startRedrawTimer() {
+    const refreshRate = Duration(minutes: 1);
+    refreshTimer = Timer.periodic(
+      refreshRate,
+      (t) {
+        _displayStart = _displayStart.add(const Duration(minutes: 1));
+      },
+    );
+  }
+
+  void _updateAfterScrolling(double delta) {
+    refreshTimer?.cancel();
+
+    final updatedTime = _displayStart.subtract(Duration(minutes: delta.round()));
+    _displayStart = updatedTime;
   }
 }
