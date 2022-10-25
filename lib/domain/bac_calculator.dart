@@ -18,35 +18,65 @@ class BACCalculationArgs {
 }
 
 class BACCalculator {
+  static const _deltaTime = Duration(minutes: 5);
+
   final User user;
 
   BACCalculator(this.user);
 
   BACCalculationResults calculate(BACCalculationArgs args) {
-    const deltaTime = Duration(minutes: 5);
-
-    final results = <BACEntry>[];
-
     final rhoFactor = _calculateRhoFactorForUser();
 
+    // We also simulate the drinks before the start time, but not as accurate
+    // and we don't add the simulation results to the return value.
+    // They are only needed to start with the correct BAC
+    final drinksBeforeStartTime = args.drinks.where((el) => el.startTime.isBefore(args.startTime)).toList()
+      ..sort((lhs, rhs) => lhs.startTime.compareTo(rhs.startTime));
+
     var currentBAC = 0.0;
+    if (drinksBeforeStartTime.isNotEmpty) {
+      currentBAC = _calculateBACFromOlderDrinks(drinksBeforeStartTime, args.startTime, rhoFactor);
+    }
+
+    // Only these drinks count to the results
+    final drinksAfterStartTime = args.drinks.where((el) => el.startTime.isAfter(args.startTime)).toList();
+    final results = <BACEntry>[];
+
     var previousAbsorbedAlcohol = 0.0;
     for (var time = args.startTime;
         time.isBefore(args.endTime) || currentBAC >= Alcohol.soberLimit;
-        time = time.add(deltaTime)) {
-      final absorbedAlcohol = _calculateAbsorbedAlcohol(args.drinks, time);
+        time = time.add(_deltaTime)) {
+      final absorbedAlcohol = _calculateAbsorbedAlcohol(drinksAfterStartTime, time);
       final deltaAbsorbedAlcohol = absorbedAlcohol - previousAbsorbedAlcohol;
       currentBAC += (deltaAbsorbedAlcohol / rhoFactor);
 
       previousAbsorbedAlcohol = absorbedAlcohol;
 
-      final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (deltaTime.inMinutes / 60.0);
+      final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
 
-      results.add(BACEntry(time, currentBAC / (user.weight)));
+      results.add(BACEntry(time, currentBAC / user.weight));
     }
 
     return BACCalculationResults(results);
+  }
+
+  double _calculateBACFromOlderDrinks(List<ConsumedDrink> drinksBeforeStartTime, DateTime startTime, double rhoFactor) {
+    var currentBAC = 0.0;
+    var previousAbsorbedAlcohol = 0.0;
+    final timeOfFirstDrink = drinksBeforeStartTime.first.startTime;
+    for (var time = timeOfFirstDrink; time.isBefore(startTime); time = time.add(_deltaTime)) {
+      final absorbedAlcohol = _calculateAbsorbedAlcohol(drinksBeforeStartTime, time);
+      final deltaAbsorbedAlcohol = absorbedAlcohol - previousAbsorbedAlcohol;
+      currentBAC += (deltaAbsorbedAlcohol / rhoFactor);
+
+      previousAbsorbedAlcohol = absorbedAlcohol;
+
+      final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
+      currentBAC -= metabolizedAlcohol;
+    }
+
+    return currentBAC;
   }
 
   double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
