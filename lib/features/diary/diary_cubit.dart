@@ -95,7 +95,7 @@ class DiaryCubitState {
       : calculationResults = BACCalculationResults.empty(
           startTime: date.floorToDay(hour: 6),
           endTime: date.floorToDay(hour: 6).add(const Duration(days: 1)),
-          timestep: const Duration(minutes: 5),
+          timestep: const Duration(minutes: 10),
         ),
         diaryEntry = null,
         drinks = [],

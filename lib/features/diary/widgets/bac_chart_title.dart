@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/bac_calulation_results.dart';
 import '../../../domain/diary/diary_entry.dart';
+import '../../../infra/extensions/floor_date_time.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/widgets/filled_button.dart';
 
@@ -52,10 +53,16 @@ class BACChartTitle extends StatelessWidget {
         context.l18n.diary_drinkFreeDay,
         style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
       );
-    } else {
+    } else if (DateUtils.isSameDay(DateTime.now(), dateTime)) {
       return Text(
         '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
         style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
+      );
+    } else {
+      final maxBAC = results.findMaxEntryAfter(dateTime.floorToDay(hour: 6));
+      return Text(
+        '${maxBAC.value.toStringAsFixed(2)}‰ max',
+        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
       );
     }
   }
@@ -77,8 +84,6 @@ class BACChartTitle extends StatelessWidget {
     }
   }
 
-  bool _isDrunk() => results.soberAt.isAfter(DateTime.now());
-
   String _drunkSubtitle(BuildContext context) {
     final now = DateTime.now();
     final soberAt = results.soberAt;
@@ -98,4 +103,6 @@ class BACChartTitle extends StatelessWidget {
       return context.l18n.diary_youreSober;
     }
   }
+
+  bool _isDrunk() => results.soberAt.isAfter(DateTime.now());
 }
