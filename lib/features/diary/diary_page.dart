@@ -25,82 +25,116 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<DiaryCubit, DiaryCubitState>(
-        builder: (context, state) => SingleChildScrollView(
-          child: Column(
-            children: [
-              HomeAppBar(
-                onTapProfile: () {
-                  context.router.push(const ProfileRoute());
-                },
-              ),
-              DiaryCalendar(
-                selectedDay: state.date.floorToDay(),
-                onSelectedDayChanged: (value) {
-                  context.read<DiaryCubit>().switchDate(value);
-                },
-              ),
-              const SizedBox(height: 24),
-              BACChartTitle(
-                dateTime: state.date,
-                results: state.calculationResults,
-                diaryEntry: state.diaryEntry,
-                onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
-              ),
-              const SizedBox(height: 18),
-              BACChart(
-                results: state.calculationResults,
-                currentDate: state.date,
-              ),
-              const SizedBox(height: 12),
-              DiaryStatistics(
-                numberOfConsumedDrinks: state.drinks.length,
-                unitsOfAlcohol: state.unitsOfAlcohol,
-                calories: state.calories,
-              ),
-              const SizedBox(height: 24),
-              _buildRecentDrinks(state, context),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomeAppBar(
+              onTapProfile: () {
+                context.router.push(const ProfileRoute());
+              },
+            ),
+            _buildCalendar(),
+            const SizedBox(height: 24),
+            _buildTitle(),
+            const SizedBox(height: 18),
+            _buildChart(),
+            const SizedBox(height: 12),
+            _buildStatistics(),
+            const SizedBox(height: 24),
+            _buildRecentDrinks(),
+          ],
         ),
       ),
-      floatingActionButton: BlocBuilder<DiaryCubit, DiaryCubitState>(
-        buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
-        builder: (context, state) => FloatingActionButton(
-          onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
-          child: const Icon(Icons.add),
-        ),
+      floatingActionButton: _buildFAB(),
+    );
+  }
+
+  Widget _buildCalendar() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
+      builder: (context, state) => DiaryCalendar(
+        selectedDay: state.date.floorToDay(),
+        onSelectedDayChanged: (value) {
+          context.read<DiaryCubit>().switchDate(value);
+        },
       ),
     );
   }
 
-  Widget _buildRecentDrinks(DiaryCubitState state, BuildContext context) {
-    if (state.drinks.isEmpty) {
-      return const SizedBox();
-    }
+  Widget _buildTitle() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      builder: (context, state) => BACChartTitle(
+        dateTime: state.date,
+        results: state.calculationResults,
+        diaryEntry: state.diaryEntry,
+        onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+      ),
+    );
+  }
 
-    return DiaryConsumedDrinks(
-      state.drinks,
-      onEdit: (drink) {
-        context.router.push(ConsumedDrinkRoute(drink: drink, isEditing: true));
-      },
-      onDelete: (drink) {
-        showDialog(
-          context: context,
-          builder: (dialogContext) => RemoveDrinkDialog(
-            onCancel: () {
-              Navigator.pop(dialogContext);
-            },
-            onRemove: () {
-              context.read<DiaryCubit>().deleteDrink(drink);
-              Navigator.pop(dialogContext);
-            },
-          ),
+  Widget _buildChart() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
+      builder: (context, state) => BACChart(
+        results: state.calculationResults,
+        currentDate: state.date,
+      ),
+    );
+  }
+
+  Widget _buildStatistics() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.drinks != current.drinks,
+      builder: (context, state) => DiaryStatistics(
+        numberOfConsumedDrinks: state.drinks.length,
+        unitsOfAlcohol: state.unitsOfAlcohol,
+        calories: state.calories,
+      ),
+    );
+  }
+
+  Widget _buildRecentDrinks() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.drinks != current.drinks,
+      builder: (context, state) {
+        if (state.drinks.isEmpty) {
+          return const SizedBox();
+        }
+
+        return DiaryConsumedDrinks(
+          state.drinks,
+          onEdit: (drink) {
+            context.router.push(ConsumedDrinkRoute(drink: drink, isEditing: true));
+          },
+          onDelete: (drink) {
+            showDialog(
+              context: context,
+              builder: (dialogContext) => RemoveDrinkDialog(
+                onCancel: () {
+                  Navigator.pop(dialogContext);
+                },
+                onRemove: () {
+                  context.read<DiaryCubit>().deleteDrink(drink);
+                  Navigator.pop(dialogContext);
+                },
+              ),
+            );
+          },
+          onViewAll: () {
+            context.router.push(TodaysDrinksRoute(date: state.date));
+          },
         );
       },
-      onViewAll: () {
-        context.router.push(TodaysDrinksRoute(date: state.date));
-      },
+    );
+  }
+
+  Widget _buildFAB() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
+      builder: (context, state) => FloatingActionButton(
+        onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

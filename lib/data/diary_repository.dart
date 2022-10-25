@@ -27,6 +27,10 @@ class DiaryRepository {
         .map((results) => results.firstOrNull);
   }
 
+  Future<DiaryEntry?> getEntryOnDate(DateTime date) {
+    return _collection.where().dateEqualTo(date.floorToDay()).findFirst();
+  }
+
   void markAsDrinkFree(DateTime date) async {
     await _database.writeTxn(() async {
       await _deleteDrinksOnDate(date);

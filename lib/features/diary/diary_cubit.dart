@@ -23,9 +23,12 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
     _subscribeToRepository();
   }
 
-  void switchDate(DateTime date) {
+  void switchDate(DateTime date) async {
     if (!DateUtils.isSameDay(date, state.date)) {
-      emit(DiaryCubitState.initial(date: date));
+      final drinks = await _consumedDrinksRepository.getDrinksOnDate(date);
+      final diaryEntry = await _diaryRepository.getEntryOnDate(date);
+
+      emit(DiaryCubitState.initial(date: date, drinks: drinks, diaryEntry: diaryEntry));
     }
   }
 
@@ -91,14 +94,15 @@ class DiaryCubitState {
   })  : unitsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.unitsOfAlcohol),
         calories = drinks.fold(0, (calories, it) => calories + it.calories);
 
-  DiaryCubitState.initial({required this.date})
-      : calculationResults = BACCalculationResults.empty(
+  DiaryCubitState.initial({
+    required this.date,
+    this.diaryEntry,
+    this.drinks = const [],
+  })  : calculationResults = BACCalculationResults.empty(
           startTime: date.floorToDay(hour: 6),
           endTime: date.floorToDay(hour: 6).add(const Duration(days: 1)),
           timestep: const Duration(minutes: 10),
         ),
-        diaryEntry = null,
-        drinks = [],
         unitsOfAlcohol = 0,
         calories = 0;
 
