@@ -15,14 +15,14 @@ class BACChart extends StatefulWidget {
   static const timeOffset = Duration(minutes: 45);
   static const displayRange = Duration(hours: 5);
 
-  final bool showCurrentBACIndicator;
-  final DateTime dateTime;
   final BACCalculationResults results;
+  final DateTime currentDate;
+
+  bool get isShowingToday => DateUtils.isSameDay(currentDate, DateTime.now());
 
   const BACChart({
     required this.results,
-    required this.dateTime,
-    required this.showCurrentBACIndicator,
+    required this.currentDate,
     super.key,
   });
 
@@ -33,15 +33,46 @@ class BACChart extends StatefulWidget {
 class _BACChartState extends State<BACChart> {
   static final _currentBacIndex = (BACChart.timeOffset.inMinutes / BACChart.timestep.inMinutes).floor();
 
-  late final Timer refreshTimer;
   late DateTime _displayStart;
+  Timer? refreshTimer;
 
   @override
   void initState() {
     super.initState();
 
-    _displayStart = widget.dateTime.subtract(BACChart.timeOffset).floorToMinute();
+    _initializeDisplayStart();
+  }
 
+  @override
+  void didUpdateWidget(BACChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _initializeDisplayStart();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    refreshTimer?.cancel();
+  }
+
+  void _initializeDisplayStart() {
+    if (widget.isShowingToday) {
+      setState(() {
+        _displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
+      });
+
+      _startRedrawTimer();
+    } else {
+      setState(() {
+        _displayStart =
+            widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset).floorToMinute() ?? widget.currentDate;
+      });
+    }
+  }
+
+  void _startRedrawTimer() {
     const refreshRate = Duration(minutes: 1);
     refreshTimer = Timer.periodic(
       refreshRate,
@@ -52,20 +83,13 @@ class _BACChartState extends State<BACChart> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-
-    refreshTimer.cancel();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LineChart(
       _getChartData(),
       height: 140,
       labels: _buildLabels(context),
       indexForSpotIndicator: _currentBacIndex,
-      showSpotIndicator: widget.showCurrentBACIndicator,
+      showSpotIndicator: widget.isShowingToday,
     );
   }
 
@@ -84,7 +108,7 @@ class _BACChartState extends State<BACChart> {
   List<ChartLabelData> _buildLabels(BuildContext context) {
     final List<ChartLabelData> data = [];
 
-    final firstFullHour = widget.dateTime.copyWith(hour: _displayStart.hour + 1, minute: 0);
+    final firstFullHour = _displayStart.copyWith(hour: _displayStart.hour + 1, minute: 0);
     final displayEnd = _displayStart.add(BACChart.displayRange);
     for (var hour = firstFullHour; hour.isBefore(displayEnd); hour = hour.add(const Duration(hours: 1))) {
       final percentageOfChart = hour.difference(_displayStart).inMinutes / BACChart.displayRange.inMinutes;

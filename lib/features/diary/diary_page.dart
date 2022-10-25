@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../infra/extensions/floor_date_time.dart';
 import '../../router.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../diary_calendar/diary_calendar.dart';
@@ -34,7 +35,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
                 },
               ),
               DiaryCalendar(
-                selectedDay: state.date,
+                selectedDay: state.date.floorToDay(),
                 onSelectedDayChanged: (value) {
                   context.read<DiaryCubit>().switchDate(value);
                 },
@@ -48,9 +49,8 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
               ),
               const SizedBox(height: 18),
               BACChart(
-                dateTime: state.time,
                 results: state.calculationResults,
-                showCurrentBACIndicator: state.shouldShowCurrentBACIndicator,
+                currentDate: state.date,
               ),
               const SizedBox(height: 12),
               DiaryStatistics(

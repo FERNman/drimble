@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'alcohol/alcohol.dart';
 
 class BACEntry {
@@ -15,19 +17,47 @@ class BACEntry {
 }
 
 class BACCalculationResults {
-  final List<BACEntry> _results;
-
-  late final DateTime soberAt;
-
-  BACCalculationResults(this._results) {
-    soberAt = _findFirstSoberEntry();
-  }
-
-  BACEntry getEntryAt(DateTime time) {
-    if (_results.isEmpty) {
-      return BACEntry.sober(time);
+  static DateTime _findFirstSoberEntry(List<BACEntry> results) {
+    // Go through results from last to first
+    // Return first entry where the next entry is not sober
+    for (var i = results.length - 1; i > 0; i--) {
+      final nextEntry = results[i - 1];
+      if (nextEntry.value >= Alcohol.soberLimit) {
+        final currentEntry = results[i];
+        return currentEntry.time;
+      }
     }
 
+    return results.first.time;
+  }
+
+  static DateTime? _findTimeOfFirstDrink(List<BACEntry> results) {
+    return results.firstWhereOrNull((element) => element.value > Alcohol.soberLimit)?.time;
+  }
+
+  static List<BACEntry> _generateEmptyResults(DateTime startTime, DateTime endTime, Duration timestep) {
+    final itemCount = (endTime.difference(startTime).inMinutes / timestep.inMinutes).round();
+    return List.generate(itemCount, (i) => BACEntry.sober(startTime.add(timestep * i)));
+  }
+
+  final List<BACEntry> _results;
+  final DateTime? timeOfFirstDrink;
+  final DateTime soberAt;
+
+  BACCalculationResults(this._results)
+      : assert(_results.isNotEmpty),
+        soberAt = _findFirstSoberEntry(_results),
+        timeOfFirstDrink = _findTimeOfFirstDrink(_results);
+
+  BACCalculationResults.empty({
+    required DateTime startTime,
+    required DateTime endTime,
+    required Duration timestep,
+  })  : _results = _generateEmptyResults(startTime, endTime, timestep),
+        soberAt = startTime,
+        timeOfFirstDrink = null;
+
+  BACEntry getEntryAt(DateTime time) {
     if (time.isBefore(_results.first.time)) {
       return _results.first.copyWith(time: time);
     }
@@ -49,23 +79,5 @@ class BACCalculationResults {
 
       return max.value > el.value ? max : el;
     });
-  }
-
-  DateTime _findFirstSoberEntry() {
-    if (_results.isEmpty) {
-      return DateTime.now();
-    }
-
-    // Go through results from last to first
-    // Return first entry where the next entry is not sober
-    for (var i = _results.length - 1; i > 0; i--) {
-      final nextEntry = _results[i - 1];
-      if (nextEntry.value >= Alcohol.soberLimit) {
-        final currentEntry = _results[i];
-        return currentEntry.time;
-      }
-    }
-
-    return _results.last.time;
   }
 }
