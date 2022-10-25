@@ -31,7 +31,7 @@ class UserRepository {
     _user.add(null);
     await _unsetUser();
 
-    await _database.txn(() async {
+    await _database.writeTxn(() async {
       await _database.clear();
     });
   }
