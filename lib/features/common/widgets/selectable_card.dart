@@ -17,21 +17,21 @@ class SelectableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor = isSelected ? context.colorScheme.onPrimary : context.colorScheme.onPrimaryContainer;
-    final backgroundColor = isSelected ? context.colorScheme.primary : context.colorScheme.primaryContainer;
+    final backgroundColor = isSelected ? context.colorScheme.primaryContainer : Colors.transparent;
 
     return Card(
       color: backgroundColor,
-      elevation: isSelected ? 0.0 : 1.0,
+      elevation: 0.0,
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: onSelect,
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(16),
-          child: DefaultTextStyle.merge(
-            style: TextStyle(color: foregroundColor),
-            child: child,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black87),
+            borderRadius: BorderRadius.circular(16),
           ),
+          child: child,
         ),
       ),
     );
