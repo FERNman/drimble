@@ -17,11 +17,7 @@ class ConsumedDrinksRepository {
   ConsumedDrinksRepository(Isar database) : _collection = database.consumedDrinks;
 
   Stream<List<ConsumedDrink>> observeDrinksBetween(DateTime startDate, DateTime endDate) {
-    return _collection
-        .where()
-        .startTimeBetween(startDate, endDate)
-        .sortByStartTimeDesc()
-        .watch(fireImmediately: true);
+    return _collection.where().startTimeBetween(startDate, endDate).sortByStartTimeDesc().watch(fireImmediately: true);
   }
 
   Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
@@ -40,7 +36,7 @@ class ConsumedDrinksRepository {
     await _database.writeTxn(() async {
       await _collection.put(drink.toEntity());
 
-      await _markAsNonDrinkFree(drink.startTime.floorToDay());
+      await _markAsNonDrinkFree(drink.date);
     });
   }
 
@@ -50,10 +46,9 @@ class ConsumedDrinksRepository {
     await _database.writeTxn(() async {
       await _collection.delete(drink.id!);
 
-      final remainingDrinksOnThisDay = await _collection.where().onSameDate(drink.startTime).count();
-
+      final remainingDrinksOnThisDay = await _collection.where().onSameDate(drink.date).count();
       if (remainingDrinksOnThisDay == 0) {
-        await _markAsUntracked(drink.startTime.floorToDay());
+        await _markAsUntracked(drink.date);
       }
     });
   }

@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 
+import '../../infra/extensions/floor_date_time.dart';
 import '../alcohol/alcohol.dart';
 import '../alcohol/beverage.dart';
 import '../alcohol/milliliter.dart';
@@ -23,6 +24,15 @@ class ConsumedDrink {
 
   @ignore
   final Duration duration;
+
+  @ignore
+  DateTime get date {
+    if (startTime.hour < 6) {
+      return startTime.subtract(const Duration(days: 1)).floorToDay();
+    }
+
+    return startTime.floorToDay();
+  }
 
   @ignore
   double get unitsOfAlcohol => (volume * alcoholByVolume) / 10;
