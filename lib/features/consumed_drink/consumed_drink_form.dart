@@ -55,7 +55,7 @@ class ConsumedDrinkForm extends StatelessWidget {
     return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.volume != current.drink.volume,
       builder: (context, state) => AmountSelection(
-        standardServings: state.beverage.standardServings,
+        standardServings: state.drink.category.defaultServings,
         initialValue: state.drink.volume,
         onChanged: (it) {
           context.read<ConsumedDrinkCubit>().updateVolume(it);

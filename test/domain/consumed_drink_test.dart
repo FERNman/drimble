@@ -1,4 +1,4 @@
-import 'package:drimble/domain/alcohol/beverages.dart';
+import 'package:drimble/domain/alcohol/drink_category.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +8,9 @@ void main() {
     group('fromExistingDrink', () {
       final existingDrink = ConsumedDrink(
         id: 19,
-        beverage: Beverages.beer,
+        name: 'Beer',
+        icon: 'test',
+        category: DrinkCategory.beer,
         volume: 500,
         alcoholByVolume: 0.05,
         startTime: DateTime(2020),
@@ -25,7 +27,9 @@ void main() {
     group('copyWith', () {
       final drink = ConsumedDrink(
         id: 19,
-        beverage: Beverages.beer,
+        name: 'Beer',
+        icon: 'test',
+        category: DrinkCategory.beer,
         volume: 500,
         alcoholByVolume: 0.05,
         startTime: DateTime(2020),

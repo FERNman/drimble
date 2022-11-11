@@ -2,14 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/alcohol/beverage.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../infra/extensions/set_date.dart';
 import '../../router.dart';
 import '../common/build_context_extensions.dart';
 import '../common/widgets/extended_app_bar.dart';
 import 'add_drink_cubit.dart';
-import 'widgets/common_beverages.dart';
+import 'widgets/common_drinks.dart';
 import 'widgets/recent_drinks.dart';
 
 class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
@@ -28,46 +27,61 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ExtendedAppBar.medium(
-        leading: IconButton(
-          onPressed: () => context.router.pop(),
-          icon: const Icon(Icons.close),
-        ),
-        title: Text(context.l18n.add_drink_addADrink),
-      ),
+      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
-        child: BlocBuilder<AddDrinkCubit, AddDrinkCubitState>(builder: (context, state) {
-          return Column(
-            children: [
-              // TODO: Search functionality
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   child: SearchField(onChange: _search),
-              // ),
-              state.recentlyAddedDrinks.isNotEmpty
-                  ? RecentDrinks(
-                      state.recentlyAddedDrinks,
-                      onTap: (drink) => _addRecentDrink(context, drink),
-                    )
-                  : const SizedBox(),
-              CommonBeverages(
-                state.commonBeverages,
-                onTap: (beverage) => _addCommonBeverage(context, beverage),
-              ),
-            ],
-          );
-        }),
+        child: Column(
+          children: [
+            // TODO: Search functionality
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16),
+            //   child: SearchField(onChange: _search),
+            // ),
+            _buildRecentDrinks(),
+            _buildCommonDrinks(),
+          ],
+        ),
       ),
     );
   }
 
-  void _addRecentDrink(BuildContext context, ConsumedDrink drink) {
-    final newDrink = ConsumedDrink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date));
-    context.router.push(ConsumedDrinkRoute(drink: newDrink));
+  ExtendedAppBar _buildAppBar(BuildContext context) {
+    return ExtendedAppBar.medium(
+      leading: IconButton(
+        onPressed: () => context.router.pop(),
+        icon: const Icon(Icons.close),
+      ),
+      title: Text(context.l18n.add_drink_addADrink),
+    );
   }
 
-  void _addCommonBeverage(BuildContext context, Beverage beverage) {
-    final drink = ConsumedDrink.fromBeverage(beverage, startTime: DateTime.now().setDate(date));
-    context.router.push(ConsumedDrinkRoute(drink: drink));
+  Widget _buildRecentDrinks() {
+    return BlocBuilder<AddDrinkCubit, AddDrinkCubitState>(
+      buildWhen: (previous, current) => previous.recentDrinks != current.recentDrinks,
+      builder: (context, state) {
+        if (state.recentDrinks.isNotEmpty) {
+          return RecentDrinks(
+            state.recentDrinks,
+            onTap: (drink) => _addDrink(context, drink),
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
+
+  Widget _buildCommonDrinks() {
+    return BlocBuilder<AddDrinkCubit, AddDrinkCubitState>(
+      buildWhen: (previous, current) => previous.commonDrinks != current.commonDrinks,
+      builder: (context, state) => CommonDrinks(
+        state.commonDrinks,
+        onTap: (drink) => _addDrink(context, drink),
+      ),
+    );
+  }
+
+  void _addDrink(BuildContext context, ConsumedDrink drink) {
+    final newDrink = ConsumedDrink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date));
+    context.router.push(ConsumedDrinkRoute(drink: newDrink));
   }
 }

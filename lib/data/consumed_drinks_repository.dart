@@ -1,77 +1,52 @@
 import 'dart:async';
 
-import 'package:isar/isar.dart';
-
 import '../domain/diary/consumed_drink.dart';
-import '../infra/database/database_consumed_drink.dart';
-import '../infra/database/database_diary_entry.dart';
-import '../infra/extensions/floor_date_time.dart';
+import '../domain/diary/diary_entry.dart';
+import 'daos/consumed_drinks_dao.dart';
+import 'daos/diary_dao.dart';
 
 class ConsumedDrinksRepository {
   static const oneDay = Duration(days: 1);
 
-  final IsarCollection<DatabaseConsumedDrink> _collection;
+  final ConsumedDrinksDAO _consumedDrinksDao;
+  final DiaryDAO _diaryDao;
 
-  Isar get _database => _collection.isar;
+  ConsumedDrinksRepository(this._consumedDrinksDao, this._diaryDao);
 
-  ConsumedDrinksRepository(Isar database) : _collection = database.consumedDrinks;
+  Stream<List<ConsumedDrink>> observeDrinksBetween(DateTime startDate, DateTime endDate) =>
+      _consumedDrinksDao.observeBetweenDates(startDate, endDate);
 
-  Stream<List<ConsumedDrink>> observeDrinksBetween(DateTime startDate, DateTime endDate) {
-    return _collection.where().startTimeBetween(startDate, endDate).sortByStartTimeDesc().watch(fireImmediately: true);
-  }
+  Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) => _consumedDrinksDao.observeOnDate(date);
 
-  Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) {
-    return _collection.where().onSameDate(date).sortByStartTimeDesc().watch(fireImmediately: true);
-  }
+  Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async => _consumedDrinksDao.findOnDate(date);
 
-  Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async {
-    return _collection.where().onSameDate(date).sortByStartTimeDesc().limit(3).findAll();
-  }
-
-  Stream<List<ConsumedDrink>> observeLatestDrinks() {
-    return _collection.where().sortByStartTimeDesc().limit(3).watch(fireImmediately: true);
-  }
+  Stream<List<ConsumedDrink>> observeLatestDrinks() => _consumedDrinksDao.observeLatest();
 
   void save(ConsumedDrink drink) async {
-    await _database.writeTxn(() async {
-      await _collection.put(drink.toEntity());
-
-      await _markAsNonDrinkFree(drink.date);
-    });
+    await _consumedDrinksDao.save(drink);
+    await _markAsNonDrinkFree(drink.date);
   }
 
   void removeDrink(ConsumedDrink drink) async {
-    assert(drink.id != null);
+    await _consumedDrinksDao.delete(drink);
 
-    await _database.writeTxn(() async {
-      await _collection.delete(drink.id!);
-
-      final remainingDrinksOnThisDay = await _collection.where().onSameDate(drink.date).count();
-      if (remainingDrinksOnThisDay == 0) {
-        await _markAsUntracked(drink.date);
-      }
-    });
+    final remainingDrinksOnThisDay = await getDrinksOnDate(drink.date);
+    if (remainingDrinksOnThisDay.isEmpty) {
+      await _markAsUntracked(drink.date);
+    }
   }
 
   Future<void> _markAsNonDrinkFree(DateTime date) async {
-    final diaryEntry = await _database.diary.where().dateEqualTo(date).findFirst() ??
-        DatabaseDiaryEntry(date: date, isDrinkFreeDay: false);
+    final existingEntry = await _diaryDao.findOnDate(date);
+    final diaryEntry = existingEntry?.copyWith(isDrinkFreeDay: false) ?? DiaryEntry(date: date, isDrinkFreeDay: false);
 
-    diaryEntry.isDrinkFreeDay = false;
-
-    _database.diary.put(diaryEntry);
+    _diaryDao.save(diaryEntry);
   }
 
   Future<void> _markAsUntracked(DateTime date) async {
-    final diaryEntry = await _database.diary.where().dateEqualTo(date).findFirst();
+    final diaryEntry = await _diaryDao.findOnDate(date);
     if (diaryEntry != null) {
-      await _database.diary.delete(diaryEntry.id!);
+      await _diaryDao.delete(diaryEntry);
     }
   }
-}
-
-extension DrinksQueryBuilder on QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QWhere> {
-  QueryBuilder<DatabaseConsumedDrink, DatabaseConsumedDrink, QAfterWhereClause> onSameDate(DateTime date) =>
-      startTimeBetween(date.floorToDay(hour: 6), date.floorToDay(hour: 6).add(const Duration(days: 1)),
-          includeUpper: false);
 }

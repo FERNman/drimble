@@ -1,6 +1,7 @@
 import 'package:drimble/data/consumed_drinks_repository.dart';
-import 'package:drimble/domain/alcohol/beverages.dart';
+import 'package:drimble/domain/alcohol/drink_category.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
+import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:drimble/features/consumed_drink/consumed_drink_cubit.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +16,17 @@ void main() {
 
     test('should correctly update the date if the time is before 6am', () {
       final at10Am = date.copyWith(hour: 10);
-      final drink = ConsumedDrink.fromBeverage(Beverages.beer, startTime: at10Am);
+      final drink = ConsumedDrink(
+        id: 1,
+        name: 'Beer',
+        icon: 'test',
+        category: DrinkCategory.beer,
+        volume: 500,
+        alcoholByVolume: 0.05,
+        startTime: at10Am,
+        duration: const Duration(hours: 1),
+        stomachFullness: StomachFullness.full,
+      );
       final cubit = ConsumedDrinkCubit.createDrink(MockConsumedDrinksRepository(), drink: drink);
 
       final at3am = date.copyWith(hour: 3);
@@ -26,7 +37,17 @@ void main() {
 
     test('should not update the date if the start time was already before 6am', () {
       final at5Am = date.copyWith(hour: 5);
-      final drink = ConsumedDrink.fromBeverage(Beverages.beer, startTime: at5Am);
+      final drink = ConsumedDrink(
+        id: 1,
+        name: 'Beer',
+        icon: 'test',
+        category: DrinkCategory.beer,
+        volume: 500,
+        alcoholByVolume: 0.05,
+        startTime: at5Am,
+        duration: const Duration(hours: 1),
+        stomachFullness: StomachFullness.full,
+      );
       final cubit = ConsumedDrinkCubit.createDrink(MockConsumedDrinksRepository(), drink: drink);
 
       final at3am = date.copyWith(hour: 3);
@@ -37,7 +58,17 @@ void main() {
 
     test('should reset the date if it was before 6am but is changed to after 6am', () {
       final at5Am = date.copyWith(hour: 5);
-      final drink = ConsumedDrink.fromBeverage(Beverages.beer, startTime: at5Am);
+      final drink = ConsumedDrink(
+        id: 1,
+        name: 'Beer',
+        icon: 'test',
+        category: DrinkCategory.beer,
+        volume: 500,
+        alcoholByVolume: 0.05,
+        startTime: at5Am,
+        duration: const Duration(hours: 1),
+        stomachFullness: StomachFullness.full,
+      );
       final cubit = ConsumedDrinkCubit.createDrink(MockConsumedDrinksRepository(), drink: drink);
 
       final at12pm = date.copyWith(hour: 12);

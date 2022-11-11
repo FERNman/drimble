@@ -45,7 +45,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         stream.distinct((previous, next) => previous.date.isAtSameMomentAs(next.date)).startWith(state);
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.overserveEntryOnDate(value.date))
+        .flatMap((value) => _diaryRepository.observeEntryOnDate(value.date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
     addSubscription(dateChangedStream

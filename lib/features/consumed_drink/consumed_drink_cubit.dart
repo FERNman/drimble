@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/consumed_drinks_repository.dart';
-import '../../domain/alcohol/beverage.dart';
 import '../../domain/alcohol/milliliter.dart';
 import '../../domain/alcohol/percentage.dart';
 import '../../domain/diary/consumed_drink.dart';
@@ -68,8 +67,6 @@ class ConsumedDrinkCubitState {
   ConsumedDrinkCubitState.edit(this.drink) : isEditing = true;
 
   ConsumedDrinkCubitState._({required this.isEditing, required this.drink});
-
-  Beverage get beverage => drink.beverage;
 
   ConsumedDrinkCubitState copyWith({required ConsumedDrink drink}) =>
       ConsumedDrinkCubitState._(isEditing: isEditing, drink: drink);

@@ -1,52 +1,25 @@
-import 'package:collection/collection.dart';
-import 'package:isar/isar.dart';
-
 import '../domain/diary/diary_entry.dart';
-import '../infra/database/database_consumed_drink.dart';
-import '../infra/database/database_diary_entry.dart';
 import '../infra/extensions/floor_date_time.dart';
-import 'consumed_drinks_repository.dart';
+import 'daos/consumed_drinks_dao.dart';
+import 'daos/diary_dao.dart';
 
 class DiaryRepository {
-  final IsarCollection<DatabaseDiaryEntry> _collection;
+  final DiaryDAO _diaryDao;
+  final ConsumedDrinksDAO _drinksDao;
 
-  Isar get _database => _collection.isar;
+  DiaryRepository(this._diaryDao, this._drinksDao);
 
-  DiaryRepository(Isar database) : _collection = database.diary;
+  Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) => _diaryDao.observeEntriesAfter(date.floorToDay());
 
-  Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) {
-    return _collection.where().dateGreaterThan(date.floorToDay()).sortByDateDesc().watch(fireImmediately: true);
-  }
+  Stream<DiaryEntry?> observeEntryOnDate(DateTime date) => _diaryDao.observeEntryOnDate(date);
 
-  Stream<DiaryEntry?> overserveEntryOnDate(DateTime date) {
-    return _collection
-        .where()
-        .dateEqualTo(date.floorToDay())
-        .limit(1)
-        .watch(fireImmediately: true)
-        .map((results) => results.firstOrNull);
-  }
-
-  Future<DiaryEntry?> getEntryOnDate(DateTime date) {
-    return _collection.where().dateEqualTo(date.floorToDay()).findFirst();
-  }
+  Future<DiaryEntry?> getEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
 
   void markAsDrinkFree(DateTime date) async {
-    await _database.writeTxn(() async {
-      await _deleteDrinksOnDate(date);
+    await _drinksDao.deleteOnDate(date);
 
-      final entry = await _collection.where().dateEqualTo(date.floorToDay()).findFirst() ??
-          DatabaseDiaryEntry(date: date, isDrinkFreeDay: true);
-      entry.isDrinkFreeDay = true;
-
-      await _collection.put(entry);
-    });
-  }
-
-  Future<void> _deleteDrinksOnDate(DateTime date) async {
-    final drinks = await _database.consumedDrinks.where().onSameDate(date).findAll();
-    final idsToDelete = drinks.map((e) => e.id!).toList();
-
-    await _database.consumedDrinks.deleteAll(idsToDelete);
+    final entry = await _diaryDao.findOnDate(date.floorToDay()) ?? DiaryEntry(date: date, isDrinkFreeDay: true);
+    entry.copyWith(isDrinkFreeDay: true);
+    await _diaryDao.save(entry);
   }
 }

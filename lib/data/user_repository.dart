@@ -1,16 +1,17 @@
 import 'dart:convert';
 
-import 'package:isar/isar.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../domain/user/user.dart';
+import '../infra/extensions/database_drop.dart';
 
 class UserRepository {
   static const userKey = 'user';
 
   final BehaviorSubject<User?> _user = BehaviorSubject();
-  final Isar _database;
+  final Database _database;
 
   Future<User?> get user async => _user.hasValue ? _user.value : await _user.first;
 
@@ -31,9 +32,8 @@ class UserRepository {
     _user.add(null);
     await _unsetUser();
 
-    await _database.writeTxn(() async {
-      await _database.clear();
-    });
+    await _database.drop();
+    
   }
 
   Future<User?> _tryLoadUser() async {

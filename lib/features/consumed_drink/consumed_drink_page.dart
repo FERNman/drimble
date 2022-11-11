@@ -49,8 +49,8 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           child: Column(
             children: [
               BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
-                buildWhen: (previous, current) => previous.beverage != current.beverage,
-                builder: (context, state) => ConsumedDrinkSummary(state.beverage),
+                buildWhen: (previous, current) => previous.drink != current.drink,
+                builder: (context, state) => ConsumedDrinkSummary(state.drink),
               ),
               const ConsumedDrinkForm(),
             ],
