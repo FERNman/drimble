@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../data/consumed_drinks_repository.dart';
 import '../../data/diary_repository.dart';
+import '../../data/drinks_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
-import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../domain/diary/drink.dart';
 import '../../infra/disposable.dart';
 import '../../infra/extensions/floor_date_time.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final UserRepository _userRepository;
-  final ConsumedDrinksRepository _consumedDrinksRepository;
+  final DrinksRepository _consumedDrinksRepository;
   final DiaryRepository _diaryRepository;
 
   DiaryCubit(this._userRepository, this._diaryRepository, this._consumedDrinksRepository)
@@ -36,7 +36,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
     _diaryRepository.markAsDrinkFree(state.date);
   }
 
-  void deleteDrink(ConsumedDrink drink) {
+  void deleteDrink(Drink drink) {
     _consumedDrinksRepository.removeDrink(drink);
   }
 
@@ -45,7 +45,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         stream.distinct((previous, next) => previous.date.isAtSameMomentAs(next.date)).startWith(state);
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.overserveEntryOnDate(value.date))
+        .flatMap((value) => _diaryRepository.observeEntryOnDate(value.date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
     addSubscription(dateChangedStream
@@ -59,7 +59,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         .listen(_calculateBAC));
   }
 
-  void _calculateBAC(List<ConsumedDrink> drinks) async {
+  void _calculateBAC(List<Drink> drinks) async {
     final user = await _userRepository.user;
     if (user == null) {
       return;
@@ -83,7 +83,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 class DiaryCubitState {
   final DateTime date;
   final DiaryEntry? diaryEntry;
-  final List<ConsumedDrink> drinks;
+  final List<Drink> drinks;
   final BACCalculationResults calculationResults;
 
   final double unitsOfAlcohol;
@@ -116,7 +116,7 @@ class DiaryCubitState {
         calculationResults: calculationResults,
       );
 
-  DiaryCubitState updateDrinks(List<ConsumedDrink> drinks) => DiaryCubitState(
+  DiaryCubitState updateDrinks(List<Drink> drinks) => DiaryCubitState(
         date: date,
         diaryEntry: diaryEntry,
         drinks: drinks,

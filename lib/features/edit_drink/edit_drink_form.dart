@@ -5,17 +5,17 @@ import 'package:intl/intl.dart';
 
 import '../../infra/extensions/copy_date_time.dart';
 import '../common/build_context_extensions.dart';
-import 'consumed_drink_cubit.dart';
+import 'edit_drink_cubit.dart';
 import 'widgets/alcohol_percentage_text_field.dart';
-import 'widgets/consumed_drink_form_subtitle.dart';
-import 'widgets/consumed_drink_form_title.dart';
 import 'widgets/drink_amount_selection.dart';
+import 'widgets/edit_drink_form_subtitle.dart';
+import 'widgets/edit_drink_form_title.dart';
 import 'widgets/stomach_fullness_selection.dart';
 
-class ConsumedDrinkForm extends StatelessWidget {
+class EditDrinkForm extends StatelessWidget {
   static final _timespanRegex = RegExp(r'^(([0|1]\d)|(2[0-3])):[0-5]\d$');
 
-  const ConsumedDrinkForm({super.key});
+  const EditDrinkForm({super.key});
 
   static String _formatDateTimeAsTime(DateTime time) => DateFormat.Hm().format(time);
 
@@ -31,14 +31,14 @@ class ConsumedDrinkForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ConsumedDrinkFormTitle(context.l18n.consumed_drink_amount),
+          EditDrinkFormTitle(context.l18n.consumed_drink_amount),
           _buildAmountSelection(),
-          ConsumedDrinkFormTitle(context.l18n.consumed_drink_strength),
+          EditDrinkFormTitle(context.l18n.consumed_drink_strength),
           _buildPercentageTextField(),
-          ConsumedDrinkFormTitle(context.l18n.consumed_drink_stomachFullness),
-          ConsumedDrinkFormSubtitle(context.l18n.consumed_drink_priorToConsumption),
+          EditDrinkFormTitle(context.l18n.consumed_drink_stomachFullness),
+          EditDrinkFormSubtitle(context.l18n.consumed_drink_priorToConsumption),
           _buildStomachFullnessSelection(),
-          ConsumedDrinkFormTitle(context.l18n.consumed_drink_timing),
+          EditDrinkFormTitle(context.l18n.consumed_drink_timing),
           Row(
             children: [
               Expanded(child: _buildStartTimePicker()),
@@ -52,27 +52,27 @@ class ConsumedDrinkForm extends StatelessWidget {
   }
 
   Widget _buildAmountSelection() {
-    return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.volume != current.drink.volume,
       builder: (context, state) => AmountSelection(
-        standardServings: state.beverage.standardServings,
+        standardServings: state.drink.category.defaultServings,
         initialValue: state.drink.volume,
         onChanged: (it) {
-          context.read<ConsumedDrinkCubit>().updateVolume(it);
+          context.read<EditDrinkCubit>().updateVolume(it);
         },
       ),
     );
   }
 
   Widget _buildPercentageTextField() {
-    return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.alcoholByVolume != current.drink.alcoholByVolume,
       builder: (context, state) => Row(children: [
         Expanded(
           child: AlcoholPercentageTextField(
             value: state.drink.alcoholByVolume,
             onChanged: (it) {
-              context.read<ConsumedDrinkCubit>().updatePercentage(it);
+              context.read<EditDrinkCubit>().updatePercentage(it);
             },
           ),
         ),
@@ -83,19 +83,19 @@ class ConsumedDrinkForm extends StatelessWidget {
   }
 
   Widget _buildStomachFullnessSelection() {
-    return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.stomachFullness != current.drink.stomachFullness,
       builder: (context, state) => StomachFullnessSelection(
         initialValue: state.drink.stomachFullness,
         onChanged: (it) {
-          context.read<ConsumedDrinkCubit>().updateStomachFullness(it);
+          context.read<EditDrinkCubit>().updateStomachFullness(it);
         },
       ),
     );
   }
 
   Widget _buildStartTimePicker() {
-    return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.startTime != current.drink.startTime,
       builder: (context, state) => DateTimePicker(
         type: DateTimePickerType.time,
@@ -116,12 +116,12 @@ class ConsumedDrinkForm extends StatelessWidget {
         minute: int.parse(rawValue.substring(3, 5)),
       );
 
-      context.read<ConsumedDrinkCubit>().updateStartTime(startTime);
+      context.read<EditDrinkCubit>().updateStartTime(startTime);
     }
   }
 
   Widget _buildDurationPicker() {
-    return BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.duration != current.drink.duration,
       builder: (context, state) {
         return DateTimePicker(
@@ -144,7 +144,7 @@ class ConsumedDrinkForm extends StatelessWidget {
         minutes: int.parse(rawValue.substring(3, 5)),
       );
 
-      context.read<ConsumedDrinkCubit>().updateDuration(duration);
+      context.read<EditDrinkCubit>().updateDuration(duration);
     }
   }
 }

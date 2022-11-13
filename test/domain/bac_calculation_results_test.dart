@@ -5,16 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('BAC calculation results', () {
     group('getEntryAt', () {
-      test('should return a sober entry if the entries are empty ', () {
-        final when = DateTime(2022);
-
-        final results = BACCalculationResults([]);
-
-        final entry = results.getEntryAt(when);
-        expect(entry.time, when);
-        expect(entry.value, 0.0);
-      });
-
       test('should return the exact value if a entry exists at the given time', () {
         final when = DateTime(2022);
         const value = 1.2;
@@ -70,13 +60,6 @@ void main() {
     });
 
     group('findMaxEntryAfter', () {
-      test('should be a sober entry if the entries are empty', () {
-        final results = BACCalculationResults([]);
-
-        final maxBAC = results.findMaxEntryAfter(DateTime(2020));
-        expect(maxBAC.value, 0.0);
-      });
-
       test('should be the entry with the hightest BAC', () {
         final timestamp = DateTime(2022, 1, 1);
         final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);

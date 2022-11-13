@@ -2,17 +2,17 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/drink.dart';
 import '../common/build_context_extensions.dart';
-import 'consumed_drink_cubit.dart';
-import 'consumed_drink_form.dart';
-import 'widgets/consumed_drink_summary.dart';
+import 'edit_drink_cubit.dart';
+import 'edit_drink_form.dart';
+import 'widgets/edit_drink_summary.dart';
 
-class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
-  final ConsumedDrink drink;
+class EditDrinkPage extends StatelessWidget implements AutoRouteWrapper {
+  final Drink drink;
   final bool isEditing;
 
-  const ConsumedDrinkPage({
+  const EditDrinkPage({
     required this.drink,
     this.isEditing = false,
     super.key,
@@ -22,12 +22,12 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     if (isEditing) {
       return BlocProvider(
-        create: (context) => ConsumedDrinkCubit.editDrink(context.read(), drink: drink),
+        create: (context) => EditDrinkCubit.editDrink(context.read(), drink: drink),
         child: this,
       );
     } else {
       return BlocProvider(
-        create: (context) => ConsumedDrinkCubit.createDrink(context.read(), drink: drink),
+        create: (context) => EditDrinkCubit.createDrink(context.read(), drink: drink),
         child: this,
       );
     }
@@ -48,11 +48,11 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
           child: Column(
             children: [
-              BlocBuilder<ConsumedDrinkCubit, ConsumedDrinkCubitState>(
-                buildWhen: (previous, current) => previous.beverage != current.beverage,
-                builder: (context, state) => ConsumedDrinkSummary(state.beverage),
+              BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
+                buildWhen: (previous, current) => previous.drink != current.drink,
+                builder: (context, state) => EditDrinkSummary(state.drink),
               ),
-              const ConsumedDrinkForm(),
+              const EditDrinkForm(),
             ],
           ),
         ),
@@ -66,7 +66,7 @@ class ConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   void _saveAndNavigate(BuildContext context) {
-    context.read<ConsumedDrinkCubit>().save();
+    context.read<EditDrinkCubit>().save();
     context.router.popUntilRoot();
   }
 }

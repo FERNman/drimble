@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/alcohol/beverage.dart';
+import '../../../domain/diary/drink.dart';
+import '../../common/build_context_extensions.dart';
 
-class ConsumedDrinkSummary extends StatelessWidget {
-  final Beverage beverage;
+class EditDrinkSummary extends StatelessWidget {
+  final Drink drink;
 
-  const ConsumedDrinkSummary(this.beverage, {super.key});
+  const EditDrinkSummary(this.drink, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +17,16 @@ class ConsumedDrinkSummary extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(beverage.name, style: Theme.of(context).textTheme.headlineSmall),
+              Text(drink.name, style: context.textTheme.headlineSmall),
               const SizedBox(height: 4),
               Text(
                 'This drink will raise your blood alcohol level by approx. 0.2‰.',
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: context.textTheme.bodyMedium,
               )
             ],
           ),
         ),
-        Image.asset(beverage.icon, width: 96, height: 96, fit: BoxFit.fill)
+        Image.asset(drink.icon, width: 96, height: 96, fit: BoxFit.fill)
       ],
     );
   }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/diary/drink.dart';
 import '../../common/build_context_extensions.dart';
 
-typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink);
+typedef ConsumedDrinkTapCallback = void Function(Drink);
 
 class RecentDrinks extends StatelessWidget {
-  final List<ConsumedDrink> recentDrinks;
+  final List<Drink> recentDrinks;
   final ConsumedDrinkTapCallback onTap;
 
   const RecentDrinks(this.recentDrinks, {required this.onTap, super.key});
@@ -40,7 +40,7 @@ class RecentDrinks extends StatelessWidget {
 }
 
 class _RecentDrink extends StatelessWidget {
-  final ConsumedDrink drink;
+  final Drink drink;
   final GestureTapCallback onTap;
 
   const _RecentDrink(this.drink, {required this.onTap});
@@ -53,17 +53,13 @@ class _RecentDrink extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           children: [
-            Image(
-              image: AssetImage(drink.beverage.icon),
-              width: 32,
-              height: 32,
-            ),
+            Image(image: AssetImage(drink.icon), width: 32, height: 32),
             const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(drink.beverage.name, style: Theme.of(context).textTheme.bodyLarge),
-                Text('${drink.volume}ml - ${drink.alcoholByVolume}%', style: Theme.of(context).textTheme.bodySmall),
+                Text(drink.name, style: context.textTheme.bodyLarge),
+                Text('${drink.volume}ml - ${drink.alcoholByVolume}%', style: context.textTheme.bodySmall),
               ],
             ),
             const Spacer(),

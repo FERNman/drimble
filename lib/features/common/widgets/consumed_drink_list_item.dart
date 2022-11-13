@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/diary/drink.dart';
 import '../build_context_extensions.dart';
 
 class ConsumedDrinkListItem extends StatelessWidget {
-  final ConsumedDrink drink;
+  final Drink drink;
   final GestureTapCallback onEdit;
   final GestureTapCallback onDelete;
 
@@ -22,7 +22,7 @@ class ConsumedDrinkListItem extends StatelessWidget {
         child: Row(
           children: [
             Image(
-              image: AssetImage(drink.beverage.icon),
+              image: AssetImage(drink.icon),
               width: 42,
               height: 42,
             ),
@@ -31,7 +31,7 @@ class ConsumedDrinkListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: labelTextStyle),
-                Text(drink.beverage.name, style: context.textTheme.titleMedium),
+                Text(drink.name, style: context.textTheme.titleMedium),
                 Text('${drink.volume}ml - ${(drink.alcoholByVolume * 100).round()}%', style: labelTextStyle),
               ],
             ),
