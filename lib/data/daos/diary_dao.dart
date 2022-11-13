@@ -11,11 +11,11 @@ class DiaryDAO {
   static Future<void> create(Database database) async {
     await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
       ${_Entity.id} INTEGER PRIMARY KEY,
-      ${_Entity.date} INTEGER,
-      ${_Entity.isDrinkFreeDay} INTEGER
+      ${_Entity.date} INTEGER NOT NULL,
+      ${_Entity.isDrinkFreeDay} INTEGER NOT NULL
       )''');
 
-    await database.execute('CREATE INDEX IF NOT EXISTS idx_date ON ${_Entity.table} (${_Entity.date} ASC)');
+    await database.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_date ON ${_Entity.table} (${_Entity.date} ASC)');
   }
 
   Future<void> save(DiaryEntry entry) async {
