@@ -4,12 +4,12 @@ import 'package:intl/intl.dart';
 import '../../../domain/diary/drink.dart';
 import '../build_context_extensions.dart';
 
-class ConsumedDrinkListItem extends StatelessWidget {
+class DrinkListItem extends StatelessWidget {
   final Drink drink;
   final GestureTapCallback onEdit;
   final GestureTapCallback onDelete;
 
-  const ConsumedDrinkListItem(this.drink, {required this.onEdit, required this.onDelete, super.key});
+  const DrinkListItem(this.drink, {required this.onEdit, required this.onDelete, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,10 @@ class ConsumedDrinkListItem extends StatelessWidget {
               children: [
                 Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: labelTextStyle),
                 Text(drink.name, style: context.textTheme.titleMedium),
-                Text('${drink.volume}ml - ${(drink.alcoholByVolume * 100).round()}%', style: labelTextStyle),
+                Text(
+                  '${drink.volume}ml - ${NumberFormat.percentPattern().format(drink.alcoholByVolume)}',
+                  style: labelTextStyle,
+                ),
               ],
             ),
             const Spacer(),

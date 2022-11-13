@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/diary/drink.dart';
 import '../../common/build_context_extensions.dart';
-import '../../common/widgets/consumed_drink_list_item.dart';
+import '../../common/widgets/drink_list_item.dart';
 
 typedef ConsumedDrinkTapCallback = void Function(Drink drink);
 
@@ -36,7 +36,7 @@ class DiaryConsumedDrinks extends StatelessWidget {
             if (index < recentItemCount) {
               final drink = drinks[index];
 
-              return ConsumedDrinkListItem(
+              return DrinkListItem(
                 drink,
                 onEdit: () => onEdit(drink),
                 onDelete: () => onDelete(drink),
