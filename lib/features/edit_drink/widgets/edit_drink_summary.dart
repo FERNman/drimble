@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/diary/drink.dart';
 import '../../common/build_context_extensions.dart';
 
-class ConsumedDrinkSummary extends StatelessWidget {
-  final ConsumedDrink drink;
+class EditDrinkSummary extends StatelessWidget {
+  final Drink drink;
 
-  const ConsumedDrinkSummary(this.drink, {super.key});
+  const EditDrinkSummary(this.drink, {super.key});
 
   @override
   Widget build(BuildContext context) {

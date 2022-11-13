@@ -4,9 +4,9 @@ import '../alcohol/alcohol.dart';
 import '../alcohol/drink_category.dart';
 import '../alcohol/milliliter.dart';
 import '../alcohol/percentage.dart';
-import 'consumed_drink.dart';
+import 'drink.dart';
 
-class Cocktail extends ConsumedDrink {
+class Cocktail extends Drink {
   final List<Alcohol> ingredients;
 
   Cocktail({

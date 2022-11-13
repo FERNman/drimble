@@ -8,7 +8,7 @@ import '../domain/user/user.dart';
 import '../infra/extensions/database_drop.dart';
 
 class UserRepository {
-  static const userKey = 'user';
+  static const _userKey = 'user';
 
   final BehaviorSubject<User?> _user = BehaviorSubject();
   final Database _database;
@@ -38,7 +38,7 @@ class UserRepository {
 
   Future<User?> _tryLoadUser() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    final encodedUser = sharedPreferences.getString(userKey);
+    final encodedUser = sharedPreferences.getString(_userKey);
     if (encodedUser != null) {
       return User.fromJson(jsonDecode(encodedUser));
     }
@@ -49,11 +49,11 @@ class UserRepository {
   Future<void> _persistUser(User user) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final encodedUser = jsonEncode(user.toJson());
-    await sharedPreferences.setString(userKey, encodedUser);
+    await sharedPreferences.setString(_userKey, encodedUser);
   }
 
   Future<void> _unsetUser() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.remove(userKey);
+    await sharedPreferences.remove(_userKey);
   }
 }

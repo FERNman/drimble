@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/consumed_drinks_repository.dart';
+import '../../data/drinks_repository.dart';
 import '../../domain/alcohol/drinks.dart';
-import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/drink.dart';
 import '../../infra/disposable.dart';
 
 class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
-  final ConsumedDrinksRepository _consumedDrinksRepository;
+  final DrinksRepository _consumedDrinksRepository;
 
   AddDrinkCubit(this._consumedDrinksRepository) : super(AddDrinkCubitState()) {
     _fetchRecentDrinks();
@@ -26,7 +26,7 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
 }
 
 class AddDrinkCubitState {
-  final List<ConsumedDrink> commonDrinks = [
+  final List<Drink> commonDrinks = [
     Drinks.beer,
     Drinks.ale,
     Drinks.cider,
@@ -38,13 +38,13 @@ class AddDrinkCubitState {
     Drinks.vodka
   ];
 
-  final List<ConsumedDrink> recentDrinks;
+  final List<Drink> recentDrinks;
   final String search;
 
   AddDrinkCubitState({this.recentDrinks = const [], this.search = ''});
 
   AddDrinkCubitState copyWith({
-    List<ConsumedDrink>? recentDrinks,
+    List<Drink>? recentDrinks,
     String? search,
   }) =>
       AddDrinkCubitState(

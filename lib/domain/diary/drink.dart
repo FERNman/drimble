@@ -4,7 +4,7 @@ import '../alcohol/milliliter.dart';
 import '../alcohol/percentage.dart';
 import 'stomach_fullness.dart';
 
-class ConsumedDrink extends Alcohol {
+class Drink extends Alcohol {
   int? id;
   final StomachFullness stomachFullness;
   final DateTime startTime;
@@ -29,7 +29,7 @@ class ConsumedDrink extends Alcohol {
     }
   }
 
-  ConsumedDrink({
+  Drink({
     this.id,
     required super.name,
     required super.icon,
@@ -41,7 +41,7 @@ class ConsumedDrink extends Alcohol {
     required this.stomachFullness,
   }) : assert(alcoholByVolume > 0.0 && alcoholByVolume <= 1.0);
 
-  ConsumedDrink.fromExistingDrink(ConsumedDrink drink, {required this.startTime})
+  Drink.fromExistingDrink(Drink drink, {required this.startTime})
       : duration = drink.duration,
         stomachFullness = drink.stomachFullness,
         super(
@@ -52,14 +52,14 @@ class ConsumedDrink extends Alcohol {
           alcoholByVolume: drink.alcoholByVolume,
         );
 
-  ConsumedDrink copyWith({
+  Drink copyWith({
     Milliliter? volume,
     Percentage? alcoholByVolume,
     DateTime? startTime,
     Duration? duration,
     StomachFullness? stomachFullness,
   }) =>
-      ConsumedDrink(
+      Drink(
         id: id,
         name: name,
         icon: icon,

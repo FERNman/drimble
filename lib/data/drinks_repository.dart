@@ -1,33 +1,31 @@
 import 'dart:async';
 
-import '../domain/diary/consumed_drink.dart';
 import '../domain/diary/diary_entry.dart';
-import 'daos/consumed_drinks_dao.dart';
+import '../domain/diary/drink.dart';
 import 'daos/diary_dao.dart';
+import 'daos/drinks_dao.dart';
 
-class ConsumedDrinksRepository {
-  static const oneDay = Duration(days: 1);
-
-  final ConsumedDrinksDAO _consumedDrinksDao;
+class DrinksRepository {
+  final DrinksDAO _consumedDrinksDao;
   final DiaryDAO _diaryDao;
 
-  ConsumedDrinksRepository(this._consumedDrinksDao, this._diaryDao);
+  DrinksRepository(this._consumedDrinksDao, this._diaryDao);
 
-  Stream<List<ConsumedDrink>> observeDrinksBetween(DateTime startDate, DateTime endDate) =>
+  Stream<List<Drink>> observeDrinksBetween(DateTime startDate, DateTime endDate) =>
       _consumedDrinksDao.observeBetweenDates(startDate, endDate);
 
-  Stream<List<ConsumedDrink>> observeDrinksOnDate(DateTime date) => _consumedDrinksDao.observeOnDate(date);
+  Stream<List<Drink>> observeDrinksOnDate(DateTime date) => _consumedDrinksDao.observeOnDate(date);
 
-  Future<List<ConsumedDrink>> getDrinksOnDate(DateTime date) async => _consumedDrinksDao.findOnDate(date);
+  Future<List<Drink>> getDrinksOnDate(DateTime date) async => _consumedDrinksDao.findOnDate(date);
 
-  Stream<List<ConsumedDrink>> observeLatestDrinks() => _consumedDrinksDao.observeLatest();
+  Stream<List<Drink>> observeLatestDrinks() => _consumedDrinksDao.observeLatest();
 
-  void save(ConsumedDrink drink) async {
+  void save(Drink drink) async {
     await _consumedDrinksDao.save(drink);
     await _markAsNonDrinkFree(drink.date);
   }
 
-  void removeDrink(ConsumedDrink drink) async {
+  void removeDrink(Drink drink) async {
     await _consumedDrinksDao.delete(drink);
 
     final remainingDrinksOnThisDay = await getDrinksOnDate(drink.date);

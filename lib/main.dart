@@ -6,10 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
 import 'package:sqlbrite/sqlbrite.dart';
 
-import 'data/consumed_drinks_repository.dart';
-import 'data/daos/consumed_drinks_dao.dart';
 import 'data/daos/diary_dao.dart';
+import 'data/daos/drinks_dao.dart';
 import 'data/diary_repository.dart';
+import 'data/drinks_repository.dart';
 import 'data/user_repository.dart';
 import 'features/diary/diary_guard.dart';
 import 'infra/l18n/l10n.dart';
@@ -21,7 +21,7 @@ void main() async {
   final database = await openDatabase(
     join(await getDatabasesPath(), 'drimble.db'),
     onCreate: (db, version) async {
-      await ConsumedDrinksDAO.create(db);
+      await DrinksDAO.create(db);
       await DiaryDAO.create(db);
     },
     version: 1,
@@ -61,9 +61,9 @@ class _DrimbleAppState extends State<DrimbleApp> {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => ConsumedDrinksDAO(widget.database)),
+        RepositoryProvider(create: (context) => DrinksDAO(widget.database)),
         RepositoryProvider(create: (context) => DiaryDAO(widget.database)),
-        RepositoryProvider(create: (context) => ConsumedDrinksRepository(context.read(), context.read())),
+        RepositoryProvider(create: (context) => DrinksRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => DiaryRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => UserRepository(widget.database)),
       ],

@@ -1,4 +1,4 @@
-import '../diary/consumed_drink.dart';
+import '../diary/drink.dart';
 import '../diary/stomach_fullness.dart';
 import 'drink_category.dart';
 
@@ -31,8 +31,8 @@ abstract class Drinks {
 
   static final vodka = _drinkFromCategory(DrinkCategory.spirit, name: 'Vodka', icon: 'assets/icons/vodka.png');
 
-  static ConsumedDrink _drinkFromCategory(DrinkCategory category, {required String name, required String icon}) =>
-      ConsumedDrink(
+  static Drink _drinkFromCategory(DrinkCategory category, {required String name, required String icon}) =>
+      Drink(
         name: name,
         icon: icon,
         category: category,

@@ -2,16 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/diary/drink.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/widgets/consumed_drink_list_item.dart';
 
-typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink drink);
+typedef ConsumedDrinkTapCallback = void Function(Drink drink);
 
 class DiaryConsumedDrinks extends StatelessWidget {
   static const recentItemCount = 3;
 
-  final List<ConsumedDrink> drinks;
+  final List<Drink> drinks;
   final ConsumedDrinkTapCallback onEdit;
   final ConsumedDrinkTapCallback onDelete;
   final GestureTapCallback onViewAll;

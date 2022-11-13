@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/diary/drink.dart';
 import '../build_context_extensions.dart';
 
 class ConsumedDrinkListItem extends StatelessWidget {
-  final ConsumedDrink drink;
+  final Drink drink;
   final GestureTapCallback onEdit;
   final GestureTapCallback onDelete;
 

@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'alcohol/alcohol.dart';
 import 'bac_calulation_results.dart';
-import 'diary/consumed_drink.dart';
+import 'diary/drink.dart';
 import 'user/user.dart';
 
 class BACCalculationArgs {
-  final List<ConsumedDrink> drinks;
+  final List<Drink> drinks;
   final DateTime startTime;
   final DateTime endTime;
 
@@ -61,7 +61,7 @@ class BACCalculator {
     return BACCalculationResults(results);
   }
 
-  double _calculateBACFromOlderDrinks(List<ConsumedDrink> drinksBeforeStartTime, DateTime startTime, double rhoFactor) {
+  double _calculateBACFromOlderDrinks(List<Drink> drinksBeforeStartTime, DateTime startTime, double rhoFactor) {
     var currentBAC = 0.0;
     var previousAbsorbedAlcohol = 0.0;
     final timeOfFirstDrink = drinksBeforeStartTime.first.startTime;
@@ -81,13 +81,13 @@ class BACCalculator {
 
   double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
 
-  double _calculateAbsorbedAlcohol(List<ConsumedDrink> drinks, DateTime at) {
+  double _calculateAbsorbedAlcohol(List<Drink> drinks, DateTime at) {
     return drinks.fold<double>(0.0, (absorbedAlcohol, drink) {
       return absorbedAlcohol + _calculateAbsorbedAlcoholForDrink(drink, at);
     });
   }
 
-  double _calculateAbsorbedAlcoholForDrink(ConsumedDrink drink, DateTime at) {
+  double _calculateAbsorbedAlcoholForDrink(Drink drink, DateTime at) {
     if (drink.startTime.isAfter(at)) {
       return 0.0;
     }

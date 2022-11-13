@@ -1,19 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/consumed_drinks_repository.dart';
+import '../../data/drinks_repository.dart';
 import '../../domain/alcohol/milliliter.dart';
 import '../../domain/alcohol/percentage.dart';
-import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 
-class ConsumedDrinkCubit extends Cubit<ConsumedDrinkCubitState> {
-  final ConsumedDrinksRepository repository;
+class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
+  final DrinksRepository repository;
 
-  ConsumedDrinkCubit.createDrink(this.repository, {required ConsumedDrink drink})
-      : super(ConsumedDrinkCubitState.create(drink));
+  EditDrinkCubit.createDrink(this.repository, {required Drink drink})
+      : super(EditDrinkCubitState.create(drink));
 
-  ConsumedDrinkCubit.editDrink(this.repository, {required ConsumedDrink drink})
-      : super(ConsumedDrinkCubitState.edit(drink));
+  EditDrinkCubit.editDrink(this.repository, {required Drink drink})
+      : super(EditDrinkCubitState.edit(drink));
 
   void updateVolume(Milliliter volume) {
     emit(state.copyWith(drink: state.drink.copyWith(volume: volume)));
@@ -57,17 +57,17 @@ class ConsumedDrinkCubit extends Cubit<ConsumedDrinkCubitState> {
   }
 }
 
-class ConsumedDrinkCubitState {
+class EditDrinkCubitState {
   final bool isEditing;
 
-  ConsumedDrink drink;
+  Drink drink;
 
-  ConsumedDrinkCubitState.create(this.drink) : isEditing = false;
+  EditDrinkCubitState.create(this.drink) : isEditing = false;
 
-  ConsumedDrinkCubitState.edit(this.drink) : isEditing = true;
+  EditDrinkCubitState.edit(this.drink) : isEditing = true;
 
-  ConsumedDrinkCubitState._({required this.isEditing, required this.drink});
+  EditDrinkCubitState._({required this.isEditing, required this.drink});
 
-  ConsumedDrinkCubitState copyWith({required ConsumedDrink drink}) =>
-      ConsumedDrinkCubitState._(isEditing: isEditing, drink: drink);
+  EditDrinkCubitState copyWith({required Drink drink}) =>
+      EditDrinkCubitState._(isEditing: isEditing, drink: drink);
 }

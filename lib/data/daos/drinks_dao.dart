@@ -1,14 +1,14 @@
 import 'package:sqlbrite/sqlbrite.dart';
 
 import '../../domain/alcohol/drink_category.dart';
-import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/extensions/floor_date_time.dart';
 
-class ConsumedDrinksDAO {
+class DrinksDAO {
   final BriteDatabase _database;
 
-  const ConsumedDrinksDAO(this._database);
+  const DrinksDAO(this._database);
 
   static Future<void> create(Database database) async {
     await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
@@ -26,7 +26,7 @@ class ConsumedDrinksDAO {
     await database.execute('CREATE INDEX IF NOT EXISTS idx_startTime ON ${_Entity.table} (${_Entity.startTime} ASC)');
   }
 
-  Future<void> save(ConsumedDrink drink) async {
+  Future<void> save(Drink drink) async {
     if (drink.id == null) {
       final id = await _database.insert(_Entity.table, drink.toEntity());
       drink.id = id;
@@ -35,7 +35,7 @@ class ConsumedDrinksDAO {
     }
   }
 
-  Future<void> delete(ConsumedDrink drink) async {
+  Future<void> delete(Drink drink) async {
     await _database.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [drink.id]);
   }
 
@@ -50,7 +50,7 @@ class ConsumedDrinksDAO {
     );
   }
 
-  Future<List<ConsumedDrink>> findOnDate(DateTime date) {
+  Future<List<Drink>> findOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
@@ -64,7 +64,7 @@ class ConsumedDrinksDAO {
         .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
   }
 
-  Stream<List<ConsumedDrink>> observeOnDate(DateTime date) {
+  Stream<List<Drink>> observeOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
@@ -78,7 +78,7 @@ class ConsumedDrinksDAO {
         .mapToList((e) => _Entity.fromEntity(e));
   }
 
-  Stream<List<ConsumedDrink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
+  Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
     return _database
         .createQuery(
           _Entity.table,
@@ -89,7 +89,7 @@ class ConsumedDrinksDAO {
         .mapToList((e) => _Entity.fromEntity(e));
   }
 
-  Stream<List<ConsumedDrink>> observeLatest() {
+  Stream<List<Drink>> observeLatest() {
     return _database
         .createQuery(
           _Entity.table,
@@ -104,7 +104,7 @@ class ConsumedDrinksDAO {
   }
 }
 
-extension _Entity on ConsumedDrink {
+extension _Entity on Drink {
   static const table = 'consumed_drinks';
 
   static const id = 'id';
@@ -129,7 +129,7 @@ extension _Entity on ConsumedDrink {
         duration: this.duration.inMilliseconds,
       };
 
-  static ConsumedDrink fromEntity(Map<String, dynamic> entity) => ConsumedDrink(
+  static Drink fromEntity(Map<String, dynamic> entity) => Drink(
         id: entity[id],
         name: entity[name],
         icon: entity[icon],
