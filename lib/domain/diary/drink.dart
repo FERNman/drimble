@@ -1,50 +1,23 @@
-import 'package:isar/isar.dart';
-
 import '../../infra/extensions/floor_date_time.dart';
 import '../alcohol/alcohol.dart';
-import '../alcohol/beverage.dart';
 import '../alcohol/milliliter.dart';
 import '../alcohol/percentage.dart';
 import 'stomach_fullness.dart';
 
-class ConsumedDrink {
-  Id? id;
-
-  @ignore
-  final Beverage beverage;
-
-  final Milliliter volume;
-  final Percentage alcoholByVolume;
-
-  @Enumerated(EnumType.name)
+class Drink extends Alcohol {
+  int? id;
   final StomachFullness stomachFullness;
-
-  @Index()
   final DateTime startTime;
-
-  @ignore
   final Duration duration;
 
-  @ignore
-  DateTime get date {
-    if (startTime.hour < 6) {
-      return startTime.subtract(const Duration(days: 1)).floorToDay();
-    }
+  DateTime get date =>
+      (startTime.hour < 6) ? startTime.subtract(const Duration(days: 1)).floorToDay() : startTime.floorToDay();
 
-    return startTime.floorToDay();
-  }
-
-  @ignore
   double get unitsOfAlcohol => (volume * alcoholByVolume) / 10;
-
-  @ignore
   double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
-
-  @ignore
   int get calories => (gramsOfAlcohol * 7.1).round();
 
-  // How much of this drink is absorbed per hour
-  @ignore
+  /// How much of this drink is absorbed per hour
   double get rateOfAbsorption {
     switch (stomachFullness) {
       case StomachFullness.empty:
@@ -56,40 +29,41 @@ class ConsumedDrink {
     }
   }
 
-  ConsumedDrink({
+  Drink({
     this.id,
-    required this.beverage,
-    required this.volume,
-    required this.alcoholByVolume,
+    required super.name,
+    required super.icon,
+    required super.category,
+    required super.volume,
+    required super.alcoholByVolume,
     required this.startTime,
     required this.duration,
     required this.stomachFullness,
   }) : assert(alcoholByVolume > 0.0 && alcoholByVolume <= 1.0);
 
-  ConsumedDrink.fromBeverage(this.beverage, {required this.startTime})
-      : volume = beverage.standardServings.first,
-        alcoholByVolume = beverage.defaultABV,
-        stomachFullness = StomachFullness.empty,
-        duration = beverage.defaultDuration;
+  Drink.fromExistingDrink(Drink drink, {required this.startTime})
+      : duration = drink.duration,
+        stomachFullness = drink.stomachFullness,
+        super(
+          name: drink.name,
+          icon: drink.icon,
+          category: drink.category,
+          volume: drink.volume,
+          alcoholByVolume: drink.alcoholByVolume,
+        );
 
-  ConsumedDrink.fromExistingDrink(ConsumedDrink drink, {required this.startTime})
-      : beverage = drink.beverage,
-        volume = drink.volume,
-        alcoholByVolume = drink.alcoholByVolume,
-        duration = drink.duration,
-        stomachFullness = drink.stomachFullness;
-
-  ConsumedDrink copyWith({
-    Beverage? beverage,
+  Drink copyWith({
     Milliliter? volume,
     Percentage? alcoholByVolume,
     DateTime? startTime,
     Duration? duration,
     StomachFullness? stomachFullness,
   }) =>
-      ConsumedDrink(
+      Drink(
         id: id,
-        beverage: beverage ?? this.beverage,
+        name: name,
+        icon: icon,
+        category: category,
         volume: volume ?? this.volume,
         alcoholByVolume: alcoholByVolume ?? this.alcoholByVolume,
         startTime: startTime ?? this.startTime,

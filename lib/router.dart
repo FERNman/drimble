@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'domain/diary/consumed_drink.dart';
+import 'domain/diary/drink.dart';
 import 'features/add_drink/add_drink_page.dart';
-import 'features/consumed_drink/consumed_drink_page.dart';
 import 'features/diary/diary_guard.dart';
 import 'features/diary/diary_page.dart';
+import 'features/edit_drink/edit_drink_page.dart';
 import 'features/onboarding/onboarding_cubit_provider_page.dart';
 import 'features/onboarding/onboarding_select_birthyear_page.dart';
 import 'features/onboarding/onboarding_select_body_composition_page.dart';
@@ -23,7 +23,7 @@ part 'router.gr.dart';
   routes: <AutoRoute>[
     AutoRoute(page: DiaryPage, initial: true, guards: [DiaryGuard]),
     AutoRoute(page: AddDrinkPage),
-    AutoRoute(page: ConsumedDrinkPage),
+    AutoRoute(page: EditDrinkPage),
     AutoRoute(page: TodaysDrinksPage),
     AutoRoute(page: ProfilePage),
     AutoRoute(

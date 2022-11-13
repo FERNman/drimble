@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ConsumedDrinkFormSubtitle extends StatelessWidget {
+class EditDrinkFormTitle extends StatelessWidget {
   final String text;
 
-  const ConsumedDrinkFormSubtitle(this.text, {super.key});
+  const EditDrinkFormTitle(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(children: [
-      Text(text, style: textTheme.bodySmall),
+      const SizedBox(height: 16),
+      Text(text, style: textTheme.titleMedium),
       const SizedBox(height: 4),
     ]);
   }

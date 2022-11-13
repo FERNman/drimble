@@ -7,5 +7,5 @@ extension BuildContextExtensions on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
   TextTheme get textTheme => theme.textTheme;
 
-  AppLocalizations get l18n => AppLocalizations.of(this)!;
+  AppLocalizations get l18n => AppLocalizations.of(this);
 }
