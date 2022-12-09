@@ -64,8 +64,8 @@
     }
   },
   "diary_youreSober": "you're sober! 🎉",
-  "diary_statisticsUnitsOfAlcohol": "units of alcohol",
-  "diary_statisticsUnitsOfAlcoholGuidelines": "Aim for less than 3-5 units of alcohol in one session to stay healthy.",
+  "diary_statisticsGramsOfAlcohol": "grams of alcohol",
+  "diary_statisticsGramsOfAlcoholGuidelines": "Aim for less than 30-40 grams of alcohol in one session to stay healthy.",
   "diary_statisticsConsumedDrinks": "drinks consumed",
   "diary_statisticsCaloriesFromAlcohol": "calories from alcohol",
   "diary_consumedDrinksTitle": "Consumed drinks",
@@ -75,16 +75,25 @@
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
   "add_drink_common": "Common",
-  "consumed_drink_amount": "Amount",
-  "consumed_drink_enterAmount": "enter",
-  "consumed_drink_strength": "Strength",
-  "consumed_drink_stomachFullness": "Stomach fullness",
-  "consumed_drink_priorToConsumption": "Prior to consumption",
-  "consumed_drink_timing": "Timing",
-  "consumed_drink_startTime": "Start time",
-  "consumed_drink_endTime": "End time",
-  "consumed_drink_duration": "Duration",
-  "consumed_drink_done": "Done",
+  "edit_drink_alcoholContent": "This drink contains about {grams}g of alcohol.",
+  "@edit_drink_alcoholContent": {
+    "placeholders": {
+      "grams": {
+        "type": "double",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "edit_drink_amount": "Amount",
+  "edit_drink_enterAmount": "enter",
+  "edit_drink_strength": "Strength",
+  "edit_drink_stomachFullness": "Stomach fullness",
+  "edit_drink_priorToConsumption": "Prior to consumption",
+  "edit_drink_timing": "Timing",
+  "edit_drink_startTime": "Start time",
+  "edit_drink_endTime": "End time",
+  "edit_drink_duration": "Duration",
+  "edit_drink_done": "Done",
   "profile_title": "Profile",
   "profile_signOut": "Sign out",
   "profile_birthyear": "Birthyear",

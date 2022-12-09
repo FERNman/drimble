@@ -31,14 +31,14 @@ class EditDrinkForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EditDrinkFormTitle(context.l18n.consumed_drink_amount),
+          EditDrinkFormTitle(context.l18n.edit_drink_amount),
           _buildAmountSelection(),
-          EditDrinkFormTitle(context.l18n.consumed_drink_strength),
+          EditDrinkFormTitle(context.l18n.edit_drink_strength),
           _buildPercentageTextField(),
-          EditDrinkFormTitle(context.l18n.consumed_drink_stomachFullness),
-          EditDrinkFormSubtitle(context.l18n.consumed_drink_priorToConsumption),
+          EditDrinkFormTitle(context.l18n.edit_drink_stomachFullness),
+          EditDrinkFormSubtitle(context.l18n.edit_drink_priorToConsumption),
           _buildStomachFullnessSelection(),
-          EditDrinkFormTitle(context.l18n.consumed_drink_timing),
+          EditDrinkFormTitle(context.l18n.edit_drink_timing),
           Row(
             children: [
               Expanded(child: _buildStartTimePicker()),
@@ -103,7 +103,7 @@ class EditDrinkForm extends StatelessWidget {
         onChanged: (rawValue) => _onStartTimeChanged(context, rawValue, state.drink.startTime),
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.access_time_outlined),
-          label: Text(context.l18n.consumed_drink_startTime),
+          label: Text(context.l18n.edit_drink_startTime),
         ),
       ),
     );
@@ -130,7 +130,7 @@ class EditDrinkForm extends StatelessWidget {
           onChanged: (value) => _onDurationChanged(context, value),
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.hourglass_empty_outlined),
-            label: Text(context.l18n.consumed_drink_duration),
+            label: Text(context.l18n.edit_drink_duration),
           ),
         );
       },

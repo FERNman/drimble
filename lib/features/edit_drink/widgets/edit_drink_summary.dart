@@ -19,10 +19,7 @@ class EditDrinkSummary extends StatelessWidget {
             children: [
               Text(drink.name, style: context.textTheme.headlineSmall),
               const SizedBox(height: 4),
-              Text(
-                'This drink will raise your blood alcohol level by approx. 0.2‰.',
-                style: context.textTheme.bodyMedium,
-              )
+              Text(context.l18n.edit_drink_alcoholContent(drink.gramsOfAlcohol), style: context.textTheme.bodyMedium)
             ],
           ),
         ),
