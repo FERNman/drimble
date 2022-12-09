@@ -46,9 +46,9 @@ class _DrimbleAppState extends State<DrimbleApp> {
   @override
   Widget build(BuildContext context) {
     const colorScheme = ColorScheme.light(
-      primary: Color(0xFF0059C5),
+      primary: Color(0xFF3879E9),
       primaryContainer: Color(0xFFD8E2FF),
-      secondary: Color(0xFF006B56),
+      secondary: Color(0xFF7BE5C5),
       tertiary: Color(0xFFF3BB5D),
       tertiaryContainer: Color(0xFFFFDEAD),
       background: Colors.white,
