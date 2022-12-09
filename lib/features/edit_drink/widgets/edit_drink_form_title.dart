@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../common/build_context_extensions.dart';
+
 class EditDrinkFormTitle extends StatelessWidget {
   final String text;
 
@@ -7,11 +9,9 @@ class EditDrinkFormTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(children: [
       const SizedBox(height: 16),
-      Text(text, style: textTheme.titleMedium),
+      Text(text, style: context.textTheme.titleMedium),
       const SizedBox(height: 4),
     ]);
   }

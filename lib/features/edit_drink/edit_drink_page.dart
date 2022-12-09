@@ -58,7 +58,7 @@ class EditDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(context.l18n.consumed_drink_done),
+        label: Text(context.l18n.edit_drink_done),
         icon: const Icon(Icons.done),
         onPressed: () => _saveAndNavigate(context),
       ),

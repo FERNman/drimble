@@ -13,7 +13,6 @@ class Drink extends Alcohol {
   DateTime get date =>
       (startTime.hour < 6) ? startTime.subtract(const Duration(days: 1)).floorToDay() : startTime.floorToDay();
 
-  double get unitsOfAlcohol => (volume * alcoholByVolume) / 10;
   double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
   int get calories => (gramsOfAlcohol * 7.1).round();
 
