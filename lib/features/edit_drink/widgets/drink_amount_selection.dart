@@ -86,7 +86,7 @@ class _AmountSelectionState extends State<AmountSelection> {
   }
 
   InputDecoration _getInputDecoration(BuildContext context) {
-    final inputDecoration = InputDecoration.collapsed(hintText: context.l18n.consumed_drink_enterAmount);
+    final inputDecoration = InputDecoration.collapsed(hintText: context.l18n.edit_drink_enterAmount);
     if (_customAmountTextController.text.isNotEmpty) {
       return inputDecoration.copyWith(suffix: const Text('ml'));
     }

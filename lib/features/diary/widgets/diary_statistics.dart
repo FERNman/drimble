@@ -5,12 +5,12 @@ import '../../common/build_context_extensions.dart';
 
 class DiaryStatistics extends StatelessWidget {
   final int numberOfConsumedDrinks;
-  final double unitsOfAlcohol;
+  final double gramsOfAlcohol;
   final int calories;
 
   const DiaryStatistics({
     required this.numberOfConsumedDrinks,
-    required this.unitsOfAlcohol,
+    required this.gramsOfAlcohol,
     required this.calories,
     super.key,
   });
@@ -31,7 +31,7 @@ class DiaryStatistics extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildUnitsOfAlcohol(context),
+              _buildGramsOfAlcohol(context),
               const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: SizedBox(width: 48, child: Divider())),
               _buildDrinksAndCalories(context),
             ],
@@ -41,7 +41,7 @@ class DiaryStatistics extends StatelessWidget {
     );
   }
 
-  Widget _buildUnitsOfAlcohol(BuildContext context) {
+  Widget _buildGramsOfAlcohol(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,16 +49,16 @@ class DiaryStatistics extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: '${unitsOfAlcohol.toStringAsFloat(1)} ',
+                text: '${gramsOfAlcohol.toStringAsFloat(1)} ',
                 style: context.textTheme.headlineLarge?.copyWith(color: context.colorScheme.primary),
               ),
-              TextSpan(text: context.l18n.diary_statisticsUnitsOfAlcohol, style: context.textTheme.bodyLarge),
+              TextSpan(text: context.l18n.diary_statisticsGramsOfAlcohol, style: context.textTheme.bodyLarge),
             ],
           ),
         ),
         const SizedBox(height: 4),
         Text(
-          context.l18n.diary_statisticsUnitsOfAlcoholGuidelines,
+          context.l18n.diary_statisticsGramsOfAlcoholGuidelines,
           style: context.textTheme.bodyMedium?.copyWith(color: Colors.black54),
         ),
       ],

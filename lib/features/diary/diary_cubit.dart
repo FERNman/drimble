@@ -86,7 +86,7 @@ class DiaryCubitState {
   final List<Drink> drinks;
   final BACCalculationResults calculationResults;
 
-  final double unitsOfAlcohol;
+  final double gramsOfAlcohol;
   final int calories;
 
   DiaryCubitState({
@@ -94,7 +94,7 @@ class DiaryCubitState {
     required this.diaryEntry,
     required this.drinks,
     required this.calculationResults,
-  })  : unitsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.unitsOfAlcohol),
+  })  : gramsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.gramsOfAlcohol),
         calories = drinks.fold(0, (calories, it) => calories + it.calories);
 
   DiaryCubitState.initial({
@@ -106,7 +106,7 @@ class DiaryCubitState {
           endTime: date.floorToDay(hour: 6).add(const Duration(days: 1)),
           timestep: const Duration(minutes: 10),
         ),
-        unitsOfAlcohol = 0,
+        gramsOfAlcohol = 0,
         calories = 0;
 
   DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(

@@ -87,7 +87,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (previous, current) => previous.drinks != current.drinks,
       builder: (context, state) => DiaryStatistics(
         numberOfConsumedDrinks: state.drinks.length,
-        unitsOfAlcohol: state.unitsOfAlcohol,
+        gramsOfAlcohol: state.gramsOfAlcohol,
         calories: state.calories,
       ),
     );
