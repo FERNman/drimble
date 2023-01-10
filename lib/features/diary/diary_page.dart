@@ -24,28 +24,25 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            HomeAppBar(
-              onTapProfile: () {
-                context.router.push(const ProfileRoute());
-              },
-            ),
-            _buildCalendar(),
-            const SizedBox(height: 24),
-            _buildTitle(),
-            const SizedBox(height: 18),
-            _buildChart(),
-            const SizedBox(height: 12),
-            _buildStatistics(),
-            const SizedBox(height: 24),
-            _buildRecentDrinks(),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          HomeAppBar(
+            onTapProfile: () {
+              context.router.push(const ProfileRoute());
+            },
+          ),
+          _buildCalendar(),
+          const SizedBox(height: 24),
+          _buildTitle(),
+          const SizedBox(height: 18),
+          _buildChart(),
+          const SizedBox(height: 12),
+          _buildStatistics(),
+          const SizedBox(height: 24),
+          _buildRecentDrinks(),
+        ],
       ),
-      floatingActionButton: _buildFAB(),
     );
   }
 

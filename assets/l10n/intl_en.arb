@@ -29,6 +29,8 @@
   "onboarding_bodyCompositionSelectionDescription": "The amount of muscle and fat you carry influences the amount of alcohol you can metabolize at once.",
   "onboarding_bodyCompositionSelectionLabel": "Body composition",
   "onboarding_finish": "Finish",
+  "home_appBarDiary": "Diary",
+  "home_appBarAnalytics": "Analytics",
   "diary_notDrinkingToday": "Not drinking today?",
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
