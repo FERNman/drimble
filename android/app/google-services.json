@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "159589082657",
+    "project_id": "drimble-app",
+    "storage_bucket": "drimble-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159589082657:android:c626ff22efeb0bbc22e560",
+        "android_client_info": {
+          "package_name": "app.drimble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159589082657-hkalv4lm1bbjp2pg9bp16goeb3kstrmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaMfwVm8hl9fpqaHpq7EHno-YsVOnJLZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159589082657-hkalv4lm1bbjp2pg9bp16goeb3kstrmf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

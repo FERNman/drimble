@@ -1,0 +1,16 @@
+import "../../Fastfile"
+
+default_platform(:android)
+
+platform :android do
+  desc "Submit a new beta build to Firebase App Distribution"
+  lane :beta do
+    run_cmd(command: "flutter build apk --release")
+
+    firebase_app_distribution(
+      app: "1:159589082657:android:c626ff22efeb0bbc22e560",
+      android_artifact_path: "#{root_path}/build/app/outputs/flutter-apk/app-release.apk",
+      groups: "alpha-testers"
+    )
+  end
+end
