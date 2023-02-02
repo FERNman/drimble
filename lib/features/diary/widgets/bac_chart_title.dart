@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../domain/bac_calulation_results.dart';
 import '../../../domain/diary/diary_entry.dart';
 import '../../common/build_context_extensions.dart';
-import '../../common/widgets/filled_button.dart';
 
 class BACChartTitle extends StatelessWidget {
   final DateTime dateTime;

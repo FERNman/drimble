@@ -55,6 +55,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       shadow: Colors.black,
       surface: Color(0xFFFEFBFF),
       surfaceVariant: Color(0xFFE1E2EC),
+      surfaceTint: Colors.white,
     );
 
     final textTheme = GoogleFonts.poppinsTextTheme();
