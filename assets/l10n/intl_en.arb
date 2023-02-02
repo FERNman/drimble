@@ -73,6 +73,20 @@
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
+  "weeklyAnalytics_title": "Weekly Analytics",
+  "weeklyAnalytics_weekFromTo": "{start} - {end}",
+  "@weeklyAnalytics_weekFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
   "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
