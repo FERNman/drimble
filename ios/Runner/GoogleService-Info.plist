@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>159589082657-qmqm2fvu54ddt41nc93kfc3j1lu3ebdq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.159589082657-qmqm2fvu54ddt41nc93kfc3j1lu3ebdq</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDUwSV7NfMXJJVPvhX0qTo_Be3ya5rHbyk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>159589082657</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>app.drimble</string>
+	<key>PROJECT_ID</key>
+	<string>drimble-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>drimble-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:159589082657:ios:a3ae69b9b171834122e560</string>
+</dict>
+</plist>
