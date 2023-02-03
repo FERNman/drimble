@@ -10,10 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
-      routes: const [
-        DiaryRoute(),
-        WeeklyAnalyticsRoute(),
-      ],
+      routes: const [DiaryRoute(), AnalyticsRoute()],
       builder: (context, child, animation) {
         final tabsRouter = AutoTabsRouter.of(context);
 

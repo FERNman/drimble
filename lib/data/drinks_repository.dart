@@ -20,6 +20,9 @@ class DrinksRepository {
 
   Future<List<Drink>> findDrinksOnDate(DateTime date) => _drinksDao.findOnDate(date);
 
+  Future<List<Drink>> findDrinksBetween(DateTime startDate, DateTime endDate) =>
+      _drinksDao.findBetweenDates(startDate, endDate);
+
   void save(Drink drink) async {
     await _drinksDao.transaction(() async {
       await _drinksDao.save(drink);

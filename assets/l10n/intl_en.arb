@@ -73,9 +73,9 @@
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
-  "weeklyAnalytics_title": "Weekly Analytics",
-  "weeklyAnalytics_weekFromTo": "{start} - {end}",
-  "@weeklyAnalytics_weekFromTo": {
+  "analytics_title": "The week at Drimble",
+  "analytics_weekFromTo": "{start} - {end}",
+  "@analytics_weekFromTo": {
     "placeholders": {
       "start": {
         "type": "DateTime",

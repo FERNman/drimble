@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'domain/diary/drink.dart';
 import 'features/add_drink/add_drink_page.dart';
+import 'features/analytics/analytics_page.dart';
 import 'features/diary/diary_page.dart';
 import 'features/edit_drink/edit_drink_page.dart';
 import 'features/home/home_guard.dart';
@@ -16,7 +17,6 @@ import 'features/onboarding/onboarding_select_weight_page.dart';
 import 'features/onboarding/onboarding_welcome_page.dart';
 import 'features/profile/profile_page.dart';
 import 'features/todays_drinks/todays_drinks_page.dart';
-import 'features/weekly_analytics/weekly_analytics_page.dart';
 
 part 'router.gr.dart';
 
@@ -29,7 +29,7 @@ part 'router.gr.dart';
       guards: [HomeGuard],
       children: [
         AutoRoute(page: DiaryPage, initial: true),
-        AutoRoute(page: WeeklyAnalyticsPage),
+        AutoRoute(page: AnalyticsPage),
       ],
     ),
     AutoRoute(page: AddDrinkPage),
