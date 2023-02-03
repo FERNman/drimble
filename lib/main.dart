@@ -58,7 +58,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       surfaceTint: Colors.white,
     );
 
-    final textTheme = GoogleFonts.poppinsTextTheme();
+    final textTheme = GoogleFonts.poppinsTextTheme().apply(displayColor: Colors.black87);
 
     // A hack(?) to change the navigation bar color on Android
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
