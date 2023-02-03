@@ -41,17 +41,6 @@ class DiaryDAO extends DAO {
         .mapToList((e) => _Entity.fromEntity(e));
   }
 
-  Future<List<DiaryEntry>> findBetweenDates(DateTime startDate, DateTime endDate) {
-    return executor
-        .query(
-          _Entity.table,
-          where: '${_Entity.date} BETWEEN ? AND ?',
-          whereArgs: [startDate.floorToDay().millisecondsSinceEpoch, endDate.floorToDay().millisecondsSinceEpoch],
-          orderBy: '${_Entity.date} ASC',
-        )
-        .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
-  }
-
   Future<DiaryEntry?> findOnDate(DateTime date) {
     return executor
         .query(

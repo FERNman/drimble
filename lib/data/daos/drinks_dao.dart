@@ -63,17 +63,6 @@ class DrinksDAO extends DAO {
         .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
   }
 
-  Future<List<Drink>> findBetweenDates(DateTime startDate, DateTime endDate) {
-    return executor
-        .query(
-          _Entity.table,
-          where: '${_Entity.startTime} BETWEEN ? AND ?',
-          whereArgs: [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} ASC',
-        )
-        .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
-  }
-
   Stream<List<Drink>> observeOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));

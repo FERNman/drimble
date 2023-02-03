@@ -19,8 +19,8 @@ void main() {
     final mockDiaryRepository = MockDiaryRepository();
 
     setUp(() {
-      when(mockDrinksRepository.findDrinksBetween(any, any)).thenAnswer((_) async => []);
-      when(mockDiaryRepository.findEntriesBetween(any, any)).thenAnswer((_) async => []);
+      when(mockDrinksRepository.observeDrinksBetween(any, any)).thenAnswer((_) => Stream.value([]));
+      when(mockDiaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value([]));
     });
 
     tearDown(() {
@@ -50,7 +50,7 @@ void main() {
       final drinksOnThirdDay = [generateDrink(startTime: date.add(const Duration(days: 2)))];
 
       final drinks = [...drinksOnFirstDay, ...drinksOnThirdDay];
-      when(mockDrinksRepository.findDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) async => drinks);
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value(drinks));
 
       final diaryEntries = [
         generateDiaryEntry(date: date, isDrinkFreeDay: false),
@@ -59,7 +59,7 @@ void main() {
         generateDiaryEntry(date: date.add(const Duration(days: 3)), isDrinkFreeDay: true), // day 4
         generateDiaryEntry(date: date.add(const Duration(days: 4)), isDrinkFreeDay: true), // day 5
       ];
-      when(mockDiaryRepository.findEntriesBetween(any, any)).thenAnswer((_) async => diaryEntries);
+      when(mockDiaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
 
@@ -87,8 +87,9 @@ void main() {
 
       final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
 
-      when(mockDrinksRepository.findDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) async => drinks);
-      when(mockDiaryRepository.findEntriesBetween(date, date.add(oneWeek))).thenAnswer((_) async => diaryEntries);
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value(drinks));
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+          .thenAnswer((_) => Stream.value(diaryEntries));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
       await cubit.stream.first;
@@ -104,8 +105,8 @@ void main() {
         generateDrink(startTime: date.subtract(oneWeek)),
       ];
 
-      when(mockDrinksRepository.findDrinksBetween(date.subtract(oneWeek), date))
-          .thenAnswer((_) async => lastWeeksDrinks);
+      when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date))
+          .thenAnswer((_) => Stream.value(lastWeeksDrinks));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
       await cubit.stream.first;
@@ -127,10 +128,11 @@ void main() {
         generateDrink(startTime: date.subtract(oneWeek)),
       ];
 
-      when(mockDrinksRepository.findDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) async => drinks);
-      when(mockDiaryRepository.findEntriesBetween(date, date.add(oneWeek))).thenAnswer((_) async => diaryEntries);
-      when(mockDrinksRepository.findDrinksBetween(date.subtract(oneWeek), date))
-          .thenAnswer((_) async => lastWeeksDrinks);
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value(drinks));
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+          .thenAnswer((_) => Stream.value(diaryEntries));
+      when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date))
+          .thenAnswer((_) => Stream.value(lastWeeksDrinks));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
       await cubit.stream.first;
@@ -143,9 +145,10 @@ void main() {
     test('should calculate a 100% increase if there was no alcohol consumed last week', () async {
       final drinks = [generateDrink(startTime: date)];
       final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
-      when(mockDrinksRepository.findDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) async => drinks);
-      when(mockDiaryRepository.findEntriesBetween(date, date.add(oneWeek))).thenAnswer((_) async => diaryEntries);
-      when(mockDrinksRepository.findDrinksBetween(date.subtract(oneWeek), date)).thenAnswer((_) async => []);
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value(drinks));
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+          .thenAnswer((_) => Stream.value(diaryEntries));
+      when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date)).thenAnswer((_) => Stream.value([]));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
       await cubit.stream.first;

@@ -1,11 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/drinks_repository.dart';
+import '../../domain/diary/diary_entry.dart';
+import '../../infra/disposable.dart';
 import '../../infra/extensions/floor_date_time.dart';
 
-class AnalyticsCubit extends Cubit<AnalyticsCubitState> {
+class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   final DrinksRepository _drinksRepository;
   final DiaryRepository _diaryRepository;
 
@@ -18,35 +21,39 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> {
     _initState();
   }
 
-  void _initState() async {
-    final gramsOfAlcoholPerDay = await _loadGramsOfAlcoholPerDay();
-    final lastWeeksAlcohol = await _loadGramsOfAlcoholForLastWeek();
-
-    emit(state.copyWith(
-      gramsOfAlcoholPerDay: gramsOfAlcoholPerDay,
-      gramsOfAlcoholLastWeek: lastWeeksAlcohol,
-    ));
+  void _initState() {
+    addSubscription(
+        _observeGramsOfAlcoholPerDay().listen((value) => emit(state.copyWith(gramsOfAlcoholPerDay: value))));
+    addSubscription(
+        _observeGramsOfAlcoholForLastWeek().listen((value) => emit(state.copyWith(gramsOfAlcoholLastWeek: value))));
   }
 
-  Future<double> _loadGramsOfAlcoholForLastWeek() async {
+  Stream<double> _observeGramsOfAlcoholForLastWeek() {
     final firstDayOfLastWeek = state.firstDayOfWeek.subtract(AnalyticsCubitState.oneWeek);
     return _drinksRepository
-        .findDrinksBetween(firstDayOfLastWeek, state.firstDayOfWeek)
-        .then((results) => results.fold<double>(0, (sum, el) => sum + el.gramsOfAlcohol));
+        .observeDrinksBetween(firstDayOfLastWeek, state.firstDayOfWeek)
+        .map((results) => results.fold<double>(0, (sum, el) => sum + el.gramsOfAlcohol));
   }
 
-  Future<List<double?>> _loadGramsOfAlcoholPerDay() async {
-    final diaryEntries = await _diaryRepository
-        .findEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek)
-        .then((results) => results.groupFoldBy((el) => el.date.floorToDay(), (_, el) => el)); // Only one entry per day
+  Stream<List<double?>> _observeGramsOfAlcoholPerDay() {
+    final diaryEntries = _diaryRepository
+        .observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek)
+        .map((results) => results.groupFoldBy((el) => el.date.floorToDay(), (_, el) => el)); // Only one entry per day
 
-    final gramsOfAlcoholByDay = await _drinksRepository
-        .findDrinksBetween(state.firstDayOfWeek, state.lastDayOfWeek)
-        .then((results) => results.groupFoldBy<DateTime, double>(
+    final gramsOfAlcoholByDay = _drinksRepository
+        .observeDrinksBetween(state.firstDayOfWeek, state.lastDayOfWeek)
+        .map((results) => results.groupFoldBy<DateTime, double>(
               (el) => el.date.floorToDay(),
               (sum, el) => (sum ?? 0.0) + el.gramsOfAlcohol,
             ));
 
+    return Rx.combineLatest2(diaryEntries, gramsOfAlcoholByDay, _calculateGramsOfAlcoholPerDay);
+  }
+
+  List<double?> _calculateGramsOfAlcoholPerDay(
+    Map<DateTime, DiaryEntry> diaryEntries,
+    Map<DateTime, double> gramsOfAlcoholByDay,
+  ) {
     final results = List<double?>.filled(state.timespan.inDays, null);
     for (int i = 0; i < state.timespan.inDays; i++) {
       final date = state.firstDayOfWeek.add(Duration(days: i)).floorToDay();
@@ -95,14 +102,14 @@ class AnalyticsCubitState {
   });
 
   AnalyticsCubitState copyWith({
-    required List<double?> gramsOfAlcoholPerDay,
-    required double gramsOfAlcoholLastWeek,
+    List<double?>? gramsOfAlcoholPerDay,
+    double? gramsOfAlcoholLastWeek,
   }) =>
       AnalyticsCubitState._(
         firstDayOfWeek: firstDayOfWeek,
         lastDayOfWeek: lastDayOfWeek,
-        gramsOfAlcoholPerDay: gramsOfAlcoholPerDay,
-        gramsOfAlcoholLastWeek: gramsOfAlcoholLastWeek,
+        gramsOfAlcoholPerDay: gramsOfAlcoholPerDay ?? this.gramsOfAlcoholPerDay,
+        gramsOfAlcoholLastWeek: gramsOfAlcoholLastWeek ?? this.gramsOfAlcoholLastWeek,
       );
 }
 
