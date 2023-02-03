@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import '../../common/build_context_extensions.dart';
 
-class HomeBottomNavigationBar extends StatelessWidget {
+class HomeNavigationBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const HomeBottomNavigationBar({
+  const HomeNavigationBar({
     required this.currentIndex,
     required this.onTap,
     super.key,

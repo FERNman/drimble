@@ -13,14 +13,8 @@ import 'widgets/diary_app_bar.dart';
 import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_statistics.dart';
 
-class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
+class DiaryPage extends StatelessWidget {
   const DiaryPage({super.key});
-
-  @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => DiaryCubit(context.read(), context.read(), context.read()),
-        child: this,
-      );
 
   @override
   Widget build(BuildContext context) {
@@ -122,16 +116,6 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
           },
         );
       },
-    );
-  }
-
-  Widget _buildFAB() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
-      builder: (context, state) => FloatingActionButton(
-        onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
