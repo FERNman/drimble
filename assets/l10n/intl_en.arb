@@ -73,7 +73,7 @@
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
-  "analytics_title": "Your week",
+  "analytics_title": "Analytics",
   "analytics_weekFromTo": "{start} - {end}",
   "@analytics_weekFromTo": {
     "placeholders": {
@@ -89,6 +89,8 @@
   },
   "analytics_totalAlcoholConsumed": "alcohol consumed",
   "analytics_changeFromLastWeek": "from last week",
+  "analytics_highestBloodAlcoholLevel": "highest blood alcohol level",
+  "analytics_maxBACInfo": "Stay below 0.08% to minimize immediate health consequences and damage to your brain.",
   "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",

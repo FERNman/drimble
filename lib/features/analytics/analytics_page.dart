@@ -6,11 +6,14 @@ import 'package:intl/intl.dart';
 import '../common/build_context_extensions.dart';
 import 'analytics_cubit.dart';
 import 'widgets/alcohol_per_day_chart.dart';
+import 'widgets/analytics_app_bar.dart';
+import 'widgets/highest_bac_card.dart';
+import 'widgets/total_alcohol_indicator.dart';
 
 class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => AnalyticsCubit(context.read(), context.read()),
+        create: (context) => AnalyticsCubit(context.read(), context.read(), context.read()),
         child: this,
       );
 
@@ -30,6 +33,8 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
                 _buildTotalAlcoholIndicator(),
                 const SizedBox(height: 38),
                 _buildAlcoholChart(),
+                const SizedBox(height: 24),
+                _buildHighestBACCard(),
               ],
             ),
           ),
@@ -44,18 +49,7 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
       builder: (context, state) {
         // Subtract a day because the last day would be monday otherwise
         final sunday = state.lastDayOfWeek.subtract(const Duration(days: 1));
-        return AppBar(
-          title: Column(
-            children: [
-              Text(context.l18n.analytics_title),
-              const SizedBox(height: 4),
-              Text(
-                context.l18n.analytics_weekFromTo(state.firstDayOfWeek, sunday),
-                style: context.textTheme.bodySmall,
-              ),
-            ],
-          ),
-        );
+        return AnalyticsAppBar(firstDayOfWeek: state.firstDayOfWeek, lastDayOfWeek: sunday);
       },
     );
   }
@@ -65,38 +59,11 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (previous, current) =>
           previous.totalGramsOfAlcohol != current.totalGramsOfAlcohol ||
           previous.changeToLastWeek != current.changeToLastWeek,
-      builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('${state.totalGramsOfAlcohol.toStringAsFixed(0)}g', style: context.textTheme.displaySmall),
-            const SizedBox(height: 4),
-            Text(context.l18n.analytics_totalAlcoholConsumed, style: context.textTheme.bodyLarge),
-            RichText(
-              text: TextSpan(
-                style: context.textTheme.bodySmall,
-                children: [
-                  _buildChangeIndicator(context, state),
-                  TextSpan(text: context.l18n.analytics_changeFromLastWeek),
-                ],
-              ),
-            )
-          ],
-        );
-      },
+      builder: (context, state) => TotalAlcoholIndicator(
+        totalGramsOfAlcohol: state.totalGramsOfAlcohol,
+        changeToLastWeek: state.changeToLastWeek,
+      ),
     );
-  }
-
-  TextSpan _buildChangeIndicator(BuildContext context, AnalyticsCubitState state) {
-    final formatter = NumberFormat.percentPattern();
-    if (state.changeToLastWeek > 1) {
-      final formatted = formatter.format(state.changeToLastWeek - 1);
-      return TextSpan(
-          text: '▲ $formatted ', style: context.textTheme.bodySmall?.copyWith(color: context.colorScheme.error));
-    } else {
-      final formatted = formatter.format(state.changeToLastWeek);
-      return TextSpan(text: '▼ $formatted ', style: context.textTheme.bodySmall?.copyWith(color: Colors.green));
-    }
   }
 
   Widget _buildAlcoholChart() {
@@ -114,6 +81,13 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
           height: 140,
         );
       },
+    );
+  }
+
+  Widget _buildHighestBACCard() {
+    return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
+      buildWhen: (previous, current) => previous.maxBAC != current.maxBAC,
+      builder: (context, state) => HighestBACCard(maxBAC: state.maxBAC),
     );
   }
 }

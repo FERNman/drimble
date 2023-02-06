@@ -40,7 +40,7 @@ class _ChartPainter extends CustomPainter {
   // Keep painters because layouting is expensive apparently
   // (see first comment https://stackoverflow.com/q/41371449/4471085)
   final List<TextPainter> _labelPainters;
-  final List<TextPainter> _valueLabelPainters;
+  final List<TextPainter?> _valueLabelPainters;
 
   // The spacing at the bottom below the actual chart where the labels for the days are displayed
   late final double _labelSpacing;
@@ -58,19 +58,20 @@ class _ChartPainter extends CustomPainter {
                 ))
             .toList(),
         _valueLabelPainters = data
-            .whereNotNull()
-            .map((v) => TextPainter(
-                  text: TextSpan(text: v.toStringAsFloat(1), style: valueLabelStyle),
-                  textAlign: TextAlign.center,
-                  textDirection: TextDirection.ltr,
-                ))
+            .map((v) => v == null
+                ? null
+                : TextPainter(
+                    text: TextSpan(text: v.toStringAsFloat(1), style: valueLabelStyle),
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.ltr,
+                  ))
             .toList() {
     for (final element in _labelPainters) {
       element.layout();
     }
 
     for (final element in _valueLabelPainters) {
-      element.layout();
+      element?.layout();
     }
 
     _labelSpacing = _labelPainters.fold(_labelPadding, (height, el) => max(height, el.height + _labelPadding));
@@ -115,7 +116,7 @@ class _ChartPainter extends CustomPainter {
       );
 
       final valueLabelPainter = _valueLabelPainters[i];
-      valueLabelPainter.paint(
+      valueLabelPainter?.paint(
         canvas,
         Offset(centerX - valueLabelPainter.width * 0.5, chartHeight - barHeight - valueLabelPainter.height),
       );

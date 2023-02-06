@@ -1,5 +1,6 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/drinks_repository.dart';
+import 'package:drimble/data/user_repository.dart';
 import 'package:drimble/features/analytics/analytics_cubit.dart';
 import 'package:drimble/infra/extensions/floor_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,18 +10,22 @@ import 'package:mockito/mockito.dart';
 import '../../generate_entities.dart';
 import 'analytics_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DrinksRepository>(), MockSpec<DiaryRepository>()])
+@GenerateNiceMocks([MockSpec<DrinksRepository>(), MockSpec<DiaryRepository>(), MockSpec<UserRepository>()])
 void main() {
   const oneWeek = Duration(days: 7);
 
   group('AnalyticsCubit', () {
     final date = faker.date.dateTime().floorToWeek().floorToDay(hour: 6);
+    final user = generateUser();
+
     final mockDrinksRepository = MockDrinksRepository();
     final mockDiaryRepository = MockDiaryRepository();
+    final mockUserRepository = MockUserRepository();
 
     setUp(() {
       when(mockDrinksRepository.observeDrinksBetween(any, any)).thenAnswer((_) => Stream.value([]));
       when(mockDiaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value([]));
+      when(mockUserRepository.user).thenAnswer((_) async => user);
     });
 
     tearDown(() {
@@ -29,7 +34,7 @@ void main() {
 
     test('should set the correct date as the first day of the week', () {
       final date = faker.date.dateTime();
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
 
       final firstDayOfWeek = date.subtract(Duration(days: date.weekday - 1)).floorToDay(hour: 6);
       expect(cubit.state.firstDayOfWeek, firstDayOfWeek);
@@ -38,7 +43,7 @@ void main() {
 
     test('should set the correct date as the last day of the week', () {
       final date = faker.date.dateTime();
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
 
       final firstDayOfWeek = date.subtract(Duration(days: date.weekday - 1)).floorToDay(hour: 6);
       expect(cubit.state.lastDayOfWeek.weekday, 1); // Should be monday 6am again
@@ -61,7 +66,7 @@ void main() {
       ];
       when(mockDiaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
 
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
 
       final alcoholOnFirstDay = drinksOnFirstDay.fold<double>(0, (total, e) => total + e.gramsOfAlcohol);
       final alcoholOnThirdDay = drinksOnThirdDay.fold<double>(0, (total, e) => total + e.gramsOfAlcohol);
@@ -91,7 +96,7 @@ void main() {
       when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
           .thenAnswer((_) => Stream.value(diaryEntries));
 
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
       await cubit.stream.first;
 
       final expectedGramsOfAlcohol = drinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
@@ -108,7 +113,7 @@ void main() {
       when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date))
           .thenAnswer((_) => Stream.value(lastWeeksDrinks));
 
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
       await cubit.stream.first;
 
       final expectedGramsOfAlcohol = lastWeeksDrinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
@@ -134,7 +139,7 @@ void main() {
       when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date))
           .thenAnswer((_) => Stream.value(lastWeeksDrinks));
 
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
       await cubit.stream.first;
 
       final gramsOfAlcoholLastWeek = lastWeeksDrinks.fold<double>(0.0, (sum, el) => sum + el.gramsOfAlcohol);
@@ -150,7 +155,7 @@ void main() {
           .thenAnswer((_) => Stream.value(diaryEntries));
       when(mockDrinksRepository.observeDrinksBetween(date.subtract(oneWeek), date)).thenAnswer((_) => Stream.value([]));
 
-      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, date: date);
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
       await cubit.stream.first;
 
       expect(cubit.state.changeToLastWeek, 2);
