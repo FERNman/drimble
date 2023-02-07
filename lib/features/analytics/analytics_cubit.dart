@@ -68,8 +68,9 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
       if (diaryEntry?.isDrinkFreeDay == true) {
         results[i] = 0;
       } else if (diaryEntry?.isDrinkFreeDay == false) {
-        // Must exist in this case, otherwise, we have a problem
-        assert(gramsOfAlcoholByDay.containsKey(date));
+        // Technically, gramsOfAlcoholByDate[date] must not be bull here. However, if the diary entries stream emits
+        // before the alcohol stream, we might be in an invalid state (and gramsOfAlcoholByDate[date] == null).
+        // Since this doesn't really matter because it will be fixed immediately, we'll accept it for now.
         results[i] = gramsOfAlcoholByDay[date];
       }
     }

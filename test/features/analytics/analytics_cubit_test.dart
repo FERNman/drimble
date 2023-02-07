@@ -1,11 +1,13 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/drinks_repository.dart';
 import 'package:drimble/data/user_repository.dart';
+import 'package:drimble/domain/diary/drink.dart';
 import 'package:drimble/features/analytics/analytics_cubit.dart';
 import 'package:drimble/infra/extensions/floor_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../generate_entities.dart';
 import 'analytics_cubit_test.mocks.dart';
@@ -67,11 +69,11 @@ void main() {
       when(mockDiaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
 
       final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+      await cubit.stream.first;
 
       final alcoholOnFirstDay = drinksOnFirstDay.fold<double>(0, (total, e) => total + e.gramsOfAlcohol);
       final alcoholOnThirdDay = drinksOnThirdDay.fold<double>(0, (total, e) => total + e.gramsOfAlcohol);
 
-      await cubit.stream.first;
       expect(cubit.state.gramsOfAlcoholPerDay, [
         alcoholOnFirstDay, // 2 drinks
         0, // drink-free
@@ -159,6 +161,59 @@ void main() {
       await cubit.stream.first;
 
       expect(cubit.state.changeToLastWeek, 2);
+    });
+
+    test('should correctly indicate if the user drank no alcohol', () async {
+      final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: true)];
+
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value([]));
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+          .thenAnswer((_) => Stream.value(diaryEntries));
+
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+      await cubit.stream.first;
+
+      expect(cubit.state.didDrink, false);
+    });
+
+    test('should correclty indicate if the user drank alcohol', () async {
+      final drinks = [generateDrink(startTime: date)];
+
+      final diaryEntries = [
+        generateDiaryEntry(date: date, isDrinkFreeDay: false),
+        generateDiaryEntry(date: date.add(const Duration(days: 1)), isDrinkFreeDay: true),
+      ];
+
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => Stream.value(drinks));
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+          .thenAnswer((_) => Stream.value(diaryEntries));
+
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+      await cubit.stream.first;
+
+      expect(cubit.state.didDrink, true);
+    });
+
+    // Needed because the streams in RxDart emit one-by-one, so we cannot expect the two streams to always be in sync
+    test('should not throw if diary entries and drinks are out of sync', () async {
+      final drinksSubject = BehaviorSubject.seeded(<Drink>[]);
+      final diaryEntriesSubject = BehaviorSubject.seeded([
+        generateDiaryEntry(date: date, isDrinkFreeDay: false),
+        generateDiaryEntry(date: date.add(const Duration(days: 1)), isDrinkFreeDay: true),
+      ]);
+
+      when(mockDrinksRepository.observeDrinksBetween(date, date.add(oneWeek))).thenAnswer((_) => drinksSubject);
+      when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek))).thenAnswer((_) => diaryEntriesSubject);
+
+      final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+      await cubit.stream.first;
+
+      expect(cubit.state.didDrink, false);
+
+      drinksSubject.add([generateDrink(startTime: date)]);
+      await cubit.stream.elementAt(1);
+
+      expect(cubit.state.didDrink, true);
     });
   });
 }
