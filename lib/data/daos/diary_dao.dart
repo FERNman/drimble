@@ -2,11 +2,10 @@ import 'package:sqlbrite/sqlbrite.dart';
 
 import '../../domain/diary/diary_entry.dart';
 import '../../infra/extensions/floor_date_time.dart';
+import 'dao.dart';
 
-class DiaryDAO {
-  final BriteDatabase _database;
-
-  const DiaryDAO(this._database);
+class DiaryDAO extends DAO {
+  DiaryDAO(super.database);
 
   static Future<void> create(Database database) async {
     await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
@@ -20,19 +19,30 @@ class DiaryDAO {
 
   Future<void> save(DiaryEntry entry) async {
     if (entry.id == null) {
-      final id = await _database.insert(_Entity.table, entry.toEntity());
+      final id = await executor.insert(_Entity.table, entry.toEntity());
       entry.id = id;
     } else {
-      await _database.update(_Entity.table, entry.toEntity(), where: '${_Entity.id} = ?', whereArgs: [entry.id]);
+      await executor.update(_Entity.table, entry.toEntity(), where: '${_Entity.id} = ?', whereArgs: [entry.id]);
     }
   }
 
   Future<void> delete(DiaryEntry entry) async {
-    await _database.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [entry.id]);
+    await executor.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [entry.id]);
+  }
+
+  Stream<List<DiaryEntry>> observeBetweenDates(DateTime startDate, DateTime endDate) {
+    return database
+        .createQuery(
+          _Entity.table,
+          where: '${_Entity.date} BETWEEN ? AND ?',
+          whereArgs: [startDate.floorToDay().millisecondsSinceEpoch, endDate.floorToDay().millisecondsSinceEpoch],
+          orderBy: '${_Entity.date} ASC',
+        )
+        .mapToList((e) => _Entity.fromEntity(e));
   }
 
   Future<DiaryEntry?> findOnDate(DateTime date) {
-    return _database
+    return executor
         .query(
           _Entity.table,
           where: '${_Entity.date} = ?',
@@ -43,7 +53,7 @@ class DiaryDAO {
   }
 
   Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) {
-    return _database.createQuery(
+    return database.createQuery(
       _Entity.table,
       where: '${_Entity.date} >= ?',
       whereArgs: [date.floorToDay().millisecondsSinceEpoch],
@@ -51,7 +61,7 @@ class DiaryDAO {
   }
 
   Stream<DiaryEntry?> observeEntryOnDate(DateTime date) {
-    return _database
+    return database
         .createQuery(
           _Entity.table,
           where: '${_Entity.date} = ?',
@@ -62,7 +72,7 @@ class DiaryDAO {
   }
 
   Future<void> drop() async {
-    await _database.delete(_Entity.table);
+    await executor.delete(_Entity.table);
   }
 }
 
