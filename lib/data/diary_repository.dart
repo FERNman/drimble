@@ -16,10 +16,12 @@ class DiaryRepository {
   Future<DiaryEntry?> getEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
 
   void markAsDrinkFree(DateTime date) async {
-    await _drinksDao.deleteOnDate(date);
+    await _diaryDao.transaction(() async {
+      await _drinksDao.deleteOnDate(date);
 
-    final entry = await _diaryDao.findOnDate(date.floorToDay()) ?? DiaryEntry(date: date, isDrinkFreeDay: true);
-    entry.copyWith(isDrinkFreeDay: true);
-    await _diaryDao.save(entry);
+      final entity = await _diaryDao.findOnDate(date.floorToDay());
+      final entry = entity?.copyWith(isDrinkFreeDay: true) ?? DiaryEntry(date: date, isDrinkFreeDay: true);
+      await _diaryDao.save(entry);
+    });
   }
 }

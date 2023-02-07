@@ -4,11 +4,10 @@ import '../../domain/alcohol/drink_category.dart';
 import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/extensions/floor_date_time.dart';
+import 'dao.dart';
 
-class DrinksDAO {
-  final BriteDatabase _database;
-
-  const DrinksDAO(this._database);
+class DrinksDAO extends DAO {
+  DrinksDAO(super.database);
 
   static Future<void> create(Database database) async {
     await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
@@ -28,22 +27,22 @@ class DrinksDAO {
 
   Future<void> save(Drink drink) async {
     if (drink.id == null) {
-      final id = await _database.insert(_Entity.table, drink.toEntity());
+      final id = await executor.insert(_Entity.table, drink.toEntity());
       drink.id = id;
     } else {
-      await _database.update(_Entity.table, drink.toEntity(), where: '${_Entity.id} = ?', whereArgs: [drink.id]);
+      await executor.update(_Entity.table, drink.toEntity(), where: '${_Entity.id} = ?', whereArgs: [drink.id]);
     }
   }
 
   Future<void> delete(Drink drink) async {
-    await _database.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [drink.id]);
+    await executor.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [drink.id]);
   }
 
   Future<void> deleteOnDate(DateTime date) async {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    await _database.delete(
+    await executor.delete(
       _Entity.table,
       where: '${_Entity.startTime} BETWEEN ? AND ?',
       whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
@@ -54,7 +53,7 @@ class DrinksDAO {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return _database
+    return executor
         .query(
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
@@ -68,7 +67,7 @@ class DrinksDAO {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return _database
+    return database
         .createQuery(
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
@@ -79,7 +78,7 @@ class DrinksDAO {
   }
 
   Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
-    return _database
+    return database
         .createQuery(
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
@@ -90,7 +89,7 @@ class DrinksDAO {
   }
 
   Stream<List<Drink>> observeLatest() {
-    return _database
+    return database
         .createQuery(
           _Entity.table,
           limit: 3,
@@ -100,7 +99,7 @@ class DrinksDAO {
   }
 
   Future<void> drop() async {
-    await _database.delete(_Entity.table);
+    await executor.delete(_Entity.table);
   }
 }
 
