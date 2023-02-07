@@ -37,30 +37,30 @@ class BACChartTitle extends StatelessWidget {
     if (_isDrunk()) {
       return Text(
         '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
-        style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
+        style: context.textTheme.headlineMedium,
       );
     }
 
     if (diaryEntry == null) {
       return Text(
         context.l18n.diary_notDrinkingToday,
-        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
+        style: context.textTheme.titleLarge,
       );
     } else if (diaryEntry!.isDrinkFreeDay) {
       return Text(
         context.l18n.diary_drinkFreeDay,
-        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
+        style: context.textTheme.titleLarge,
       );
     } else if (DateUtils.isSameDay(DateTime.now(), dateTime)) {
       return Text(
         '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
-        style: context.textTheme.headlineMedium?.copyWith(color: Colors.black87),
+        style: context.textTheme.headlineMedium,
       );
     } else {
       final maxBAC = results.maxBAC;
       return Text(
         '${maxBAC.value.toStringAsFixed(2)}‰ max',
-        style: context.textTheme.titleLarge?.copyWith(color: Colors.black87),
+        style: context.textTheme.titleLarge,
       );
     }
   }

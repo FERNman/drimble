@@ -29,6 +29,8 @@
   "onboarding_bodyCompositionSelectionDescription": "The amount of muscle and fat you carry influences the amount of alcohol you can metabolize at once.",
   "onboarding_bodyCompositionSelectionLabel": "Body composition",
   "onboarding_finish": "Finish",
+  "home_appBarDiary": "Diary",
+  "home_appBarAnalytics": "Analytics",
   "diary_notDrinkingToday": "Not drinking today?",
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
@@ -71,6 +73,23 @@
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
+  "analytics_title": "Analytics",
+  "analytics_weekFromTo": "{start} - {end}",
+  "@analytics_weekFromTo": {
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "analytics_changeFromLastWeek": "from last week",
+  "analytics_highestBloodAlcoholLevel": "highest blood alcohol level",
+  "analytics_maxBACInfo": "Stay below 0.08% to minimize immediate health consequences and damage to your brain.",
   "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",

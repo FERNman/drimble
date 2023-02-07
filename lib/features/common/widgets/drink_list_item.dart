@@ -13,8 +13,6 @@ class DrinkListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelTextStyle = context.textTheme.labelSmall?.copyWith(color: Colors.black87);
-
     return InkWell(
       onTap: onEdit,
       child: Padding(
@@ -30,11 +28,11 @@ class DrinkListItem extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: labelTextStyle),
+                Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: context.textTheme.labelSmall),
                 Text(drink.name, style: context.textTheme.titleMedium),
                 Text(
                   '${drink.volume}ml - ${NumberFormat.percentPattern().format(drink.alcoholByVolume)}',
-                  style: labelTextStyle,
+                  style: context.textTheme.labelSmall,
                 ),
               ],
             ),

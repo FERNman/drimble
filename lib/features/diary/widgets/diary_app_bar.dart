@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../common/build_context_extensions.dart';
+
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GestureTapCallback onTapProfile;
 
@@ -7,8 +9,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle =
-        Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75);
+    final titleStyle = context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75);
 
     return SafeArea(
       bottom: false,

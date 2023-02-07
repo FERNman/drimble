@@ -24,7 +24,7 @@ class OnboardingWelcomePage extends StatelessWidget {
                     const Spacer(),
                     Text(
                       context.l18n.onboarding_welcomeToDrimble,
-                      style: context.textTheme.headlineLarge?.copyWith(color: Colors.black87),
+                      style: context.textTheme.headlineLarge,
                     ),
                     const SizedBox(height: 24),
                     const Center(child: Image(image: AssetImage('assets/images/onboarding_welcome.png'))),

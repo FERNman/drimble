@@ -13,7 +13,10 @@ class DiaryRepository {
 
   Stream<DiaryEntry?> observeEntryOnDate(DateTime date) => _diaryDao.observeEntryOnDate(date);
 
-  Future<DiaryEntry?> getEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
+  Stream<List<DiaryEntry>> observeEntriesBetween(DateTime startDate, DateTime endDate) =>
+      _diaryDao.observeBetweenDates(startDate.floorToDay(), endDate.floorToDay());
+
+  Future<DiaryEntry?> findEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
 
   void markAsDrinkFree(DateTime date) async {
     await _diaryDao.transaction(() async {
