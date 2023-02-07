@@ -15,8 +15,9 @@ class TotalAlcoholIndicator extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text('${totalGramsOfAlcohol.toStringAsFixed(0)}g', style: context.textTheme.displaySmall),
-        const SizedBox(height: 4),
+        const SizedBox(height: 12),
         Text(context.l18n.analytics_totalAlcoholConsumed, style: context.textTheme.bodyLarge),
+        const SizedBox(height: 4),
         RichText(
           text: TextSpan(
             style: context.textTheme.bodySmall,
@@ -32,12 +33,14 @@ class TotalAlcoholIndicator extends StatelessWidget {
 
   TextSpan _buildChangeIndicator(BuildContext context) {
     final formatter = NumberFormat.percentPattern();
-    if (changeToLastWeek > 1) {
-      final formatted = formatter.format(changeToLastWeek - 1);
+    if (changeToLastWeek > 0) {
+      final formatted = formatter.format(changeToLastWeek);
       return TextSpan(
           text: '▲ $formatted ', style: context.textTheme.bodySmall?.copyWith(color: context.colorScheme.error));
+    } else if (changeToLastWeek == 0) {
+      return TextSpan(text: '± 0% ', style: context.textTheme.bodySmall?.copyWith(color: Colors.black54));
     } else {
-      final formatted = formatter.format(changeToLastWeek);
+      final formatted = formatter.format(changeToLastWeek.abs());
       return TextSpan(text: '▼ $formatted ', style: context.textTheme.bodySmall?.copyWith(color: Colors.green));
     }
   }

@@ -24,14 +24,14 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _buildAppBar(context),
+          _buildAppBar(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 const SizedBox(height: 32),
                 _buildTotalAlcoholIndicator(),
-                const SizedBox(height: 38),
+                const SizedBox(height: 48),
                 _buildAlcoholChart(),
                 const SizedBox(height: 24),
                 _buildHighestBACCard(),
@@ -43,7 +43,7 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  Widget _buildAppBar() {
     return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
       buildWhen: (previous, current) => previous.firstDayOfWeek != current.firstDayOfWeek,
       builder: (context, state) {

@@ -80,7 +80,8 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final spacing = size.width / data.length;
-    final maxValue = data.whereNotNull().fold(0.0, max);
+    // At least 1 to avoid division by 0
+    final maxValue = data.whereNotNull().fold(1.0, max);
 
     final barPaint = Paint()
       ..style = PaintingStyle.fill

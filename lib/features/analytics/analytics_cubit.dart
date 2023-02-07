@@ -115,9 +115,21 @@ class AnalyticsCubitState {
   bool get didDrink => gramsOfAlcoholPerDay.whereNotNull().any((element) => element > 0.0);
   double get totalGramsOfAlcohol => gramsOfAlcoholPerDay.fold<double>(0, (total, el) => total + (el ?? 0));
 
-  /// The change in percent compared to last week.
-  /// If no alcohol was consumed last week, this will display 100%
-  double get changeToLastWeek => gramsOfAlcoholLastWeek > 0 ? totalGramsOfAlcohol / gramsOfAlcoholLastWeek : 2;
+  /// The change in percent compared to last week, from -inf to +inf
+  double get changeToLastWeek {
+    final gramsOfAlcoholThisWeek = totalGramsOfAlcohol;
+    if (gramsOfAlcoholLastWeek == 0) {
+      if (gramsOfAlcoholThisWeek == 0) {
+        return 0;
+      }
+
+      // Always +100% if no alcohol was conusmed last week (even though technically it's inf)
+      return 1;
+    }
+
+    return (gramsOfAlcoholThisWeek / gramsOfAlcoholLastWeek) - 1;
+  }
+
   Duration get timespan => lastDayOfWeek.difference(firstDayOfWeek);
 
   AnalyticsCubitState({
