@@ -15,12 +15,10 @@ class TotalAlcoholIndicator extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text('${totalGramsOfAlcohol.toStringAsFixed(0)}g', style: context.textTheme.displaySmall),
-        const SizedBox(height: 12),
-        Text(context.l18n.analytics_totalAlcoholConsumed, style: context.textTheme.bodyLarge),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         RichText(
           text: TextSpan(
-            style: context.textTheme.bodySmall,
+            style: context.textTheme.bodyMedium,
             children: [
               _buildChangeIndicator(context),
               TextSpan(text: context.l18n.analytics_changeFromLastWeek),

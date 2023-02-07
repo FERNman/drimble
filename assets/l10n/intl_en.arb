@@ -87,7 +87,6 @@
       }
     }
   },
-  "analytics_totalAlcoholConsumed": "alcohol consumed",
   "analytics_changeFromLastWeek": "from last week",
   "analytics_highestBloodAlcoholLevel": "highest blood alcohol level",
   "analytics_maxBACInfo": "Stay below 0.08% to minimize immediate health consequences and damage to your brain.",
