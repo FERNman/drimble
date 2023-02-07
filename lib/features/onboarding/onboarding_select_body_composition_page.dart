@@ -62,7 +62,7 @@ class OnboardingSelectBodyCompositionPage extends StatelessWidget {
     return OutlinedButton(
       onPressed: () {
         context.read<OnboardingCubit>().save();
-        context.router.replaceAll([const DiaryRoute()]);
+        context.router.replaceAll([const HomeRoute()]);
       },
       child: Text(context.l18n.onboarding_finish),
     );

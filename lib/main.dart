@@ -11,7 +11,7 @@ import 'data/daos/drinks_dao.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
 import 'data/user_repository.dart';
-import 'features/diary/diary_guard.dart';
+import 'features/home/home_guard.dart';
 import 'infra/l18n/l10n.dart';
 import 'router.dart';
 
@@ -58,7 +58,10 @@ class _DrimbleAppState extends State<DrimbleApp> {
       surfaceTint: Colors.white,
     );
 
-    final textTheme = GoogleFonts.poppinsTextTheme();
+    final textTheme = GoogleFonts.poppinsTextTheme().apply(displayColor: Colors.black87);
+
+    // A hack(?) to change the navigation bar color on Android
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
 
     return MultiRepositoryProvider(
       providers: [
@@ -71,7 +74,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrimbleRouter(diaryGuard: DiaryGuard(context.read()));
+          _router ??= DrimbleRouter(homeGuard: HomeGuard(context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
@@ -103,6 +106,11 @@ class _DrimbleAppState extends State<DrimbleApp> {
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                 backgroundColor: colorScheme.tertiaryContainer,
                 foregroundColor: colorScheme.onTertiaryContainer,
+              ),
+              bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+                backgroundColor: Colors.white,
+                selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               ),
             ),
             localizationsDelegates: const [

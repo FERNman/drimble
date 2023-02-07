@@ -26,7 +26,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   void switchDate(DateTime date) async {
     if (!DateUtils.isSameDay(date, state.date)) {
       final drinks = await _consumedDrinksRepository.findDrinksOnDate(date);
-      final diaryEntry = await _diaryRepository.getEntryOnDate(date);
+      final diaryEntry = await _diaryRepository.findEntryOnDate(date);
 
       emit(DiaryCubitState.initial(date: date, drinks: drinks, diaryEntry: diaryEntry));
     }

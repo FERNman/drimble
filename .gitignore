@@ -36,6 +36,7 @@ migrate_working_dir/
 
 # Testing related
 *.mocks.dart
+coverage/
 
 # Localization related
 **/l18n/l10n.dart

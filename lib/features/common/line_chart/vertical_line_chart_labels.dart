@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../build_context_extensions.dart';
+import 'draw_dashed_line.dart';
 
 class VerticalLineChartLabels extends StatelessWidget {
   final double height;
@@ -45,20 +46,13 @@ class VerticalLineChartLabels extends StatelessWidget {
 }
 
 class _DashedLinePainter extends CustomPainter {
-  static const _dashWidth = 6.0;
-  static const _dashSpace = 3.0;
-
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.black12
       ..strokeWidth = 1;
 
-    var startX = 0.0;
-    while (startX < size.width) {
-      canvas.drawLine(Offset(startX, 0), Offset(startX + _dashWidth, 0), paint);
-      startX += _dashWidth + _dashSpace;
-    }
+    canvas.drawDashedLine(const Offset(0, 0), Offset(size.width, 0), paint);
   }
 
   @override
