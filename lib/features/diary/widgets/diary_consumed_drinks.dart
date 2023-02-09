@@ -16,7 +16,13 @@ class DiaryConsumedDrinks extends StatelessWidget {
   final ConsumedDrinkTapCallback onDelete;
   final GestureTapCallback onViewAll;
 
-  const DiaryConsumedDrinks(this.drinks, {required this.onEdit, required this.onDelete, required this.onViewAll, super.key});
+  const DiaryConsumedDrinks(
+    this.drinks, {
+    required this.onEdit,
+    required this.onDelete,
+    required this.onViewAll,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +68,12 @@ class _ViewAllRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('+$remainingItemCount ${context.l18n.diary_consumedDrinksMore}', style: textTheme.bodyMedium),
+          Text('+$remainingItemCount ${context.l18n.diary_consumedDrinksMore}', style: context.textTheme.bodyMedium),
           TextButton(onPressed: onTap, child: Text(context.l18n.diary_consumedDrinksSeeAll)),
         ],
       ),

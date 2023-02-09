@@ -35,6 +35,7 @@ class DiaryPage extends StatelessWidget {
           _buildStatistics(),
           const SizedBox(height: 24),
           _buildRecentDrinks(),
+          const SizedBox(height: 12),
         ],
       ),
     );
