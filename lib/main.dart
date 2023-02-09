@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,8 +62,18 @@ class _DrimbleAppState extends State<DrimbleApp> {
 
     final textTheme = GoogleFonts.poppinsTextTheme().apply(displayColor: Colors.black87);
 
-    // A hack(?) to change the navigation bar color on Android
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
+    if (Platform.isAndroid) {
+      // A hack(?) to make sure the navigation bar color is white on Android
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.white,
+      ));
+
+      // https://github.com/flutter/flutter/issues/40590
+      final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
+      binding.renderView.automaticSystemUiAdjustment = false;
+    }
 
     return MultiRepositoryProvider(
       providers: [
@@ -85,7 +97,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
               textTheme: textTheme,
               appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.transparent,
-                systemOverlayStyle: SystemUiOverlayStyle.light,
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
               ),
               inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
               chipTheme: ChipThemeData(
