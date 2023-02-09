@@ -10,16 +10,21 @@ class HighestBACCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      surfaceTintColor: context.colorScheme.primary,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${maxBAC.toStringAsFixed(2)}%', style: context.textTheme.headlineSmall),
-            Text(context.l18n.analytics_highestBloodAlcoholLevel, style: context.textTheme.bodyMedium),
+            Text(
+              '${maxBAC.toStringAsFixed(2)}%',
+              style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary),
+            ),
+            Text(context.l18n.analytics_highestBloodAlcoholLevel, style: context.textTheme.bodyLarge),
             const SizedBox(height: 8),
-            Text(context.l18n.analytics_maxBACInfo, style: context.textTheme.bodySmall),
+            Text(
+              context.l18n.analytics_maxBACInfo,
+              style: context.textTheme.bodyMedium?.copyWith(color: Colors.black54),
+            ),
           ],
         ),
       ),

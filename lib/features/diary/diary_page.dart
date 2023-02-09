@@ -54,11 +54,14 @@ class DiaryPage extends StatelessWidget {
 
   Widget _buildTitle() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      builder: (context, state) => BACChartTitle(
-        dateTime: state.date,
-        results: state.calculationResults,
-        diaryEntry: state.diaryEntry,
-        onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+      builder: (context, state) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: BACChartTitle(
+          dateTime: state.date,
+          results: state.calculationResults,
+          diaryEntry: state.diaryEntry,
+          onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+        ),
       ),
     );
   }
@@ -76,10 +79,13 @@ class DiaryPage extends StatelessWidget {
   Widget _buildStatistics() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
       buildWhen: (previous, current) => previous.drinks != current.drinks,
-      builder: (context, state) => DiaryStatistics(
-        numberOfConsumedDrinks: state.drinks.length,
-        gramsOfAlcohol: state.gramsOfAlcohol,
-        calories: state.calories,
+      builder: (context, state) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: DiaryStatistics(
+          numberOfConsumedDrinks: state.drinks.length,
+          gramsOfAlcohol: state.gramsOfAlcohol,
+          calories: state.calories,
+        ),
       ),
     );
   }
