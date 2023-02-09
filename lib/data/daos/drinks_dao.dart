@@ -58,7 +58,7 @@ class DrinksDAO extends DAO {
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
           whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} ASC',
+          orderBy: '${_Entity.startTime} DESC',
         )
         .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
   }
@@ -72,7 +72,7 @@ class DrinksDAO extends DAO {
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
           whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} ASC',
+          orderBy: '${_Entity.startTime} DESC',
         )
         .mapToList((e) => _Entity.fromEntity(e));
   }
@@ -83,7 +83,7 @@ class DrinksDAO extends DAO {
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
           whereArgs: [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} ASC',
+          orderBy: '${_Entity.startTime} DESC',
         )
         .mapToList((e) => _Entity.fromEntity(e));
   }
