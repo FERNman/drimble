@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../common/build_context_extensions.dart';
@@ -21,23 +19,21 @@ class HomeNavigationBar extends StatelessWidget {
       shadowColor: Colors.black,
       color: Colors.white,
       child: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
-          ),
+        minimum: const EdgeInsets.only(bottom: 4),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _BottomNavigationBarIcon(
-                icon: const Icon(Icons.water_drop_outlined),
+                icon: Icons.water_drop_outlined,
                 label: context.l18n.home_appBarDiary,
                 onTap: () => onTap(0),
                 isSelected: currentIndex == 0,
               ),
               _BottomNavigationBarIcon(
-                icon: const Icon(Icons.bubble_chart_outlined),
+                icon: Icons.bubble_chart_outlined,
                 label: context.l18n.home_appBarAnalytics,
                 onTap: () => onTap(1),
                 isSelected: currentIndex == 1,
@@ -53,7 +49,7 @@ class HomeNavigationBar extends StatelessWidget {
 
 class _BottomNavigationBarIcon extends StatelessWidget {
   final String label;
-  final Icon icon;
+  final IconData icon;
   final GestureTapCallback onTap;
   final bool isSelected;
 
@@ -66,21 +62,12 @@ class _BottomNavigationBarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.only(left: 16, top: 20, right: 16, bottom: Platform.isAndroid ? 12 : 0),
-        child: DefaultTextStyle(
-          style: context.textTheme.labelLarge!.copyWith(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              icon,
-              const SizedBox(width: 8),
-              Text(label),
-            ],
-          ),
-        ),
+    return TextButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: DefaultTextStyle(
+        style: context.textTheme.labelLarge!.copyWith(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+        child: Text(label),
       ),
     );
   }
