@@ -112,6 +112,13 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 pressElevation: 0,
                 showCheckmark: false,
               ),
+              cardTheme: CardTheme(
+                color: const Color(0xFFFAFBFF), // A very light version of primaryContainer
+                margin: const EdgeInsets.all(0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
               dividerTheme: const DividerThemeData(
                 color: Colors.black54,
               ),

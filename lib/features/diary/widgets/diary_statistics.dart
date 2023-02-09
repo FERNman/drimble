@@ -17,31 +17,85 @@ class DiaryStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Card(
-        elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Colors.black26),
-          borderRadius: BorderRadius.circular(16),
+    return Column(
+      children: [
+        _buildGramsOfAlcohol(context),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildConsumedDrinks(context)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildCaloriesFromAlcohol(context)),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildGramsOfAlcohol(context),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: SizedBox(width: 48, child: Divider())),
-              _buildDrinksAndCalories(context),
-            ],
-          ),
+      ],
+    );
+  }
+
+  Widget _buildGramsOfAlcohol(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${gramsOfAlcohol.toStringAsFloat(1)} ',
+                    style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary),
+                  ),
+                  TextSpan(text: context.l18n.diary_statisticsGramsOfAlcohol, style: context.textTheme.bodyLarge),
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              context.l18n.diary_statisticsGramsOfAlcoholGuidelines,
+              style: context.textTheme.bodyMedium?.copyWith(color: Colors.black54),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildGramsOfAlcohol(BuildContext context) {
+  Widget _buildConsumedDrinks(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: _buildSmallStatistic(
+          context,
+          number: numberOfConsumedDrinks,
+          unit: context.l18n.diary_statisticsDrinks(numberOfConsumedDrinks),
+          description: context.l18n.diary_statisticsConsumedToday,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCaloriesFromAlcohol(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: _buildSmallStatistic(
+          context,
+          number: calories,
+          unit: context.l18n.diary_statisticsCalories,
+          description: context.l18n.diary_statisticsFromAlcohol,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmallStatistic(
+    BuildContext context, {
+    required int number,
+    required String unit,
+    required String description,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,58 +103,18 @@ class DiaryStatistics extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: '${gramsOfAlcohol.toStringAsFloat(1)} ',
-                style: context.textTheme.headlineLarge?.copyWith(color: context.colorScheme.primary),
+                text: '$number ',
+                style: context.textTheme.titleLarge?.copyWith(color: context.colorScheme.primary),
               ),
-              TextSpan(text: context.l18n.diary_statisticsGramsOfAlcohol, style: context.textTheme.bodyLarge),
+              TextSpan(
+                text: unit,
+                style: context.textTheme.bodyLarge,
+              )
             ],
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          context.l18n.diary_statisticsGramsOfAlcoholGuidelines,
-          style: context.textTheme.bodyMedium?.copyWith(color: Colors.black54),
-        ),
-      ],
-    );
-  }
-
-  Row _buildDrinksAndCalories(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: _buildSmallStatistic(
-            context,
-            number: numberOfConsumedDrinks,
-            title: context.l18n.diary_statisticsConsumedDrinks,
-          ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          child: _buildSmallStatistic(
-            context,
-            number: calories,
-            title: context.l18n.diary_statisticsCaloriesFromAlcohol,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Column _buildSmallStatistic(BuildContext context, {required int number, required String title}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$number',
-          style: context.textTheme.titleLarge?.copyWith(color: context.colorScheme.primary),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          title,
-          style: context.textTheme.bodySmall?.copyWith(color: Colors.black.withOpacity(0.7)),
-        )
+        Text(description, style: context.textTheme.bodySmall?.copyWith(color: Colors.black54)),
       ],
     );
   }
