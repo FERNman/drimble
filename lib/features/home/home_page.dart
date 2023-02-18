@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
             child: child,
           ),
           floatingActionButton: tabsRouter.activeIndex == 0 ? _buildFAB() : null,
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: HomeNavigationBar(
             currentIndex: tabsRouter.activeIndex,
             onTap: (index) => tabsRouter.setActiveIndex(index),
