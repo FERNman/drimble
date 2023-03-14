@@ -2,8 +2,6 @@ import 'body_composition.dart';
 import 'gender.dart';
 
 class User {
-  static const bloodPerMass = 0.067;
-
   String name;
   Gender gender;
   int age;

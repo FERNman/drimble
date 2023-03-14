@@ -35,7 +35,7 @@
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
   "diary_drinkFreeDayGreatJob": "Great job!",
-  "diary_reachesMaxBACAt": "reaches {value}‰ at {time}",
+  "diary_reachesMaxBACAt": "reaches {value}% at {time}",
   "@diary_reachesMaxBACAt": {
     "placeholders": {
       "value": {
