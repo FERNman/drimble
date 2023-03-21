@@ -3,7 +3,7 @@ import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('BAC calculation results', () {
+  group(BACCalculationResults, () {
     group('getEntryAt', () {
       test('should return the exact value if a entry exists at the given time', () {
         final when = DateTime(2022);

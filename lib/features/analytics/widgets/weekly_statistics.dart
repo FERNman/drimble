@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+
+import '../../common/build_context_extensions.dart';
+
+class WeeklyStatistics extends StatelessWidget {
+  final double highestBAC;
+  final int numberOfDrinks;
+  final int calories;
+
+  const WeeklyStatistics({
+    required this.highestBAC,
+    required this.numberOfDrinks,
+    required this.calories,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildHighestBACCard(context),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildConsumedDrinksCard(context)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildCaloriesCard(context)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHighestBACCard(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${highestBAC.toStringAsFixed(2)}%',
+              style: context.textTheme.headlineSmall
+                  ?.copyWith(color: context.colorScheme.primary, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              context.l18n.analytics_highestBloodAlcoholLevel,
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.black54),
+            ),
+            const SizedBox(height: 8),
+            Text(context.l18n.analytics_maxBACInfo, style: context.textTheme.bodyMedium),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConsumedDrinksCard(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: _buildSmallStatistic(
+          context,
+          number: numberOfDrinks,
+          unit: context.l18n.diary_statisticsDrinks(numberOfDrinks),
+          description: context.l18n.analytics_drinksThisWeek,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCaloriesCard(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: _buildSmallStatistic(
+          context,
+          number: calories,
+          unit: context.l18n.diary_statisticsCalories,
+          description: context.l18n.diary_statisticsFromAlcohol,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmallStatistic(
+    BuildContext context, {
+    required int number,
+    required String unit,
+    required String description,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            style: context.textTheme.titleMedium,
+            children: [
+              TextSpan(
+                text: '$number ',
+                style: TextStyle(color: context.colorScheme.primary, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(text: unit)
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(description, style: context.textTheme.bodySmall?.copyWith(color: Colors.black54)),
+      ],
+    );
+  }
+}

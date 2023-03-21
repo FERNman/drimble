@@ -6,8 +6,8 @@ import 'package:sqflite/sqflite.dart';
 
 import '../domain/user/body_composition.dart';
 import '../domain/user/gender.dart';
+import '../domain/user/goals.dart';
 import '../domain/user/user.dart';
-import '../domain/user/weekly_goals.dart';
 import '../infra/extensions/database_drop.dart';
 
 class UserRepository {
@@ -26,16 +26,26 @@ class UserRepository {
 
   Future<bool> isSignedIn() async => await user != null;
 
-  void signIn(User user) async {
+  Future<void> signIn(User user) async {
     _user.add(user);
     await _persistUser(user);
   }
 
-  void signOut() async {
+  Future<void> signOut() async {
     _user.add(null);
     await _unsetUser();
 
     await _database.drop();
+  }
+
+  // TODO: Maybe change to simply update the whole user...
+  //  (signing in and out is also not perfect for the methods above...)
+  Future<void> setGoals(Goals goals) async {
+    if (_user.value != null) {
+      final user = _user.value!.copyWith(goals: goals);
+      _user.add(user);
+      await _persistUser(user);
+    }
   }
 
   Future<User?> _tryLoadUser() async {
@@ -67,7 +77,7 @@ extension _UserJson on User {
   static const _height = 'height';
   static const _weight = 'weight';
   static const _bodyComposition = 'bodyComposition';
-  static const _weeklyGoals = 'weeklyGoals';
+  static const _goals = 'goals';
 
   static User fromJson(Map<String, dynamic> json) => User(
         name: json[_name],
@@ -76,8 +86,7 @@ extension _UserJson on User {
         height: json[_height],
         weight: json[_weight],
         bodyComposition: BodyComposition.values.firstWhere((el) => el.name == json[_bodyComposition]),
-        weeklyGoals:
-            json.containsKey(_weeklyGoals) ? _WeeklyGoalsJson.fromJson(json[_weeklyGoals]) : const WeeklyGoals(),
+        goals: json.containsKey(_goals) ? _GoalsJson.fromJson(json[_goals]) : const Goals(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -87,21 +96,21 @@ extension _UserJson on User {
         _height: height,
         _weight: weight,
         _bodyComposition: bodyComposition.name,
-        _weeklyGoals: weeklyGoals.toJson(),
+        _goals: goals.toJson(),
       };
 }
 
-extension _WeeklyGoalsJson on WeeklyGoals {
-  static const _gramsOfAlcohol = 'gramsOfAlcohol';
-  static const _drinkFreeDays = 'drinkFreeDays';
+extension _GoalsJson on Goals {
+  static const _weeklyGramsOfAlcohol = 'weeklyGramsOfAlcohol';
+  static const _weeklyDrinkFreeDays = 'weeklyDrinkFreeDays';
 
-  static WeeklyGoals fromJson(Map<String, dynamic> json) => WeeklyGoals(
-        gramsOfAlcohol: json[_gramsOfAlcohol],
-        drinkFreeDays: json[_drinkFreeDays],
+  static Goals fromJson(Map<String, dynamic> json) => Goals(
+        weeklyGramsOfAlcohol: json[_weeklyGramsOfAlcohol],
+        weeklyDrinkFreeDays: json[_weeklyDrinkFreeDays],
       );
 
   Map<String, dynamic> toJson() => {
-        _gramsOfAlcohol: gramsOfAlcohol,
-        _drinkFreeDays: drinkFreeDays,
+        _weeklyGramsOfAlcohol: weeklyGramsOfAlcohol,
+        _weeklyDrinkFreeDays: weeklyDrinkFreeDays,
       };
 }

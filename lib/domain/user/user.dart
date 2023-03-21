@@ -1,6 +1,6 @@
 import 'body_composition.dart';
 import 'gender.dart';
-import 'weekly_goals.dart';
+import 'goals.dart';
 
 class User {
   static const bloodPerMass = 0.067;
@@ -12,7 +12,7 @@ class User {
   int weight; // In kilograms
   BodyComposition bodyComposition;
 
-  WeeklyGoals weeklyGoals;
+  Goals goals;
 
   double get totalBodyWater {
     switch (gender) {
@@ -39,6 +39,16 @@ class User {
     required this.height,
     required this.weight,
     required this.bodyComposition,
-    this.weeklyGoals = const WeeklyGoals(),
+    this.goals = const Goals(),
   });
+
+  User copyWith({Goals? goals}) => User(
+        name: name,
+        gender: gender,
+        age: age,
+        height: height,
+        weight: weight,
+        bodyComposition: bodyComposition,
+        goals: goals ?? this.goals,
+      );
 }

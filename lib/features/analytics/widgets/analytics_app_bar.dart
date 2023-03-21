@@ -15,24 +15,21 @@ class AnalyticsAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Padding(
-        padding: const EdgeInsets.only(top: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.l18n.analytics_title,
-              style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              context.l18n.analytics_weekFromTo(firstDayOfWeek, lastDayOfWeek),
-              style: context.textTheme.bodySmall,
-            ),
-          ],
-        ),
+      title: Text(
+        context.l18n.analytics_title,
+        style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75),
       ),
       centerTitle: false,
+      actions: [
+        ActionChip(
+          onPressed: () {},
+          avatar: const Icon(Icons.calendar_today_outlined),
+          label: Text(context.l18n.analytics_date_thisWeek, style: context.textTheme.labelLarge),
+          surfaceTintColor: context.colorScheme.primaryContainer,
+          side: BorderSide.none,
+        ),
+        const SizedBox(width: 16),
+      ],
     );
   }
 }
