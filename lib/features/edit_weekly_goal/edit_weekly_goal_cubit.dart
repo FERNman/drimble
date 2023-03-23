@@ -8,18 +8,19 @@ import '../../infra/disposable.dart';
 class EditWeeklyGoalCubit extends Cubit<EditWeeklyGoalState> with Disposable {
   final UserRepository _userRepository;
 
-  EditWeeklyGoalCubit(this._userRepository) : super(const EditWeeklyGoalState(goals: Goals())) {
+  EditWeeklyGoalCubit(this._userRepository, {required Goals initialGoals})
+      : super(EditWeeklyGoalState(goals: const Goals(), newGoals: initialGoals)) {
     _loadUser();
   }
 
   void updateGramsOfAlcohol(int gramsOfAlcohol) {
     assert(gramsOfAlcohol >= 0);
-    emit(state.copyWith(newGoals: state.newGoals.copyWith(weeklyGramsOfAlcohol: gramsOfAlcohol)));
+    emit(state.updateNewGoals(weeklyGramsOfAlcohol: gramsOfAlcohol));
   }
 
   void updateDrinkFreeDays(int drinkFreeDays) {
     assert(drinkFreeDays >= 0 && drinkFreeDays <= 7);
-    emit(state.copyWith(newGoals: state.newGoals.copyWith(weeklyDrinkFreeDays: drinkFreeDays)));
+    emit(state.updateNewGoals(weeklyDrinkFreeDays: drinkFreeDays));
   }
 
   Future<void> saveGoals() async {
@@ -27,22 +28,31 @@ class EditWeeklyGoalCubit extends Cubit<EditWeeklyGoalState> with Disposable {
   }
 
   void _loadUser() {
-    addSubscription(
-        _userRepository.observeUser().whereNotNull().listen((user) => emit(EditWeeklyGoalState(goals: user.goals))));
+    addSubscription(_userRepository.observeUser().whereNotNull().listen((user) => emit(state.fromUser(user.goals))));
   }
 }
 
 class EditWeeklyGoalState {
-  final int defaultWeeklyGramsOfAlcohol = 100;
-  final int defaultWeeklyDrinkFreeDays = 3;
+  static const int defaultWeeklyGramsOfAlcohol = 100;
+  static const int defaultWeeklyDrinkFreeDays = 3;
 
   final Goals goals;
   final Goals newGoals;
 
-  const EditWeeklyGoalState({required this.goals, Goals? newGoals}) : newGoals = newGoals ?? goals;
+  const EditWeeklyGoalState({required this.goals, required this.newGoals});
 
-  EditWeeklyGoalState copyWith({Goals? goals, Goals? newGoals}) => EditWeeklyGoalState(
-        goals: goals ?? this.goals,
-        newGoals: newGoals ?? this.newGoals,
+  EditWeeklyGoalState fromUser(Goals goals) => EditWeeklyGoalState(
+      goals: goals,
+      newGoals: newGoals.copyWith(
+        weeklyGramsOfAlcohol: goals.weeklyGramsOfAlcohol,
+        weeklyDrinkFreeDays: goals.weeklyDrinkFreeDays,
+      ));
+
+  EditWeeklyGoalState updateNewGoals({int? weeklyDrinkFreeDays, int? weeklyGramsOfAlcohol}) => EditWeeklyGoalState(
+        goals: goals,
+        newGoals: newGoals.copyWith(
+          weeklyGramsOfAlcohol: weeklyGramsOfAlcohol,
+          weeklyDrinkFreeDays: weeklyDrinkFreeDays,
+        ),
       );
 }
