@@ -100,7 +100,7 @@ class WeeklyStatistics extends StatelessWidget {
             children: [
               TextSpan(
                 text: '$number ',
-                style: TextStyle(color: context.colorScheme.primary).forNumbers(),
+                style: TextStyle(color: context.colorScheme.primary, fontSize: 18).forNumbers(),
               ),
               TextSpan(text: unit)
             ],
