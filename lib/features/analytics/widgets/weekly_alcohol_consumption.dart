@@ -125,7 +125,7 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
       return context.l18n.analytics_noAlcoholConsumedYet;
     }
 
-    if (remainingGramsOfAlcohol < 0) {
+    if (remainingGramsOfAlcohol <= 0) {
       return context.l18n.analytics_alcoholConsumptionOverLimit;
     } else if (remainingGramsOfAlcohol < 10) {
       return context.l18n.analytics_alcoholConsumptionCloseToLimit;
