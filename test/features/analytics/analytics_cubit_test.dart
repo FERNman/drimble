@@ -77,7 +77,7 @@ void main() {
         final alcoholOnFirstDay = drinksOnFirstDay.fold<double>(0.0, (total, e) => total + e.gramsOfAlcohol);
         final alcoholOnThirdDay = drinksOnThirdDay.fold<double>(0.0, (total, e) => total + e.gramsOfAlcohol);
 
-        expect(cubit.state.alcoholByDayThisWeek.values.toList(), [
+        expect(cubit.state.alcoholByDay.values.toList(), [
           alcoholOnFirstDay, // 2 drinks
           0, // drink-free
           alcoholOnThirdDay, // 1 drink
@@ -103,7 +103,7 @@ void main() {
         await cubit.stream.first;
 
         expect(
-          cubit.state.alcoholByDayThisWeek.values.toList(),
+          cubit.state.alcoholByDay.values.toList(),
           [0, 0, null, null, null, null, null],
         );
 
@@ -112,7 +112,7 @@ void main() {
         await cubit.stream.first;
 
         expect(
-          cubit.state.alcoholByDayThisWeek.values.toList(),
+          cubit.state.alcoholByDay.values.toList(),
           [drink.gramsOfAlcohol, 0, null, null, null, null, null],
         );
       });
@@ -137,7 +137,89 @@ void main() {
         await cubit.stream.first;
 
         final expectedGramsOfAlcohol = drinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
-        expect(cubit.state.totalAlcoholThisWeek, expectedGramsOfAlcohol);
+        expect(cubit.state.totalAlcohol, expectedGramsOfAlcohol);
+      });
+    });
+
+    group('state.calories', () {
+      test('should be equal to the sum of the calories of all drinks consumed this week', () async {
+        final drinks = [
+          generateDrinkOnDate(date: date),
+          generateDrinkOnDate(date: date),
+          generateDrinkOnDate(date: date),
+        ];
+
+        final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
+
+        when(mockDrinksRepository.observeDrinksBetweenDays(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(drinks));
+        when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+        await cubit.stream.first;
+
+        final expectedCalories = drinks.fold<int>(0, (total, el) => total + el.calories);
+        expect(cubit.state.calories, expectedCalories);
+      });
+    });
+
+    group('state.numberOfDrinks', () {
+      test('should be equal to the number of drinks consumed this week', () async {
+        final drinks = [
+          generateDrinkOnDate(date: date),
+          generateDrinkOnDate(date: date),
+          generateDrinkOnDate(date: date),
+          generateDrinkOnDate(date: date.add(const Duration(days: 1))),
+          generateDrinkOnDate(date: date.add(const Duration(days: 1))),
+          generateDrinkOnDate(date: date.add(const Duration(days: 2))),
+        ];
+
+        final diaryEntries = [
+          generateDiaryEntry(date: date, isDrinkFreeDay: false),
+          generateDiaryEntry(date: date.add(const Duration(days: 1)), isDrinkFreeDay: false),
+          generateDiaryEntry(date: date.add(const Duration(days: 2)), isDrinkFreeDay: false),
+        ];
+
+        when(mockDrinksRepository.observeDrinksBetweenDays(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(drinks));
+        when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+        await cubit.stream.first;
+
+        expect(cubit.state.numberOfDrinks, drinks.length);
+      });
+    });
+
+    group('state.averageAlcoholPerSession', () {
+      test('should be the average alcohol per drinking session', () async {
+        final drinks = [
+          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateDrinkOnDate(date: date.add(const Duration(days: 1)), alcoholByVolume: 0.5, volume: 500),
+          generateDrinkOnDate(date: date.add(const Duration(days: 1)), alcoholByVolume: 0.5, volume: 500),
+          generateDrinkOnDate(date: date.add(const Duration(days: 2)), alcoholByVolume: 0.5, volume: 500),
+        ];
+        final diaryEntries = [
+          generateDiaryEntry(date: date, isDrinkFreeDay: false),
+          generateDiaryEntry(date: date.add(const Duration(days: 1)), isDrinkFreeDay: false),
+          generateDiaryEntry(date: date.add(const Duration(days: 2)), isDrinkFreeDay: false),
+        ];
+
+        when(mockDrinksRepository.observeDrinksBetweenDays(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(drinks));
+        when(mockDiaryRepository.observeEntriesBetween(date, date.add(oneWeek)))
+            .thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = AnalyticsCubit(mockDrinksRepository, mockDiaryRepository, mockUserRepository, date: date);
+        await cubit.stream.first;
+
+        final totalAlcohol = drinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
+        final expectedAverageAlcoholPerSession = totalAlcohol / diaryEntries.length;
+        expect(cubit.state.averageAlcoholPerSession, expectedAverageAlcoholPerSession);
       });
     });
 

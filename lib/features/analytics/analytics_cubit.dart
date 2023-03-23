@@ -24,9 +24,12 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   AnalyticsCubit(this._drinksRepository, this._diaryRepository, this._userRepository, {DateTime? date})
       : super(AnalyticsCubitState(
           date: date ?? DateTime.now(),
-          alcoholByDayThisWeek: {},
-          alcoholByDayLastWeek: {},
+          averageAlcoholPerSession: 0,
+          changeOfAverageAlcohol: 0,
+          alcoholByDay: {},
+          numberOfDrinks: 0,
           highestBAC: 0,
+          calories: 0,
           goals: const Goals(),
         )) {
     _initState();
@@ -57,13 +60,47 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
 
     final highestBAC = await _calculateHighestBAC(user, thisWeeksDrinks);
 
+    final averageAlcoholPerSessionThisWeek = _calculateAverageAlcoholPerSession(alcoholByDayThisWeek);
+    final averageAlcoholPerSessionLastWeek = _calculateAverageAlcoholPerSession(alcoholByDayLastWeek);
+
+    final changeOfAverageAlcohol = _calculateChangeToLastWeek(
+      alcoholThisWeek: averageAlcoholPerSessionThisWeek,
+      alcoholLastWeek: averageAlcoholPerSessionLastWeek,
+    );
+
     return AnalyticsCubitState(
       date: state.firstDayOfWeek,
-      goals: user.goals,
-      alcoholByDayLastWeek: alcoholByDayLastWeek,
-      alcoholByDayThisWeek: alcoholByDayThisWeek,
+      averageAlcoholPerSession: averageAlcoholPerSessionThisWeek,
+      changeOfAverageAlcohol: changeOfAverageAlcohol,
+      alcoholByDay: alcoholByDayThisWeek,
+      numberOfDrinks: thisWeeksDrinks.length,
+      calories: thisWeeksDrinks.fold(0, (sum, el) => sum + el.calories),
       highestBAC: highestBAC,
+      goals: user.goals,
     );
+  }
+
+  static double _calculateAverageAlcoholPerSession(Map<DateTime, double?> alcoholByDay) {
+    final asList = alcoholByDay.values.whereNotNull();
+    final total = asList.fold<double>(0.0, (sum, el) => sum + el);
+    final sessions = asList.length;
+    return total / max(sessions, 1);
+  }
+
+  static double _calculateChangeToLastWeek({
+    required double alcoholThisWeek,
+    required double alcoholLastWeek,
+  }) {
+    if (alcoholLastWeek == 0) {
+      if (alcoholThisWeek == 0) {
+        return 0;
+      }
+
+      // Always +100% if no alcohol was conusmed last week (even though technically it's inf)
+      return 1;
+    }
+
+    return (alcoholThisWeek / alcoholLastWeek) - 1;
   }
 
   Map<DateTime, double?> _foldDrinksAndDiaryEntries(List<Drink> drinks, List<DiaryEntry> diaryEntries) {
@@ -120,64 +157,39 @@ class AnalyticsCubitState {
   final DateTime firstDayOfWeek;
   final DateTime lastDayOfWeek;
 
-  final Map<DateTime, double?> alcoholByDayThisWeek;
-
+  final Map<DateTime, double?> alcoholByDay;
   final Map<DateTime, bool?> drinkFreeDays;
+  final double totalAlcohol;
   final double highestBAC;
+  final int calories;
+  final int numberOfDrinks;
 
-  final double totalAlcoholThisWeek;
-
-  late final double averageAlcoholPerSessionThisWeek;
+  final double averageAlcoholPerSession;
 
   /// The change in percent compared to last week, from -inf to +inf
-  late final double changeOfAverageAlcohol;
+  final double changeOfAverageAlcohol;
 
   final Goals goals;
 
   AnalyticsCubitState({
     required DateTime date,
-    required this.alcoholByDayThisWeek,
-    required Map<DateTime, double> alcoholByDayLastWeek, // Attention: This contains **only** drinking days
+    required this.changeOfAverageAlcohol,
+    required this.averageAlcoholPerSession,
+    required this.alcoholByDay,
+    required this.numberOfDrinks,
     required this.highestBAC,
+    required this.calories,
     required this.goals,
   })  : firstDayOfWeek = date.floorToWeek(),
         lastDayOfWeek = date.floorToWeek().add(oneWeek),
-        totalAlcoholThisWeek = _sum(alcoholByDayThisWeek),
-        drinkFreeDays = _mapAlcoholToDrinkFreeDays(alcoholByDayThisWeek) {
-    final drinkingSessionsThisWeek = alcoholByDayThisWeek.values.whereNotNull().length;
-    averageAlcoholPerSessionThisWeek = totalAlcoholThisWeek / max(drinkingSessionsThisWeek, 1);
-
-    final totalAlcoholLastWeek = _sum(alcoholByDayLastWeek);
-    final drinkingSessionsLastWeek = alcoholByDayLastWeek.values.length;
-    final averageAlcoholPerSessionLastWeek = totalAlcoholLastWeek / max(drinkingSessionsLastWeek, 1);
-
-    changeOfAverageAlcohol = _calculateChangeToLastWeek(
-      alcoholThisWeek: averageAlcoholPerSessionThisWeek,
-      alcoholLastWeek: averageAlcoholPerSessionLastWeek,
-    );
-  }
+        totalAlcohol = _sum(alcoholByDay),
+        drinkFreeDays = _mapAlcoholToDrinkFreeDays(alcoholByDay) {}
 
   static Map<DateTime, bool?> _mapAlcoholToDrinkFreeDays(Map<DateTime, double?> alcoholPerDay) =>
       alcoholPerDay.map((key, value) => MapEntry(key, value == null ? null : value == 0.0));
 
   static double _sum(Map<DateTime, double?> alcoholPerDay) =>
-      alcoholPerDay.values.fold(0.0, (total, el) => total + (el ?? 0));
-
-  static double _calculateChangeToLastWeek({
-    required double alcoholThisWeek,
-    required double alcoholLastWeek,
-  }) {
-    if (alcoholLastWeek == 0) {
-      if (alcoholThisWeek == 0) {
-        return 0;
-      }
-
-      // Always +100% if no alcohol was conusmed last week (even though technically it's inf)
-      return 1;
-    }
-
-    return (alcoholThisWeek / alcoholLastWeek) - 1;
-  }
+      alcoholPerDay.values.whereNotNull().fold(0.0, (total, el) => total + el);
 }
 
 extension Week on DateTime {

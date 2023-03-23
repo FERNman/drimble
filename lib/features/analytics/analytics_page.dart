@@ -77,12 +77,12 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
   Widget _buildAlcoholConsumption() {
     return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
       buildWhen: (previous, current) =>
-          previous.totalAlcoholThisWeek != current.totalAlcoholThisWeek ||
+          previous.totalAlcohol != current.totalAlcohol ||
           previous.changeOfAverageAlcohol != current.changeOfAverageAlcohol ||
           previous.goals != current.goals,
       builder: (context, state) => Center(
         child: WeeklyAlcoholConsumption(
-          totalGramsOfAlcohol: state.totalAlcoholThisWeek,
+          totalGramsOfAlcohol: state.totalAlcohol,
           changeToLastWeek: state.changeOfAverageAlcohol,
           goals: state.goals,
           onEdit: () => context.router.push(const EditWeeklyAlcoholGoalRoute()),
@@ -105,10 +105,13 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildDrinkingTrends() {
     return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
-      buildWhen: (previous, current) => previous.alcoholByDayThisWeek != current.alcoholByDayThisWeek,
+      buildWhen: (previous, current) =>
+          previous.alcoholByDay != current.alcoholByDay ||
+          previous.averageAlcoholPerSession != current.averageAlcoholPerSession ||
+          previous.changeOfAverageAlcohol != current.changeOfAverageAlcohol,
       builder: (context, state) => WeeklyAlcoholPerDayChart(
-        alcoholPerDayThisWeek: state.alcoholByDayThisWeek,
-        averageThisWeek: state.averageAlcoholPerSessionThisWeek,
+        alcoholPerDayThisWeek: state.alcoholByDay,
+        averageThisWeek: state.averageAlcoholPerSession,
         changeToLastWeek: state.changeOfAverageAlcohol,
         height: 140,
       ),
@@ -117,11 +120,14 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildStatistics() {
     return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
-      buildWhen: (previous, current) => previous.highestBAC != current.highestBAC,
+      buildWhen: (previous, current) =>
+          previous.highestBAC != current.highestBAC ||
+          previous.calories != current.calories ||
+          previous.numberOfDrinks != current.numberOfDrinks,
       builder: (context, state) => WeeklyStatistics(
         highestBAC: state.highestBAC,
-        calories: 1200,
-        numberOfDrinks: 8,
+        calories: state.calories,
+        numberOfDrinks: state.numberOfDrinks,
       ),
     );
   }
