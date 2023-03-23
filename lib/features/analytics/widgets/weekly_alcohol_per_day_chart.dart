@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import '../../../infra/extensions/to_string_as_float.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/line_chart/draw_dashed_line.dart';
+import '../../common/number_text_style.dart';
 
 class WeeklyAlcoholPerDayChart extends StatelessWidget {
   final Map<DateTime, double?> alcoholPerDayThisWeek;
@@ -73,7 +74,7 @@ class WeeklyAlcoholPerDayChart extends StatelessWidget {
       text: TextSpan(
         style: context.textTheme.bodyLarge,
         children: [
-          TextSpan(text: '${averageThisWeek.round()}g ', style :const TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: '${averageThisWeek.round()}g ', style: NumberTextStyle.style),
           TextSpan(text: context.l18n.analytics_averageAlcoholPerSession),
         ],
       ),

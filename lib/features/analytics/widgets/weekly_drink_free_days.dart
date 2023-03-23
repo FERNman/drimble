@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../domain/user/goals.dart';
 import '../../common/build_context_extensions.dart';
+import '../../common/number_text_style.dart';
 
 class WeeklyDrinkFreeDays extends StatelessWidget {
   final Map<DateTime, bool?> drinkFreeDays;
@@ -21,37 +22,55 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final didSetGoal = goals.weeklyDrinkFreeDays != null;
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
+        onTap: didSetGoal ? onTap : null,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      _buildDrinkFreeDaysText(context),
-                      const SizedBox(height: 4),
-                      _buildGoalText(context),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4),
-                    child: Icon(Icons.navigate_next_outlined),
-                  ),
-                ],
-              ),
+              _buildTextAndIcon(context),
               const SizedBox(height: 24),
               _DrinkFreeDaysIndicator(drinkFreeDays: drinkFreeDays),
+              didSetGoal ? const SizedBox() : _buildSetGoalButton(context),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextAndIcon(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDrinkFreeDaysText(context),
+            const SizedBox(height: 4),
+            _buildGoalText(context),
+          ],
+        ),
+        goals.weeklyDrinkFreeDays == null
+            ? const SizedBox()
+            : const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Icon(Icons.edit_outlined),
+              ),
+      ],
+    );
+  }
+
+  Widget _buildSetGoalButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: TextButton(
+        onPressed: onTap,
+        child: Text(context.l18n.analytics_setAGoal),
       ),
     );
   }
@@ -63,16 +82,20 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
         children: [
           TextSpan(
             text: '$_drinkFreeDayCount ',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.colorScheme.primary),
+            style: TextStyle(fontSize: 18, color: context.colorScheme.primary).forNumbers(),
           ),
-          TextSpan(text: context.l18n.analytics_drinkFreeDays),
+          TextSpan(text: context.l18n.analytics_drinkFreeDays(_drinkFreeDayCount)),
         ],
       ),
     );
   }
 
   Widget _buildGoalText(BuildContext context) {
-    final remainingDrinkFreeDaysToGoal = (goals.weeklyDrinkFreeDays ?? 0) - _drinkFreeDayCount;
+    if (goals.weeklyDrinkFreeDays == null) {
+      return Text(context.l18n.analytics_maybeTrySettingAGoal, style: context.textTheme.bodySmall);
+    }
+
+    final remainingDrinkFreeDaysToGoal = goals.weeklyDrinkFreeDays! - _drinkFreeDayCount;
     if (remainingDrinkFreeDaysToGoal <= 0) {
       return Text(context.l18n.analytics_drinkFreeDaysGoalHit, style: context.textTheme.bodySmall);
     } else {
@@ -80,13 +103,8 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
         text: TextSpan(
           style: context.textTheme.bodySmall,
           children: [
-            TextSpan(
-              text: '$remainingDrinkFreeDaysToGoal ',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextSpan(
-              text: context.l18n.analytics_remainingDrinkFreeDaysToGoal,
-            )
+            TextSpan(text: '$remainingDrinkFreeDaysToGoal ', style: NumberTextStyle.style),
+            TextSpan(text: context.l18n.analytics_remainingDrinkFreeDaysToGoal)
           ],
         ),
       );

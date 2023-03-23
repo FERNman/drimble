@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../common/build_context_extensions.dart';
+import '../../common/number_text_style.dart';
 
 class WeeklyStatistics extends StatelessWidget {
   final double highestBAC;
@@ -41,8 +42,7 @@ class WeeklyStatistics extends StatelessWidget {
           children: [
             Text(
               '${highestBAC.toStringAsFixed(2)}%',
-              style: context.textTheme.headlineSmall
-                  ?.copyWith(color: context.colorScheme.primary, fontWeight: FontWeight.bold),
+              style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary).forNumbers(),
             ),
             const SizedBox(height: 4),
             Text(
@@ -100,7 +100,7 @@ class WeeklyStatistics extends StatelessWidget {
             children: [
               TextSpan(
                 text: '$number ',
-                style: TextStyle(color: context.colorScheme.primary, fontWeight: FontWeight.bold),
+                style: TextStyle(color: context.colorScheme.primary).forNumbers(),
               ),
               TextSpan(text: unit)
             ],
