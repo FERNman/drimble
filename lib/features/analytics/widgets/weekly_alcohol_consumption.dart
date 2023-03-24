@@ -40,7 +40,7 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        _buildPercentageIndicator(context, _remainingPercentToLimit),
+        _buildPercentageIndicator(context),
         Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,7 +77,7 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
           right: 0,
           child: IconButton(icon: const Icon(Icons.edit_outlined), onPressed: onEdit),
         ),
-        _buildPercentageIndicator(context, _remainingPercentToLimit),
+        _buildPercentageIndicator(context),
         Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,34 +89,33 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
                 style: context.textTheme.labelSmall?.copyWith(color: Colors.black54),
               ),
               const SizedBox(height: 12),
-              Text(_getLimitText(context, _remainingGramsOfAlcohol)),
+              Text(
+                _getLimitText(context, _remainingGramsOfAlcohol),
+                style: context.textTheme.bodyLarge,
+              ),
             ],
           ),
         ),
         Positioned(
           bottom: 8,
-          child: _buildRemainingAlcoholText(context, _remainingGramsOfAlcohol),
+          child: Text(
+            context.l18n.analytics_goalsWeeklyAlcoholRemaining(_remainingGramsOfAlcohol.round()),
+            style: context.textTheme.bodyMedium?.copyWith(color: const Color.fromARGB(180, 0, 0, 0)),
+          ),
         ),
       ],
     );
   }
 
-  Padding _buildPercentageIndicator(BuildContext context, double remainingPercentToLimit) {
+  Widget _buildPercentageIndicator(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16, bottom: 16),
       child: CircularPercentageIndicator(
-        percentage: remainingPercentToLimit,
+        percentage: _remainingPercentToLimit,
         width: min(250, MediaQuery.of(context).size.width - 32 * 2), // 32 px padding each size
         backgroundColor: context.colorScheme.primaryContainer,
         foregroundColor: context.colorScheme.primary,
       ),
-    );
-  }
-
-  Widget _buildRemainingAlcoholText(BuildContext context, double remainingGramsOfAlcohol) {
-    return Text(
-      context.l18n.analytics_goalsWeeklyAlcoholRemaining(remainingGramsOfAlcohol.round()),
-      style: context.textTheme.bodyMedium?.copyWith(color: const Color.fromARGB(180, 0, 0, 0)),
     );
   }
 
