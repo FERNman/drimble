@@ -7,9 +7,13 @@ import 'stomach_fullness.dart';
 class Drink extends Alcohol {
   int? id;
   final StomachFullness stomachFullness;
+
+  /// The time when drinking this drink started. Only to be used for calculating the BAC.
+  /// <b>Must not be taken for date comparisons!</b>
   final DateTime startTime;
   final Duration duration;
 
+  /// The date of this drink. If the drink started before 6am, it is considered to be on the previous day.
   DateTime get date =>
       (startTime.hour < 6) ? startTime.subtract(const Duration(days: 1)).floorToDay() : startTime.floorToDay();
 

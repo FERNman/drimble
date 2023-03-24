@@ -66,7 +66,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       // A hack(?) to make sure the navigation bar color is white on Android
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.dark,
-        statusBarColor: Colors.transparent,
+        statusBarColor: Colors.white,
         systemNavigationBarColor: Colors.white,
       ));
 

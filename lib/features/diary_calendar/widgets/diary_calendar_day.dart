@@ -78,6 +78,7 @@ class DiaryCalendarDay extends StatelessWidget {
         color: onTap == null ? Colors.black26 : Colors.black87,
         borderType: BorderType.Circle,
         dashPattern: const <double>[2, 3],
+        padding: EdgeInsets.zero,
         child: container,
       );
     } else {
