@@ -55,7 +55,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       tertiaryContainer: Color(0xFFFFDEAD),
       background: Colors.white,
       shadow: Colors.black,
-      surface: Color(0xFFFEFBFF),
+      surface: Color(0xFFFDFDFF),
       surfaceVariant: Color(0xFFE1E2EC),
       surfaceTint: Colors.white,
     );
@@ -113,10 +113,11 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 showCheckmark: false,
               ),
               cardTheme: CardTheme(
-                color: const Color(0xFFFAFBFF), // A very light version of primaryContainer
+                color: colorScheme.surface,
                 margin: const EdgeInsets.all(0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: Color.fromARGB(10, 0, 0, 0)),
                 ),
               ),
               dividerTheme: const DividerThemeData(
