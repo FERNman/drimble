@@ -14,6 +14,9 @@ class BACEntry {
   BACEntry.sober(this.time) : value = 0.0;
 
   BACEntry copyWith({DateTime? time, double? value}) => BACEntry(time ?? this.time, value ?? this.value);
+
+  @override
+  String toString() => '${value.toStringAsFixed(2)}%';
 }
 
 class BACCalculationResults {
