@@ -36,7 +36,7 @@ class BACChartTitle extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     if (_isDrunk()) {
       return Text(
-        '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
+        '${results.getEntryAt(dateTime)}',
         style: context.textTheme.headlineMedium,
       );
     }
@@ -53,13 +53,13 @@ class BACChartTitle extends StatelessWidget {
       );
     } else if (DateUtils.isSameDay(DateTime.now(), dateTime)) {
       return Text(
-        '${results.getEntryAt(dateTime).value.toStringAsFixed(2)}‰',
+        '${results.getEntryAt(dateTime)}',
         style: context.textTheme.headlineMedium,
       );
     } else {
       final maxBAC = results.maxBAC;
       return Text(
-        '${maxBAC.value.toStringAsFixed(2)}‰ max',
+        '$maxBAC max',
         style: context.textTheme.titleLarge,
       );
     }
@@ -89,7 +89,7 @@ class BACChartTitle extends StatelessWidget {
     final currentBAC = results.getEntryAt(now);
 
     if (maxBAC.value > currentBAC.value && maxBAC.time.isAfter(now)) {
-      return context.l18n.diary_reachesMaxBACAt(maxBAC.value.toStringAsFixed(2), maxBAC.time);
+      return context.l18n.diary_reachesMaxBACAt('$maxBAC', maxBAC.time);
     } else if (soberAt.isAfter(now)) {
       if (soberAt.day > now.day) {
         return context.l18n.diary_soberTomorrowAt(soberAt);
