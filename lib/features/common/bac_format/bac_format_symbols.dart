@@ -8,8 +8,8 @@ class BacFormatSymbols {
   });
 }
 
-const _byVolumePercent = BacFormatSymbols(pattern: '0.0#\'%\'', multiplier: 1);
-const _byVolumePermille = BacFormatSymbols(pattern: '0.0#\'‰\'', multiplier: 10);
+const _byVolumePercent = BacFormatSymbols(pattern: '0.00\'%\'', multiplier: 1);
+const _byVolumePermille = BacFormatSymbols(pattern: '0.00\'‰\'', multiplier: 10);
 
 const bacFormatSymbols = {
   'en': _byVolumePercent,

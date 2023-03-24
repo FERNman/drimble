@@ -10,3 +10,4 @@ linter:
 analyzer:
   exclude:
     - lib/**/*.g.dart
+    - lib/infra/l18n/intl/*.dart

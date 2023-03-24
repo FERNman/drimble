@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../bac_format/bac_format.dart';
 import '../build_context_extensions.dart';
 import 'draw_dashed_line.dart';
 
@@ -30,18 +31,22 @@ class VerticalLineChartLabels extends StatelessWidget {
   }
 
   List<Widget> _rows(BuildContext context) {
-    return _values
-        .map(
-          (e) => Row(
-            children: [
-              // TODO: This style should probably not be fixed
-              Text(e.toStringAsFixed(2), style: context.textTheme.labelSmall?.copyWith(color: Colors.black38)),
-              const SizedBox(width: 8),
-              Expanded(child: CustomPaint(size: const Size(double.infinity, 2), painter: _DashedLinePainter())),
-            ],
-          ),
-        )
-        .toList();
+    final bacFormatter = BacFormat();
+
+    return _values.map(
+      (e) {
+        return Row(
+          children: [
+            Text(
+              bacFormatter.format(e, withSymbol: false),
+              style: context.textTheme.labelSmall?.copyWith(color: Colors.black38),
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: CustomPaint(size: const Size(double.infinity, 2), painter: _DashedLinePainter())),
+          ],
+        );
+      },
+    ).toList();
   }
 }
 

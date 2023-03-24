@@ -18,8 +18,14 @@ class BacFormat {
 
   BacFormat._(this._symbol, this._formatter);
 
-  String format(Percentage bac) {
-    return _formatter.format(bac * _symbol.multiplier);
+  String format(Percentage bac, {bool withSymbol = true}) {
+    final formatted = _formatter.format(bac * _symbol.multiplier);
+    if (withSymbol) {
+      return formatted;
+    } else {
+      // Remove last character, which is the symbol
+      return formatted.substring(0, formatted.length - 1);
+    }
   }
 
   static bool localeExists(localeName) {
