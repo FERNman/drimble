@@ -113,7 +113,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 showCheckmark: false,
               ),
               cardTheme: CardTheme(
-                color: Colors.white,
+                color: const Color(0xFFFAFBFF), // A very light version of primaryContainer
                 margin: const EdgeInsets.all(0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
