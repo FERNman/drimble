@@ -89,7 +89,7 @@ class BACChartTitle extends StatelessWidget {
     final currentBAC = results.getEntryAt(now);
 
     if (maxBAC.value > currentBAC.value && maxBAC.time.isAfter(now)) {
-      return context.l18n.diary_reachesMaxBACAt(maxBAC.value.toStringAsFixed(2), maxBAC.time);
+      return context.l18n.diary_reachesMaxBACAt('$maxBAC', maxBAC.time);
     } else if (soberAt.isAfter(now)) {
       if (soberAt.day > now.day) {
         return context.l18n.diary_soberTomorrowAt(soberAt);

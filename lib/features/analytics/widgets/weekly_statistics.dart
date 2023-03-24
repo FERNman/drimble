@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../common/bac_format/bac_format.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 
@@ -41,7 +42,7 @@ class WeeklyStatistics extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${highestBAC.toStringAsFixed(2)}%',
+              BacFormat().format(highestBAC),
               style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary).forNumbers(),
             ),
             const SizedBox(height: 4),
