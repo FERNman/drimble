@@ -8,6 +8,11 @@ void main() {
       expect(bacFormat.format(0.1234), '0.12%');
     });
 
+    test('should remove the symbol if withSymbol is false', () async {
+      final bacFormat = BacFormat('en_US');
+      expect(bacFormat.format(0.1234, withSymbol: false), '0.12');
+    });
+
     test('should round the last decimal place', () async {
       final bacFormat = BacFormat('en_US');
       expect(bacFormat.format(0.129), '0.13%');
