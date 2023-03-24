@@ -79,7 +79,8 @@ class BACCalculator {
     return currentBAC;
   }
 
-  double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
+  // TODO: Verify this multiplication by 10 is actually correct
+  double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent * 10.0;
 
   double _calculateAbsorbedAlcohol(List<Drink> drinks, DateTime at) {
     return drinks.fold<double>(0.0, (absorbedAlcohol, drink) {

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 
+import '../features/common/bac_format/bac_format.dart';
 import 'alcohol/alcohol.dart';
 
 class BACEntry {
@@ -14,6 +15,9 @@ class BACEntry {
   BACEntry.sober(this.time) : value = 0.0;
 
   BACEntry copyWith({DateTime? time, double? value}) => BACEntry(time ?? this.time, value ?? this.value);
+
+  @override
+  String toString() => BacFormat().format(value);
 }
 
 class BACCalculationResults {

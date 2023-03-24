@@ -3,8 +3,6 @@ import 'gender.dart';
 import 'goals.dart';
 
 class User {
-  static const bloodPerMass = 0.067;
-
   String name;
   Gender gender;
   int age;
