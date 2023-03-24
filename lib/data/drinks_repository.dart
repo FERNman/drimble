@@ -11,7 +11,7 @@ class DrinksRepository {
 
   DrinksRepository(this._drinksDao, this._diaryDao);
 
-  Stream<List<Drink>> observeDrinksBetween(DateTime startDate, DateTime endDate) =>
+  Stream<List<Drink>> observeDrinksBetweenDays(DateTime startDate, DateTime endDate) =>
       _drinksDao.observeBetweenDates(startDate, endDate);
 
   Stream<List<Drink>> observeDrinksOnDate(DateTime date) => _drinksDao.observeOnDate(date);

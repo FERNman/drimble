@@ -9,7 +9,7 @@ import 'edit_drink_cubit_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<DrinksRepository>()])
 void main() {
-  group('EditDrinkCubit', () {
+  group(EditDrinkCubit, () {
     final date = faker.date.dateTime();
 
     test('should correctly update the date if the time is before 6am', () {
@@ -20,7 +20,7 @@ void main() {
       final at3am = date.copyWith(hour: 3);
       cubit.updateStartTime(at3am);
 
-      expect(cubit.state.drink.startTime.day, at10Am.day + 1);
+      expect(cubit.state.drink.startTime.day, at10Am.add(const Duration(days: 1)).day);
     });
 
     test('should not update the date if the start time was already before 6am', () {
@@ -42,7 +42,7 @@ void main() {
       final at12pm = date.copyWith(hour: 12);
       cubit.updateStartTime(at12pm);
 
-      expect(cubit.state.drink.startTime.day, at5Am.day - 1);
+      expect(cubit.state.drink.startTime.day, at5Am.subtract(const Duration(days: 1)).day);
     });
   });
 }

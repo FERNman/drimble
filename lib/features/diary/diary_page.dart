@@ -43,9 +43,9 @@ class DiaryPage extends StatelessWidget {
 
   Widget _buildCalendar() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
+      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.dateTime, current.dateTime),
       builder: (context, state) => DiaryCalendar(
-        selectedDay: state.date.floorToDay(),
+        selectedDay: state.dateTime.floorToDay(),
         onSelectedDayChanged: (value) {
           context.read<DiaryCubit>().switchDate(value);
         },
@@ -58,7 +58,7 @@ class DiaryPage extends StatelessWidget {
       builder: (context, state) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BACChartTitle(
-          dateTime: state.date,
+          dateTime: state.dateTime,
           results: state.calculationResults,
           diaryEntry: state.diaryEntry,
           onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
@@ -72,7 +72,7 @@ class DiaryPage extends StatelessWidget {
       buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
       builder: (context, state) => BACChart(
         results: state.calculationResults,
-        currentDate: state.date,
+        currentDate: state.dateTime,
       ),
     );
   }
@@ -119,7 +119,7 @@ class DiaryPage extends StatelessWidget {
             );
           },
           onViewAll: () {
-            context.router.push(TodaysDrinksRoute(date: state.date));
+            context.router.push(TodaysDrinksRoute(date: state.dateTime));
           },
         );
       },

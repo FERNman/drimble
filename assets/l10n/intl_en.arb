@@ -99,6 +99,38 @@
   "analytics_changeFromLastWeek": "from last week",
   "analytics_highestBloodAlcoholLevel": "highest blood alcohol level",
   "analytics_maxBACInfo": "Stay below 0.08% to minimize immediate health consequences and damage to your brain.",
+  "analytics_totalAlcoholConsumption": "Alcohol consumption",
+  "analytics_totalAlcoholConsumptionDescription": "Your weekly alcohol consumption is the main indicator for the effect that alcohol has on you.",
+  "analytics_setAGoal": "Set a goal",
+  "analytics_statistics": "Statistics",
+  "analytics_drinkingTrends": "Drinking trends",
+  "analytics_date_thisWeek": "This week",
+  "analytics_noAlcoholConsumedYet": "No drinks yet! 🎉",
+  "analytics_alcoholConsumptionWithinLimits": "within your limits 💪",
+  "analytics_alcoholConsumptionCloseToLimit": "close to your limit 😬",
+  "analytics_alcoholConsumptionOverLimit": "surpassed your limit 😔",
+  "analytics_goalsWeeklyAlcoholRemaining": "{remainingAlcohol}g remaining",
+  "@analytics_goalsWeeklyAlcoholRemaining": {
+    "placeholders": {
+      "remainingAlcohol": {
+        "type": "int"
+      }
+    }
+  },
+  "analytics_gramsOfAlcohol": "of alcohol",
+  "analytics_drinkFreeDays": "drink-free {days, plural, zero{days} one{day} other{days}}",
+  "@analytics_drinkFreeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "analytics_remainingDrinkFreeDaysToGoal": "more to hit your goal!",
+  "analytics_drinkFreeDaysGoalHit": "You hit your goal! 😍",
+  "analytics_drinksThisWeek": "this week",
+  "analytics_averageAlcoholPerSession": "avg. per session",
+  "analytics_maybeTrySettingAGoal": "Maybe try setting a goal?",
   "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
@@ -129,5 +161,10 @@
   "profile_birthyear_errorInvalid": "Please enter a valid year",
   "profile_height": "Height",
   "profile_weight": "Weight",
-  "profile_bodyComposition": "Body composition"
+  "profile_bodyComposition": "Body composition",
+  "editWeeklyAlcoholGoal_title": "Weekly alcohol consumption",
+  "editWeeklyAlcoholGoal_description": "Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!",
+  "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
+  "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
+  "editWeeklyGoal_setGoal": "Set goal!"
 }

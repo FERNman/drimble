@@ -6,6 +6,8 @@ import 'features/add_drink/add_drink_page.dart';
 import 'features/analytics/analytics_page.dart';
 import 'features/diary/diary_page.dart';
 import 'features/edit_drink/edit_drink_page.dart';
+import 'features/edit_weekly_alcohol_goal/edit_weekly_alcohol_goal_page.dart';
+import 'features/edit_weekly_drink_free_days_goal/edit_weekly_drink_free_days_goal_page.dart';
 import 'features/home/home_guard.dart';
 import 'features/home/home_page.dart';
 import 'features/onboarding/onboarding_cubit_provider_page.dart';
@@ -36,6 +38,8 @@ part 'router.gr.dart';
     AutoRoute(page: EditDrinkPage),
     AutoRoute(page: TodaysDrinksPage),
     AutoRoute(page: ProfilePage),
+    AutoRoute(page: EditWeeklyAlcoholGoalPage),
+    AutoRoute(page: EditWeeklyDrinkFreeDaysGoalPage),
     AutoRoute(
       page: OnboardingCubitProviderPage,
       name: 'OnboardingRoute',

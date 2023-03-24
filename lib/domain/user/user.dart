@@ -1,5 +1,6 @@
 import 'body_composition.dart';
 import 'gender.dart';
+import 'goals.dart';
 
 class User {
   static const bloodPerMass = 0.067;
@@ -10,6 +11,8 @@ class User {
   int height; // In centimeters
   int weight; // In kilograms
   BodyComposition bodyComposition;
+
+  Goals goals;
 
   double get totalBodyWater {
     switch (gender) {
@@ -36,22 +39,16 @@ class User {
     required this.height,
     required this.weight,
     required this.bodyComposition,
+    this.goals = const Goals(),
   });
 
-  User.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        gender = Gender.values.firstWhere((el) => el.name == json['gender']),
-        age = json['age'],
-        height = json['height'],
-        weight = json['weight'],
-        bodyComposition = BodyComposition.values.firstWhere((el) => el.name == json['bodyComposition']);
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'gender': gender.name,
-        'age': age,
-        'height': height,
-        'weight': weight,
-        'bodyComposition': bodyComposition.name
-      };
+  User copyWith({Goals? goals}) => User(
+        name: name,
+        gender: gender,
+        age: age,
+        height: height,
+        weight: weight,
+        bodyComposition: bodyComposition,
+        goals: goals ?? this.goals,
+      );
 }

@@ -42,9 +42,9 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildFAB() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.date, current.date),
+      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.dateTime, current.dateTime),
       builder: (context, state) => FloatingActionButton(
-        onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
+        onPressed: () => context.router.push(AddDrinkRoute(date: state.dateTime)),
         child: const Icon(Icons.add),
       ),
     );

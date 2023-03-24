@@ -82,7 +82,10 @@ class DrinksDAO extends DAO {
         .createQuery(
           _Entity.table,
           where: '${_Entity.startTime} BETWEEN ? AND ?',
-          whereArgs: [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
+          whereArgs: [
+            startDate.floorToDay(hour: 6).millisecondsSinceEpoch,
+            endDate.floorToDay(hour: 6).millisecondsSinceEpoch
+          ],
           orderBy: '${_Entity.startTime} DESC',
         )
         .mapToList((e) => _Entity.fromEntity(e));
