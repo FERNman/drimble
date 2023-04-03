@@ -8,6 +8,7 @@ import '../common/number_text_style.dart';
 import '../edit_weekly_goal/edit_weekly_goal.dart';
 import '../edit_weekly_goal/edit_weekly_goal_cubit.dart';
 
+@RoutePage()
 class EditWeeklyAlcoholGoalPage extends StatelessWidget implements AutoRouteWrapper {
   const EditWeeklyAlcoholGoalPage({super.key});
 

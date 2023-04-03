@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import '../../router.dart';
+import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import 'onboarding_cubit.dart';
 import 'widgets/onboarding_app_bar.dart';
 
+@RoutePage()
 class OnboardingSelectBirthyearPage extends StatelessWidget {
   const OnboardingSelectBirthyearPage({super.key});
 

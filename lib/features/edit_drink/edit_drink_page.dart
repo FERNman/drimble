@@ -8,6 +8,7 @@ import 'edit_drink_cubit.dart';
 import 'edit_drink_form.dart';
 import 'widgets/edit_drink_summary.dart';
 
+@RoutePage()
 class EditDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   final Drink drink;
   final bool isEditing;

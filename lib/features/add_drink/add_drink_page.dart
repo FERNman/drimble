@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/diary/drink.dart';
 import '../../infra/extensions/set_date.dart';
-import '../../router.dart';
+import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import '../common/widgets/extended_app_bar.dart';
 import 'add_drink_cubit.dart';
 import 'widgets/common_drinks.dart';
 import 'widgets/recent_drinks.dart';
 
+@RoutePage()
 class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   final DateTime date;
 

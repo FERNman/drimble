@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 
 import '../../data/user_repository.dart';
-import '../../router.dart';
+import '../../router.gr.dart';
 
 class HomeGuard extends AutoRouteGuard {
   final UserRepository _userRepository;
