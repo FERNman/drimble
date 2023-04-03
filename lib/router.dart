@@ -1,59 +1,44 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
 
-import 'domain/diary/drink.dart';
-import 'features/add_drink/add_drink_page.dart';
-import 'features/analytics/analytics_page.dart';
-import 'features/diary/diary_page.dart';
-import 'features/edit_drink/edit_drink_page.dart';
-import 'features/edit_weekly_alcohol_goal/edit_weekly_alcohol_goal_page.dart';
-import 'features/edit_weekly_drink_free_days_goal/edit_weekly_drink_free_days_goal_page.dart';
 import 'features/home/home_guard.dart';
-import 'features/home/home_page.dart';
-import 'features/onboarding/onboarding_cubit_provider_page.dart';
-import 'features/onboarding/onboarding_select_birthyear_page.dart';
-import 'features/onboarding/onboarding_select_body_composition_page.dart';
-import 'features/onboarding/onboarding_select_gender_page.dart';
-import 'features/onboarding/onboarding_select_height_page.dart';
-import 'features/onboarding/onboarding_select_weight_page.dart';
-import 'features/onboarding/onboarding_welcome_page.dart';
-import 'features/profile/profile_page.dart';
-import 'features/todays_drinks/todays_drinks_page.dart';
+import 'router.gr.dart';
 
-part 'router.gr.dart';
+@AutoRouterConfig(replaceInRouteName: 'Page,Route')
+class DrimbleRouter extends $DrimbleRouter {
+  final HomeGuard _homeGuard;
 
-@MaterialAutoRouter(
-  replaceInRouteName: 'Page,Route',
-  routes: <AutoRoute>[
+  DrimbleRouter(this._homeGuard);
+
+  @override
+  RouteType get defaultRouteType => const RouteType.material();
+
+  @override
+  late final routes = <AutoRoute>[
     AutoRoute(
-      page: HomePage,
-      initial: true,
-      guards: [HomeGuard],
+      page: HomeRoute.page,
+      path: '/',
+      guards: [_homeGuard],
       children: [
-        AutoRoute(page: DiaryPage, initial: true),
-        AutoRoute(page: AnalyticsPage),
+        AutoRoute(page: DiaryRoute.page, path: ''),
+        AutoRoute(page: AnalyticsRoute.page),
       ],
     ),
-    AutoRoute(page: AddDrinkPage),
-    AutoRoute(page: EditDrinkPage),
-    AutoRoute(page: TodaysDrinksPage),
-    AutoRoute(page: ProfilePage),
-    AutoRoute(page: EditWeeklyAlcoholGoalPage),
-    AutoRoute(page: EditWeeklyDrinkFreeDaysGoalPage),
+    AutoRoute(page: AddDrinkRoute.page),
+    AutoRoute(page: EditDrinkRoute.page),
+    AutoRoute(page: TodaysDrinksRoute.page),
+    AutoRoute(page: ProfileRoute.page),
+    AutoRoute(page: EditWeeklyAlcoholGoalRoute.page),
+    AutoRoute(page: EditWeeklyDrinkFreeDaysGoalRoute.page),
     AutoRoute(
-      page: OnboardingCubitProviderPage,
-      name: 'OnboardingRoute',
+      page: OnboardingRoute.page,
       children: [
-        AutoRoute(page: OnboardingWelcomePage, initial: true),
-        AutoRoute(page: OnboardingSelectGenderPage),
-        AutoRoute(page: OnboardingSelectBirthyearPage),
-        AutoRoute(page: OnboardingSelectHeightPage),
-        AutoRoute(page: OnboardingSelectWeightPage),
-        AutoRoute(page: OnboardingSelectBodyCompositionPage),
+        AutoRoute(page: OnboardingWelcomeRoute.page, path: ''),
+        AutoRoute(page: OnboardingSelectGenderRoute.page),
+        AutoRoute(page: OnboardingSelectBirthyearRoute.page),
+        AutoRoute(page: OnboardingSelectHeightRoute.page),
+        AutoRoute(page: OnboardingSelectWeightRoute.page),
+        AutoRoute(page: OnboardingSelectBodyCompositionRoute.page),
       ],
     )
-  ],
-)
-class DrimbleRouter extends _$DrimbleRouter {
-  DrimbleRouter({required super.homeGuard});
+  ];
 }

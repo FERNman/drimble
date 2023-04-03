@@ -2,10 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../router.dart';
+import '../../router.gr.dart';
 import '../diary/diary_cubit.dart';
 import 'widgets/home_bottom_navigation_bar.dart';
 
+@RoutePage()
 class HomePage extends StatelessWidget implements AutoRouteWrapper {
   const HomePage({super.key});
 
@@ -21,14 +22,15 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     return AutoTabsRouter(
       routes: const [DiaryRoute(), AnalyticsRoute()],
-      builder: (context, child, animation) {
+      transitionBuilder: (context, child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
 
         return Scaffold(
-          body: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          body: child,
           floatingActionButton: tabsRouter.activeIndex == 0 ? _buildFAB() : null,
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: HomeNavigationBar(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../infra/extensions/floor_date_time.dart';
-import '../../router.dart';
+import '../../router.gr.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../diary_calendar/diary_calendar.dart';
 import 'diary_cubit.dart';
@@ -13,6 +13,7 @@ import 'widgets/diary_app_bar.dart';
 import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_statistics.dart';
 
+@RoutePage()
 class DiaryPage extends StatelessWidget {
   const DiaryPage({super.key});
 

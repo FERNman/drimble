@@ -86,7 +86,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrimbleRouter(homeGuard: HomeGuard(context.read()));
+          _router ??= DrimbleRouter(HomeGuard(context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
@@ -143,8 +143,8 @@ class _DrimbleAppState extends State<DrimbleApp> {
               Locale('en'),
             ],
             title: 'Drimble',
-            routerDelegate: _router!.delegate(),
-            routeInformationParser: _router!.defaultRouteParser(),
+            routerConfig: _router!.config(),
+            // routeInformationParser: _router!.defaultRouteParser(),
           );
         },
       ),
