@@ -28,7 +28,7 @@ class LineChart extends StatelessWidget {
     super.key,
   })  : assert(data.isNotEmpty),
         // TODO: Division by 10 is a magic number, should be improved
-        _valueRange = _oneIfZero(maxValue.ceilToNiceDouble()) / 10.0,
+        _valueRange = _oneIfZero((maxValue * 10.0).ceilToNiceDouble() / 10.0),
         _showSpotIndicator = indexForSpotIndicator >= 0 && indexForSpotIndicator < data.length;
 
   static double _oneIfZero(double number) => number == 0.0 ? 1.0 : number;
