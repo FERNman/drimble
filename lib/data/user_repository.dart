@@ -1,24 +1,23 @@
 import 'dart:convert';
 
+import 'package:realm/realm.dart' show Realm;
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../domain/user/body_composition.dart';
 import '../domain/user/gender.dart';
 import '../domain/user/goals.dart';
 import '../domain/user/user.dart';
-import '../infra/extensions/database_drop.dart';
 
 class UserRepository {
   static const _userKey = 'user';
 
   final BehaviorSubject<User?> _user = BehaviorSubject();
-  final Database _database;
+  final Realm _realm;
 
   Future<User?> get user async => _user.hasValue ? _user.value : await _user.first;
 
-  UserRepository(this._database) {
+  UserRepository(this._realm) {
     _tryLoadUser().then((value) => _user.add(value));
   }
 
@@ -35,7 +34,8 @@ class UserRepository {
     _user.add(null);
     await _unsetUser();
 
-    await _database.drop();
+    // TODO
+    // await _realm.d
   }
 
   // TODO: Maybe change to simply update the whole user...

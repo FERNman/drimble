@@ -1,145 +1,99 @@
-import 'package:sqlbrite/sqlbrite.dart';
+import 'package:realm/realm.dart';
 
 import '../../domain/alcohol/drink_category.dart';
 import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/extensions/floor_date_time.dart';
+import '../models/drink_model.dart';
 import 'dao.dart';
 
 class DrinksDAO extends DAO {
-  DrinksDAO(super.database);
+  DrinksDAO(super.realm);
 
-  static Future<void> create(Database database) async {
-    await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
-      ${_Entity.id} INTEGER PRIMARY KEY,
-      ${_Entity.name} TEXT NOT NULL,
-      ${_Entity.icon} TEXT NOT NULL,
-      ${_Entity.category} TEXT NOT NULL,
-      ${_Entity.volume} INTEGER NOT NULL,
-      ${_Entity.alcoholByVolume} REAL NOT NULL,
-      ${_Entity.stomachFullness} TEXT NOT NULL,
-      ${_Entity.startTime} INTEGER NOT NULL,
-      ${_Entity.duration} INTEGER NOT NULL
-      )''');
-
-    await database.execute('CREATE INDEX IF NOT EXISTS idx_startTime ON ${_Entity.table} (${_Entity.startTime} ASC)');
+  void save(Drink drink) {
+    final entity = drink.toModel();
+    realm.add(entity, update: true);
   }
 
-  Future<void> save(Drink drink) async {
-    if (drink.id == null) {
-      final id = await executor.insert(_Entity.table, drink.toEntity());
-      drink.id = id;
-    } else {
-      await executor.update(_Entity.table, drink.toEntity(), where: '${_Entity.id} = ?', whereArgs: [drink.id]);
+  void delete(Drink drink) {
+    final entity = realm.find<DrinkModel>(drink.id);
+    if (entity != null) {
+      realm.delete(entity);
     }
   }
 
-  Future<void> delete(Drink drink) async {
-    await executor.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [drink.id]);
-  }
-
-  Future<void> deleteOnDate(DateTime date) async {
+  void deleteOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    await executor.delete(
-      _Entity.table,
-      where: '${_Entity.startTime} BETWEEN ? AND ?',
-      whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
-    );
+    final results = realm.query<DrinkModel>('startTime BETWEEN {\$0, \$1}', [startTime.toUtc(), endTime.toUtc()]);
+    realm.deleteMany(results);
   }
 
-  Future<List<Drink>> findOnDate(DateTime date) {
+  List<Drink> findOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return executor
-        .query(
-          _Entity.table,
-          where: '${_Entity.startTime} BETWEEN ? AND ?',
-          whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} DESC',
-        )
-        .then((entities) => entities.map((e) => _Entity.fromEntity(e)).toList());
+    return realm
+        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .map((e) => _Entity.fromModel(e))
+        .toList();
   }
 
   Stream<List<Drink>> observeOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return database
-        .createQuery(
-          _Entity.table,
-          where: '${_Entity.startTime} BETWEEN ? AND ?',
-          whereArgs: [startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch],
-          orderBy: '${_Entity.startTime} DESC',
-        )
-        .mapToList((e) => _Entity.fromEntity(e));
+    return realm
+        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .changes
+        .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
   Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
-    return database
-        .createQuery(
-          _Entity.table,
-          where: '${_Entity.startTime} BETWEEN ? AND ?',
-          whereArgs: [
-            startDate.floorToDay(hour: 6).millisecondsSinceEpoch,
-            endDate.floorToDay(hour: 6).millisecondsSinceEpoch
-          ],
-          orderBy: '${_Entity.startTime} DESC',
+    return realm
+        .query<DrinkModel>(
+          'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
+          [startDate.floorToDay(hour: 6).toUtc(), endDate.floorToDay(hour: 6).toUtc()],
         )
-        .mapToList((e) => _Entity.fromEntity(e));
+        .changes
+        .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
   Stream<List<Drink>> observeLatest() {
-    return database
-        .createQuery(
-          _Entity.table,
-          limit: 3,
-          orderBy: '${_Entity.startTime} DESC',
-        )
-        .mapToList((e) => _Entity.fromEntity(e));
+    return realm
+        .query<DrinkModel>('TRUEPREDICATE SORT(startTime DESC) LIMIT(3)')
+        .changes
+        .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Future<void> drop() async {
-    await executor.delete(_Entity.table);
+  void drop() {
+    realm.deleteAll<DrinkModel>();
   }
 }
 
 extension _Entity on Drink {
-  static const table = 'consumed_drinks';
+  DrinkModel toModel() => DrinkModel(
+        id ?? ObjectId().hexString,
+        name,
+        icon,
+        category.name,
+        volume,
+        alcoholByVolume,
+        startTime.toUtc(),
+        duration.inMilliseconds,
+        stomachFullness.name,
+      );
 
-  static const id = 'id';
-  static const name = 'name';
-  static const icon = 'icon';
-  static const category = 'category';
-  static const volume = 'volume';
-  static const alcoholByVolume = 'alcoholByVolume';
-  static const stomachFullness = 'stomachFullness';
-  static const startTime = 'startTime';
-  static const duration = 'duration';
-
-  Map<String, dynamic> toEntity() => {
-        id: this.id,
-        name: this.name,
-        icon: this.icon,
-        category: this.category.name,
-        volume: this.volume,
-        alcoholByVolume: this.alcoholByVolume,
-        stomachFullness: this.stomachFullness.name,
-        startTime: this.startTime.millisecondsSinceEpoch,
-        duration: this.duration.inMilliseconds,
-      };
-
-  static Drink fromEntity(Map<String, dynamic> entity) => Drink(
-        id: entity[id],
-        name: entity[name],
-        icon: entity[icon],
-        category: DrinkCategory.values.firstWhere((e) => e.name == entity[category]),
-        volume: entity[volume],
-        alcoholByVolume: entity[alcoholByVolume],
-        stomachFullness: StomachFullness.values.firstWhere((e) => e.name == entity[stomachFullness]),
-        startTime: DateTime.fromMillisecondsSinceEpoch(entity[startTime]),
-        duration: Duration(milliseconds: entity[duration]),
+  static Drink fromModel(DrinkModel model) => Drink(
+        id: model.id,
+        name: model.name,
+        icon: model.icon,
+        category: DrinkCategory.values.firstWhere((e) => e.name == model.category),
+        volume: model.volume,
+        alcoholByVolume: model.alcoholByVolume,
+        startTime: model.startTime.toLocal(),
+        duration: Duration(milliseconds: model.duration),
+        stomachFullness: StomachFullness.values.firstWhere((e) => e.name == model.stomachFullness),
       );
 }

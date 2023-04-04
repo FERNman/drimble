@@ -1,97 +1,72 @@
-import 'package:sqlbrite/sqlbrite.dart';
+import 'package:realm/realm.dart';
 
 import '../../domain/diary/diary_entry.dart';
 import '../../infra/extensions/floor_date_time.dart';
+import '../models/diary_entry_model.dart';
 import 'dao.dart';
 
 class DiaryDAO extends DAO {
   DiaryDAO(super.database);
 
-  static Future<void> create(Database database) async {
-    await database.execute('''CREATE TABLE IF NOT EXISTS ${_Entity.table} (
-      ${_Entity.id} INTEGER PRIMARY KEY,
-      ${_Entity.date} INTEGER NOT NULL,
-      ${_Entity.isDrinkFreeDay} INTEGER NOT NULL
-      )''');
-
-    await database.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_date ON ${_Entity.table} (${_Entity.date} ASC)');
+  void save(DiaryEntry entry) {
+    final entity = entry.toModel();
+    realm.add(entity, update: true);
   }
 
-  Future<void> save(DiaryEntry entry) async {
-    if (entry.id == null) {
-      final id = await executor.insert(_Entity.table, entry.toEntity());
-      entry.id = id;
-    } else {
-      await executor.update(_Entity.table, entry.toEntity(), where: '${_Entity.id} = ?', whereArgs: [entry.id]);
+  void delete(DiaryEntry entry) {
+    final entity = realm.find<DiaryEntryModel>(entry.id);
+    if (entity != null) {
+      realm.delete(entity);
     }
   }
 
-  Future<void> delete(DiaryEntry entry) async {
-    await executor.delete(_Entity.table, where: '${_Entity.id} = ?', whereArgs: [entry.id]);
-  }
-
   Stream<List<DiaryEntry>> observeBetweenDates(DateTime startDate, DateTime endDate) {
-    return database
-        .createQuery(
-          _Entity.table,
-          where: '${_Entity.date} BETWEEN ? AND ?',
-          whereArgs: [startDate.floorToDay().millisecondsSinceEpoch, endDate.floorToDay().millisecondsSinceEpoch],
-          orderBy: '${_Entity.date} ASC',
+    return realm
+        .query<DiaryEntryModel>(
+          'date BETWEEN {\$0, \$1} SORT (date ASC)',
+          [startDate.floorToDay().toUtc(), endDate.floorToDay().toUtc()],
         )
-        .mapToList((e) => _Entity.fromEntity(e));
+        .changes
+        .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Future<DiaryEntry?> findOnDate(DateTime date) {
-    return executor
-        .query(
-          _Entity.table,
-          where: '${_Entity.date} = ?',
-          whereArgs: [date.floorToDay().millisecondsSinceEpoch],
-          limit: 1,
-        )
-        .then((entities) => entities.isEmpty ? null : _Entity.fromEntity(entities.first));
+  DiaryEntry? findOnDate(DateTime date) {
+    final results = realm.query<DiaryEntryModel>('date == \$0', [date.floorToDay().toUtc()]);
+    return results.isEmpty ? null : _Entity.fromModel(results.first);
   }
 
   Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) {
-    return database.createQuery(
-      _Entity.table,
-      where: '${_Entity.date} >= ?',
-      whereArgs: [date.floorToDay().millisecondsSinceEpoch],
-    ).mapToList((e) => _Entity.fromEntity(e));
-  }
-
-  Stream<DiaryEntry?> observeEntryOnDate(DateTime date) {
-    return database
-        .createQuery(
-          _Entity.table,
-          where: '${_Entity.date} = ?',
-          whereArgs: [date.floorToDay().millisecondsSinceEpoch],
-          limit: 1,
+    return realm
+        .query<DiaryEntryModel>(
+          'date >= \$0 SORT (date ASC)',
+          [date.floorToDay().toUtc()],
         )
-        .mapToOneOrDefault((row) => _Entity.fromEntity(row), null);
+        .changes
+        .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Future<void> drop() async {
-    await executor.delete(_Entity.table);
+  Stream<DiaryEntry?> observeOnDate(DateTime date) {
+    return realm
+        .query<DiaryEntryModel>('date == \$0 LIMIT(1)', [date.floorToDay().toUtc()])
+        .changes
+        .map((event) => event.results.isNotEmpty ? _Entity.fromModel(event.results.first) : null);
+  }
+
+  void drop() {
+    realm.deleteAll<DiaryEntryModel>();
   }
 }
 
 extension _Entity on DiaryEntry {
-  static const table = 'diary';
+  DiaryEntryModel toModel() => DiaryEntryModel(
+        id ?? ObjectId().hexString,
+        date.toUtc(),
+        isDrinkFreeDay,
+      );
 
-  static const id = 'id';
-  static const date = 'date';
-  static const isDrinkFreeDay = 'isDrinkFreeDay';
-
-  Map<String, dynamic> toEntity() => {
-        id: this.id,
-        date: this.date.millisecondsSinceEpoch,
-        isDrinkFreeDay: this.isDrinkFreeDay ? 1 : 0,
-      };
-
-  static DiaryEntry fromEntity(Map<String, dynamic> entity) => DiaryEntry(
-        id: entity[id],
-        date: DateTime.fromMillisecondsSinceEpoch(entity[date]),
-        isDrinkFreeDay: entity[isDrinkFreeDay] == 1,
+  static DiaryEntry fromModel(DiaryEntryModel model) => DiaryEntry(
+        id: model.id,
+        date: model.date.toLocal(),
+        isDrinkFreeDay: model.isDrinkFreeDay,
       );
 }
