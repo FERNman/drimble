@@ -17,6 +17,13 @@ class BACCalculationArgs {
   });
 }
 
+/// This class calculates the BAC for a given user and a given time range.
+/// It uses a modified version of the Watson formula.
+/// 
+/// It does only account for the activity of Aldehyde Dehydrogenase (ADH), Cytochrome P450 and Catalase 
+/// are not yet taken into account.
+/// It also doesn't yet take into account other pathways of elimination alcohol, such as excretion, breath, and perspiration.
+/// However, those are not as important as elimination through metabolism.
 class BACCalculator {
   static const _deltaTime = Duration(minutes: 5);
 
@@ -102,8 +109,10 @@ class BACCalculator {
   }
 
   double _calculateRateOfMetabolism(double currentBAC) {
-    const vmax = 20.0; // TODO: Adapt to BAC and user
-    const km = 8; // TODO: Look up values
+    // Between 5 and 15 mmol/min/mg
+    const vmax = 15.0; // TODO: Adapt to BAC and user
+    // Betwee 0.2 and 8 mM
+    const km = 6; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);
   }
