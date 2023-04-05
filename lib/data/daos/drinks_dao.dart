@@ -8,17 +8,17 @@ import '../models/drink_model.dart';
 import 'dao.dart';
 
 class DrinksDAO extends DAO {
-  DrinksDAO(super.realm);
+  DrinksDAO(super.databaseProvider);
 
   void save(Drink drink) {
     final entity = drink.toModel();
-    realm.add(entity, update: true);
+    databaseProvider.realm.add(entity, update: true);
   }
 
   void delete(Drink drink) {
-    final entity = realm.find<DrinkModel>(drink.id);
+    final entity = databaseProvider.realm.find<DrinkModel>(drink.id);
     if (entity != null) {
-      realm.delete(entity);
+      databaseProvider.realm.delete(entity);
     }
   }
 
@@ -26,15 +26,18 @@ class DrinksDAO extends DAO {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    final results = realm.query<DrinkModel>('startTime BETWEEN {\$0, \$1}', [startTime.toUtc(), endTime.toUtc()]);
-    realm.deleteMany(results);
+    final results = databaseProvider.realm.query<DrinkModel>(
+      'startTime BETWEEN {\$0, \$1}',
+      [startTime.toUtc(), endTime.toUtc()],
+    );
+    databaseProvider.realm.deleteMany(results);
   }
 
   List<Drink> findOnDate(DateTime date) {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return realm
+    return databaseProvider.realm
         .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
         .map((e) => _Entity.fromModel(e))
         .toList();
@@ -44,14 +47,14 @@ class DrinksDAO extends DAO {
     final startTime = date.floorToDay(hour: 6);
     final endTime = startTime.add(const Duration(days: 1));
 
-    return realm
+    return databaseProvider.realm
         .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
   Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
-    return realm
+    return databaseProvider.realm
         .query<DrinkModel>(
           'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
           [startDate.floorToDay(hour: 6).toUtc(), endDate.floorToDay(hour: 6).toUtc()],
@@ -61,14 +64,10 @@ class DrinksDAO extends DAO {
   }
 
   Stream<List<Drink>> observeLatest() {
-    return realm
+    return databaseProvider.realm
         .query<DrinkModel>('TRUEPREDICATE SORT(startTime DESC) LIMIT(3)')
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
-  }
-
-  void drop() {
-    realm.deleteAll<DrinkModel>();
   }
 }
 

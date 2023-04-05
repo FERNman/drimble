@@ -1,14 +1,15 @@
 import 'package:flutter/foundation.dart';
-import 'package:realm/realm.dart';
+
+import '../database_provider.dart';
 
 abstract class DAO {
   @protected
-  final Realm realm;
+  final DatabaseProvider databaseProvider;
 
-  DAO(this.realm);
+  DAO(this.databaseProvider);
 
   Future<void> transaction<T>(void Function() action) async {
-    await realm.writeAsync(() {
+    await databaseProvider.realm.writeAsync(() {
       action();
     });
   }

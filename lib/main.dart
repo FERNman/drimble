@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:realm/realm.dart';
 
 import 'data/daos/diary_dao.dart';
 import 'data/daos/drinks_dao.dart';
+import 'data/database_provider.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
 import 'data/models/diary_entry_model.dart';
@@ -21,15 +21,11 @@ import 'router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final config = Configuration.local([DrinkModel.schema, DiaryEntryModel.schema]);
-  final realm = Realm(config);
-  runApp(DrimbleApp(realm));
+  runApp(const DrimbleApp());
 }
 
 class DrimbleApp extends StatefulWidget {
-  final Realm realm;
-
-  const DrimbleApp(this.realm, {super.key});
+  const DrimbleApp({super.key});
 
   @override
   State<DrimbleApp> createState() => _DrimbleAppState();
@@ -70,11 +66,12 @@ class _DrimbleAppState extends State<DrimbleApp> {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => DrinksDAO(widget.realm)),
-        RepositoryProvider(create: (context) => DiaryDAO(widget.realm)),
+        RepositoryProvider(create: (context) => DatabaseProvider([DrinkModel.schema, DiaryEntryModel.schema])),
+        RepositoryProvider(create: (context) => DrinksDAO(context.read())),
+        RepositoryProvider(create: (context) => DiaryDAO(context.read())),
+        RepositoryProvider(create: (context) => UserRepository(context.read())),
         RepositoryProvider(create: (context) => DrinksRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => DiaryRepository(context.read(), context.read())),
-        RepositoryProvider(create: (context) => UserRepository(widget.realm)),
       ],
       child: Builder(
         builder: (context) {
@@ -137,7 +134,6 @@ class _DrimbleAppState extends State<DrimbleApp> {
             ],
             title: 'Drimble',
             routerConfig: _router!.config(),
-            // routeInformationParser: _router!.defaultRouteParser(),
           );
         },
       ),
