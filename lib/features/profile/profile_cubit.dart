@@ -20,7 +20,7 @@ class ProfileCubit extends Cubit<ProfileCubitState> with Disposable {
       user.weight = value.weight;
       user.bodyComposition = value.bodyComposition;
 
-      _userRepository.signIn(user);
+      _userRepository.signInOffline(user);
     }
   }
 

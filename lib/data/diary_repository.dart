@@ -11,20 +11,20 @@ class DiaryRepository {
 
   Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) => _diaryDao.observeEntriesAfter(date.floorToDay());
 
-  Stream<DiaryEntry?> observeEntryOnDate(DateTime date) => _diaryDao.observeEntryOnDate(date);
+  Stream<DiaryEntry?> observeEntryOnDate(DateTime date) => _diaryDao.observeOnDate(date);
 
   Stream<List<DiaryEntry>> observeEntriesBetween(DateTime startDate, DateTime endDate) =>
-      _diaryDao.observeBetweenDates(startDate.floorToDay(), endDate.floorToDay());
+      _diaryDao.observeBetweenDates(startDate, endDate);
 
-  Future<DiaryEntry?> findEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
+  DiaryEntry? findEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
 
   void markAsDrinkFree(DateTime date) async {
-    await _diaryDao.transaction(() async {
-      await _drinksDao.deleteOnDate(date);
+    await _diaryDao.transaction(() {
+      _drinksDao.deleteOnDate(date);
 
-      final entity = await _diaryDao.findOnDate(date.floorToDay());
+      final entity = _diaryDao.findOnDate(date);
       final entry = entity?.copyWith(isDrinkFreeDay: true) ?? DiaryEntry(date: date, isDrinkFreeDay: true);
-      await _diaryDao.save(entry);
+      _diaryDao.save(entry);
     });
   }
 }

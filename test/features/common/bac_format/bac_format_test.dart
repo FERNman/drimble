@@ -25,7 +25,7 @@ void main() {
 
     test('should use a default locale if none is given', () async {
       final bacFormat = BacFormat();
-      expect(bacFormat.format(0.1), '0.1%');
+      expect(bacFormat.format(0.1), '0.10%');
     });
   });
 }

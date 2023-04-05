@@ -2,40 +2,45 @@ import 'dart:convert';
 
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../domain/user/body_composition.dart';
 import '../domain/user/gender.dart';
 import '../domain/user/goals.dart';
 import '../domain/user/user.dart';
-import '../infra/extensions/database_drop.dart';
+import 'database_provider.dart';
 
 class UserRepository {
   static const _userKey = 'user';
 
   final BehaviorSubject<User?> _user = BehaviorSubject();
-  final Database _database;
+  final DatabaseProvider _database;
 
   Future<User?> get user async => _user.hasValue ? _user.value : await _user.first;
 
-  UserRepository(this._database) {
-    _tryLoadUser().then((value) => _user.add(value));
-  }
+  UserRepository(this._database);
 
   Stream<User?> observeUser() => _user.stream;
 
-  Future<bool> isSignedIn() async => await user != null;
+  Future<bool> isSignedIn() async {
+    if (!_user.hasValue) {
+      await _tryLoadUser();
+    }
 
-  Future<void> signIn(User user) async {
+    return await user != null;
+  }
+
+  Future<void> signInOffline(User user) async {
     _user.add(user);
     await _persistUser(user);
+
+    _database.openOfflineInstance();
   }
 
   Future<void> signOut() async {
     _user.add(null);
     await _unsetUser();
 
-    await _database.drop();
+    _database.logOut();
   }
 
   // TODO: Maybe change to simply update the whole user...
@@ -48,14 +53,16 @@ class UserRepository {
     }
   }
 
-  Future<User?> _tryLoadUser() async {
+  Future<void> _tryLoadUser() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final encodedUser = sharedPreferences.getString(_userKey);
-    if (encodedUser != null) {
-      return _UserJson.fromJson(jsonDecode(encodedUser));
+    if (encodedUser == null) {
+      _user.add(null);
+    } else {
+      final user = _UserJson.fromJson(jsonDecode(encodedUser));
+      _user.add(user);
+      _database.openOfflineInstance();
     }
-
-    return null;
   }
 
   Future<void> _persistUser(User user) async {

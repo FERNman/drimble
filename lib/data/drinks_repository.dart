@@ -18,36 +18,36 @@ class DrinksRepository {
 
   Stream<List<Drink>> observeLatestDrinks() => _drinksDao.observeLatest();
 
-  Future<List<Drink>> findDrinksOnDate(DateTime date) => _drinksDao.findOnDate(date);
+  List<Drink> findDrinksOnDate(DateTime date) => _drinksDao.findOnDate(date);
 
   void save(Drink drink) async {
-    await _drinksDao.transaction(() async {
-      await _drinksDao.save(drink);
-      await _markAsNonDrinkFree(drink.date);
+    await _drinksDao.transaction(() {
+      _drinksDao.save(drink);
+      _markAsNonDrinkFree(drink.date);
     });
   }
 
-  Future<void> _markAsNonDrinkFree(DateTime date) async {
-    final existingEntry = await _diaryDao.findOnDate(date);
+  void _markAsNonDrinkFree(DateTime date) {
+    final existingEntry = _diaryDao.findOnDate(date);
     final diaryEntry = existingEntry?.copyWith(isDrinkFreeDay: false) ?? DiaryEntry(date: date, isDrinkFreeDay: false);
-    await _diaryDao.save(diaryEntry);
+    _diaryDao.save(diaryEntry);
   }
 
   void removeDrink(Drink drink) async {
-    await _drinksDao.transaction(() async {
-      await _drinksDao.delete(drink);
+    await _drinksDao.transaction(() {
+      _drinksDao.delete(drink);
 
-      final remainingDrinksOnThisDay = await _drinksDao.findOnDate(drink.date);
+      final remainingDrinksOnThisDay = _drinksDao.findOnDate(drink.date);
       if (remainingDrinksOnThisDay.isEmpty) {
-        await _markAsUntracked(drink.date);
+        _markAsUntracked(drink.date);
       }
     });
   }
 
-  Future<void> _markAsUntracked(DateTime date) async {
-    final diaryEntry = await _diaryDao.findOnDate(date);
+  void _markAsUntracked(DateTime date) {
+    final diaryEntry = _diaryDao.findOnDate(date);
     if (diaryEntry != null) {
-      await _diaryDao.delete(diaryEntry);
+      _diaryDao.delete(diaryEntry);
     }
   }
 }

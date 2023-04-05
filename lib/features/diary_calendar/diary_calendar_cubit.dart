@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/diary_repository.dart';
@@ -15,12 +16,8 @@ class DiaryCalendarCubit extends Cubit<DiaryCalendarCubitState> with Disposable 
   void _load() async {
     addSubscription(_diaryRepository
         .observeEntriesAfter(state.startDate)
-        .map((items) => _toDateMap(state.startDate, items))
+        .map((items) => items.groupFoldBy((el) => el.date, (_, el) => el))
         .listen((items) => emit(DiaryCalendarCubitState(diaryEntries: items))));
-  }
-
-  Map<DateTime, DiaryEntry> _toDateMap(DateTime date, List<DiaryEntry> items) {
-    return {for (final el in items) el.date: el};
   }
 }
 
