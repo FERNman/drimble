@@ -1,9 +1,9 @@
 import 'package:realm/realm.dart';
 
 import '../../domain/alcohol/drink_category.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
-import '../../infra/extensions/floor_date_time.dart';
 import '../models/drink_model.dart';
 import 'dao.dart';
 
@@ -22,8 +22,8 @@ class DrinksDAO extends DAO {
     }
   }
 
-  void deleteOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
+  void deleteOnDate(Date date) {
+    final startTime = date.toShiftedDateTime();
     final endTime = startTime.add(const Duration(days: 1));
 
     final results = databaseProvider.realm.query<DrinkModel>(
@@ -33,8 +33,8 @@ class DrinksDAO extends DAO {
     databaseProvider.realm.deleteMany(results);
   }
 
-  List<Drink> findOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
+  List<Drink> findOnDate(Date date) {
+    final startTime = date.toShiftedDateTime();
     final endTime = startTime.add(const Duration(days: 1));
 
     return databaseProvider.realm
@@ -43,8 +43,8 @@ class DrinksDAO extends DAO {
         .toList();
   }
 
-  Stream<List<Drink>> observeOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
+  Stream<List<Drink>> observeOnDate(Date date) {
+    final startTime = date.toShiftedDateTime();
     final endTime = startTime.add(const Duration(days: 1));
 
     return databaseProvider.realm
@@ -53,11 +53,11 @@ class DrinksDAO extends DAO {
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
+  Stream<List<Drink>> observeBetweenDates(Date startDate, Date endDate) {
     return databaseProvider.realm
         .query<DrinkModel>(
           'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
-          [startDate.floorToDay(hour: 6).toUtc(), endDate.floorToDay(hour: 6).toUtc()],
+          [startDate.toShiftedDateTime().toUtc(), endDate.toShiftedDateTime().toUtc()],
         )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());

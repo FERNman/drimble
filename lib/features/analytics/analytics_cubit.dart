@@ -9,21 +9,21 @@ import '../../data/diary_repository.dart';
 import '../../data/drinks_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/diary_entry.dart';
 import '../../domain/diary/drink.dart';
 import '../../domain/user/goals.dart';
 import '../../domain/user/user.dart';
 import '../../infra/disposable.dart';
-import '../../infra/extensions/floor_date_time.dart';
 
 class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   final DrinksRepository _drinksRepository;
   final DiaryRepository _diaryRepository;
   final UserRepository _userRepository;
 
-  AnalyticsCubit(this._drinksRepository, this._diaryRepository, this._userRepository, {DateTime? date})
+  AnalyticsCubit(this._drinksRepository, this._diaryRepository, this._userRepository, {Date? date})
       : super(AnalyticsCubitState(
-          date: date ?? DateTime.now(),
+          date: date ?? Date.today(),
           averageAlcoholPerSession: 0,
           changeOfAverageAlcohol: 0,
           alcoholByDay: {},
@@ -36,7 +36,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   }
 
   void _initState() {
-    final firstDayOfLastWeek = state.firstDayOfWeek.subtract(AnalyticsCubitState.oneWeek);
+    final firstDayOfLastWeek = state.firstDayOfWeek.subtract(days: AnalyticsCubitState.daysInOneWeek);
     final drinksLastWeek = _drinksRepository.observeDrinksBetweenDays(firstDayOfLastWeek, state.firstDayOfWeek);
     final drinksThisWeek = _drinksRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek);
     final diaryEntries = _diaryRepository.observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek);
@@ -80,7 +80,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     );
   }
 
-  static double _calculateAverageAlcoholPerSession(Map<DateTime, double?> alcoholByDay) {
+  static double _calculateAverageAlcoholPerSession(Map<Date, double?> alcoholByDay) {
     final asList = alcoholByDay.values.whereNotNull();
     final total = asList.fold<double>(0.0, (sum, el) => sum + el);
     final sessions = asList.length;
@@ -103,15 +103,15 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     return (alcoholThisWeek / alcoholLastWeek) - 1;
   }
 
-  Map<DateTime, double?> _foldDrinksAndDiaryEntries(List<Drink> drinks, List<DiaryEntry> diaryEntries) {
+  Map<Date, double?> _foldDrinksAndDiaryEntries(List<Drink> drinks, List<DiaryEntry> diaryEntries) {
     // There is at most one diary entry per day
     final diaryEntriesByDay = diaryEntries.groupFoldBy((el) => el.date, (_, el) => el);
     final gramsOfAlcoholByDay = _foldDrinksByDay(drinks);
 
-    final Map<DateTime, double?> results = {};
+    final Map<Date, double?> results = {};
 
-    for (int i = 0; i < AnalyticsCubitState.oneWeek.inDays; i++) {
-      final date = state.firstDayOfWeek.add(Duration(days: i));
+    for (int i = 0; i < AnalyticsCubitState.daysInOneWeek; i++) {
+      final date = state.firstDayOfWeek.add(days: i);
       final diaryEntry = diaryEntriesByDay[date];
       if (diaryEntry == null) {
         results[date] = null;
@@ -128,7 +128,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     return results;
   }
 
-  Map<DateTime, double> _foldDrinksByDay(List<Drink> drinks) {
+  Map<Date, double> _foldDrinksByDay(List<Drink> drinks) {
     return drinks.groupFoldBy(
       (el) => el.date,
       (sum, el) => (sum ?? 0.0) + el.gramsOfAlcohol,
@@ -141,8 +141,8 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     final calculator = BACCalculator(user);
     final args = BACCalculationArgs(
       drinks: drinks,
-      startTime: state.firstDayOfWeek,
-      endTime: state.lastDayOfWeek,
+      startTime: state.firstDayOfWeek.toShiftedDateTime(),
+      endTime: state.lastDayOfWeek.toShiftedDateTime(),
     );
 
     final results = await compute(calculator.calculate, args);
@@ -152,13 +152,13 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
 }
 
 class AnalyticsCubitState {
-  static const oneWeek = Duration(days: 7);
+  static const daysInOneWeek = 7;
 
-  final DateTime firstDayOfWeek;
-  final DateTime lastDayOfWeek;
+  final Date firstDayOfWeek;
+  final Date lastDayOfWeek;
 
-  final Map<DateTime, double?> alcoholByDay;
-  final Map<DateTime, bool?> drinkFreeDays;
+  final Map<Date, double?> alcoholByDay;
+  final Map<Date, bool?> drinkFreeDays;
   final double totalAlcohol;
   final double highestBAC;
   final int calories;
@@ -172,7 +172,7 @@ class AnalyticsCubitState {
   final Goals goals;
 
   AnalyticsCubitState({
-    required DateTime date,
+    required Date date,
     required this.changeOfAverageAlcohol,
     required this.averageAlcoholPerSession,
     required this.alcoholByDay,
@@ -181,17 +181,17 @@ class AnalyticsCubitState {
     required this.calories,
     required this.goals,
   })  : firstDayOfWeek = date.floorToWeek(),
-        lastDayOfWeek = date.floorToWeek().add(oneWeek),
+        lastDayOfWeek = date.floorToWeek().add(days: daysInOneWeek),
         totalAlcohol = _sum(alcoholByDay),
         drinkFreeDays = _mapAlcoholToDrinkFreeDays(alcoholByDay) {}
 
-  static Map<DateTime, bool?> _mapAlcoholToDrinkFreeDays(Map<DateTime, double?> alcoholPerDay) =>
+  static Map<Date, bool?> _mapAlcoholToDrinkFreeDays(Map<Date, double?> alcoholPerDay) =>
       alcoholPerDay.map((key, value) => MapEntry(key, value == null ? null : value == 0.0));
 
-  static double _sum(Map<DateTime, double?> alcoholPerDay) =>
+  static double _sum(Map<Date, double?> alcoholPerDay) =>
       alcoholPerDay.values.whereNotNull().fold(0.0, (total, el) => total + el);
 }
 
-extension Week on DateTime {
-  DateTime floorToWeek() => subtract(Duration(days: weekday - 1)).floorToDay();
+extension Week on Date {
+  Date floorToWeek() => subtract(days: weekday - 1);
 }

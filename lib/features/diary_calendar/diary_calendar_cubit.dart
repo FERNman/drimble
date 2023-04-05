@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/diary_repository.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/diary_entry.dart';
 import '../../infra/disposable.dart';
-import '../../infra/extensions/floor_date_time.dart';
 
 class DiaryCalendarCubit extends Cubit<DiaryCalendarCubitState> with Disposable {
   final DiaryRepository _diaryRepository;
@@ -22,18 +22,16 @@ class DiaryCalendarCubit extends Cubit<DiaryCalendarCubitState> with Disposable 
 }
 
 class DiaryCalendarCubitState {
-  static const thirtyDays = Duration(days: 30);
+  static const thirtyDays = 30;
 
-  final today = DateTime.now();
-  final startDate = DateTime.now().subtract(thirtyDays);
+  final today = Date.today();
+  final startDate = Date.today().subtract(days: thirtyDays);
 
-  final Map<DateTime, DiaryEntry> _diaryEntries;
+  final Map<Date, DiaryEntry> _diaryEntries;
 
-  get dayCount => thirtyDays.inDays;
+  DiaryCalendarCubitState({Map<Date, DiaryEntry> diaryEntries = const {}}) : _diaryEntries = diaryEntries;
 
-  DiaryCalendarCubitState({Map<DateTime, DiaryEntry> diaryEntries = const {}}) : _diaryEntries = diaryEntries;
-
-  bool? isDrinkFreeDay(DateTime date) {
-    return _diaryEntries[date.floorToDay()]?.isDrinkFreeDay;
+  bool? isDrinkFreeDay(Date date) {
+    return _diaryEntries[date]?.isDrinkFreeDay;
   }
 }

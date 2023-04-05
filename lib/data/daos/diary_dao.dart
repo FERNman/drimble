@@ -1,7 +1,7 @@
 import 'package:realm/realm.dart';
 
+import '../../domain/date.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../infra/extensions/floor_date_time.dart';
 import '../models/diary_entry_model.dart';
 import 'dao.dart';
 
@@ -20,34 +20,32 @@ class DiaryDAO extends DAO {
     }
   }
 
-  Stream<List<DiaryEntry>> observeBetweenDates(DateTime startDate, DateTime endDate) {
+  Stream<List<DiaryEntry>> observeBetweenDates(Date startDate, Date endDate) {
     return databaseProvider.realm
         .query<DiaryEntryModel>(
-          'date BETWEEN {\$0, \$1} SORT (date ASC)',
-          [startDate.floorToDay().toUtc(), endDate.floorToDay().toUtc()],
-        )
+            'date BETWEEN {\$0, \$1} SORT (date ASC)', [startDate.toUtcDateTime(), endDate.toUtcDateTime()])
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  DiaryEntry? findOnDate(DateTime date) {
-    final results = databaseProvider.realm.query<DiaryEntryModel>('date == \$0', [date.floorToDay().toUtc()]);
+  DiaryEntry? findOnDate(Date date) {
+    final results = databaseProvider.realm.query<DiaryEntryModel>('date == \$0', [date.toUtcDateTime()]);
     return results.isEmpty ? null : _Entity.fromModel(results.first);
   }
 
-  Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) {
+  Stream<List<DiaryEntry>> observeEntriesAfter(Date date) {
     return databaseProvider.realm
         .query<DiaryEntryModel>(
           'date >= \$0 SORT (date ASC)',
-          [date.floorToDay().toUtc()],
+          [date.toUtcDateTime()],
         )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Stream<DiaryEntry?> observeOnDate(DateTime date) {
+  Stream<DiaryEntry?> observeOnDate(Date date) {
     return databaseProvider.realm
-        .query<DiaryEntryModel>('date == \$0 LIMIT(1)', [date.floorToDay().toUtc()])
+        .query<DiaryEntryModel>('date == \$0 LIMIT(1)', [date.toUtcDateTime()])
         .changes
         .map((event) => event.results.isNotEmpty ? _Entity.fromModel(event.results.first) : null);
   }
@@ -56,13 +54,13 @@ class DiaryDAO extends DAO {
 extension _Entity on DiaryEntry {
   DiaryEntryModel toModel() => DiaryEntryModel(
         id ?? ObjectId().hexString,
-        date.toUtc(),
+        date.toUtcDateTime(),
         isDrinkFreeDay,
       );
 
   static DiaryEntry fromModel(DiaryEntryModel model) => DiaryEntry(
         id: model.id,
-        date: model.date.toLocal(),
+        date: Date.fromDateTime(model.date),
         isDrinkFreeDay: model.isDrinkFreeDay,
       );
 }

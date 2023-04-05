@@ -1,4 +1,5 @@
 import 'package:drimble/domain/alcohol/drink_category.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,7 +57,7 @@ void main() {
           duration: const Duration(hours: 1),
           stomachFullness: StomachFullness.full,
         );
-        expect(drink.date, DateTime(2019, 12, 31));
+        expect(drink.date, const Date(2019, 12, 31));
       });
 
       test('should not be shifted if the startTime is after 6am', () {
@@ -72,7 +73,7 @@ void main() {
           stomachFullness: StomachFullness.full,
         );
 
-        expect(drink.date, DateTime(2020, 1, 1));
+        expect(drink.date, const Date(2020, 1, 1));
       });
     });
   });

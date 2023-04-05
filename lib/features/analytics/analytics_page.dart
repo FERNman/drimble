@@ -58,7 +58,7 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (previous, current) => previous.firstDayOfWeek != current.firstDayOfWeek,
       builder: (context, state) {
         // Subtract a day because the last day would be monday otherwise
-        final sunday = state.lastDayOfWeek.subtract(const Duration(days: 1));
+        final sunday = state.lastDayOfWeek.subtract(days: 1);
         return AnalyticsAppBar(firstDayOfWeek: state.firstDayOfWeek, lastDayOfWeek: sunday);
       },
     );

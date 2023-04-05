@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/date.dart';
 import 'diary_calendar_cubit.dart';
 import 'widgets/diary_calendar_day.dart';
 
 class DiaryCalendar extends StatelessWidget {
-  final DateTime today = DateTime.now();
+  final Date today = Date.today();
 
-  final DateTime selectedDay;
-  final ValueChanged<DateTime> onSelectedDayChanged;
+  final Date selectedDay;
+  final ValueChanged<Date> onSelectedDayChanged;
 
   final _scrollController = ScrollController();
 
@@ -29,11 +30,11 @@ class DiaryCalendar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (context, dayIndex) {
               final adjustedDayIndex = dayIndex - 2;
-              final date = today.subtract(Duration(days: adjustedDayIndex));
+              final date = today.subtract(days: adjustedDayIndex);
 
               return DiaryCalendarDay(
                 date: date,
-                isSelected: DateUtils.isSameDay(selectedDay, date),
+                isSelected: selectedDay == date,
                 isDrinkFreeDay: state.isDrinkFreeDay(date),
                 onTap: date.isAfter(today)
                     ? null

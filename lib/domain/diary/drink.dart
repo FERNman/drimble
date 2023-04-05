@@ -1,7 +1,7 @@
-import '../../infra/extensions/shift_date_time.dart';
 import '../alcohol/alcohol.dart';
 import '../alcohol/milliliter.dart';
 import '../alcohol/percentage.dart';
+import '../date.dart';
 import 'stomach_fullness.dart';
 
 class Drink extends Alcohol {
@@ -16,10 +16,7 @@ class Drink extends Alcohol {
 
   /// The date of this drink.
   /// If the drink started before 6am, it is considered to be on the previous day.
-  DateTime get date => startTime.shift();
-
-  double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
-  int get calories => (gramsOfAlcohol * 7.1).round();
+  Date get date => startTime.toDate();
 
   /// How much of this drink is absorbed per hour
   double get rateOfAbsorption {

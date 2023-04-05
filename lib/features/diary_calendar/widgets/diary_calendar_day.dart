@@ -2,13 +2,15 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../domain/date.dart';
+import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryCalendarDay extends StatelessWidget {
   static const double width = 72;
   static const double height = 92;
 
-  final DateTime date;
+  final Date date;
   final bool isSelected;
   final bool? isDrinkFreeDay;
   final GestureTapCallback? onTap;
@@ -23,8 +25,8 @@ class DiaryCalendarDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dayOfWeek = DateFormat(DateFormat.ABBR_WEEKDAY).format(date);
-    final formattedDate = DateFormat('dd').format(date);
+    final dayOfWeek = DateFormat(DateFormat.ABBR_WEEKDAY).formatDate(date);
+    final formattedDate = DateFormat('dd').formatDate(date);
 
     final dayOfWeekTextStyle = context.textTheme.labelSmall?.copyWith(
       color: onTap == null ? Colors.black26 : Colors.black87,
