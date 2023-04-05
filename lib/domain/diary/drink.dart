@@ -1,21 +1,22 @@
-import '../../infra/extensions/floor_date_time.dart';
+import '../../infra/extensions/shift_date_time.dart';
 import '../alcohol/alcohol.dart';
 import '../alcohol/milliliter.dart';
 import '../alcohol/percentage.dart';
 import 'stomach_fullness.dart';
 
 class Drink extends Alcohol {
-  int? id;
+  String? id;
   final StomachFullness stomachFullness;
 
   /// The time when drinking this drink started. Only to be used for calculating the BAC.
-  /// <b>Must not be taken for date comparisons!</b>
+  ///
+  /// <b>Must not be used for date comparisons!</b>
   final DateTime startTime;
   final Duration duration;
 
-  /// The date of this drink. If the drink started before 6am, it is considered to be on the previous day.
-  DateTime get date =>
-      (startTime.hour < 6) ? startTime.subtract(const Duration(days: 1)).floorToDay() : startTime.floorToDay();
+  /// The date of this drink.
+  /// If the drink started before 6am, it is considered to be on the previous day.
+  DateTime get date => startTime.shift();
 
   double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
   int get calories => (gramsOfAlcohol * 7.1).round();

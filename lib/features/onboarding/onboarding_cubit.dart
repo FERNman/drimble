@@ -35,7 +35,7 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
   }
 
   void save() {
-    _userRepository.signIn(state.user);
+    _userRepository.signInOffline(state.user);
   }
 }
 

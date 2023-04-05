@@ -33,7 +33,7 @@ User generateUser({
 /// Generates a drink with a random start time between 6am on the given date and 6am on the next day.
 Drink generateDrinkOnDate({
   required DateTime date,
-  int? id,
+  String? id,
   String? name,
   DrinkCategory? category,
   int? volume,
@@ -56,7 +56,7 @@ Drink generateDrinkOnDate({
     );
 
 Drink generateDrink({
-  int? id,
+  String? id,
   String? name,
   DrinkCategory? category,
   int? volume,
@@ -78,7 +78,7 @@ Drink generateDrink({
     );
 
 DiaryEntry generateDiaryEntry({
-  int? id,
+  String? id,
   DateTime? date,
   bool? isDrinkFreeDay,
 }) =>

@@ -1,7 +1,7 @@
 import '../../infra/extensions/floor_date_time.dart';
 
 class DiaryEntry {
-  int? id;
+  String? id;
   final DateTime date;
   final bool isDrinkFreeDay;
 
