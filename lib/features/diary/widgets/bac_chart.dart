@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../domain/bac_calulation_results.dart';
 import '../../../domain/date.dart';
 import '../../../infra/extensions/copy_date_time.dart';
-import '../../../infra/extensions/floor_date_time.dart';
 import '../../../infra/extensions/set_date.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/line_chart/horizontal_line_chart_labels.dart';
@@ -37,7 +36,7 @@ class _BACChartState extends State<BACChart> {
   DateTime get _displayStart => __displayStart;
 
   set _displayStart(DateTime value) {
-    final startTime = widget.currentDate.toShiftedDateTime();
+    final startTime = widget.currentDate.toDateTime();
     final endTime = startTime.add(const Duration(days: 1)).subtract(BACChart.displayRange);
     if (value.isBefore(startTime)) {
       value = startTime;
@@ -124,12 +123,12 @@ class _BACChartState extends State<BACChart> {
 
   void _initializeDisplayStart() {
     if (widget.isShowingToday) {
-      _displayStart = DateTime.now().subtract(BACChart.timeOffset).floorToMinute();
+      _displayStart = DateTime.now().subtract(BACChart.timeOffset);
 
       _startRedrawTimer();
     } else {
-      _displayStart = widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset).floorToMinute() ??
-          DateTime.now().setDate(widget.currentDate.toLocalDateTime());
+      _displayStart = widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset) ??
+          DateTime.now().setDate(widget.currentDate.toDateTime());
     }
   }
 

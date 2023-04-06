@@ -4,28 +4,35 @@ class Date {
   final int month;
   final int day;
 
-  int get weekday => toLocalDateTime().weekday;
+  int get weekday => toDateTime().weekday;
 
   const Date(this.year, this.month, this.day);
 
+  /// Shifts the date to the previous day if it is before 6am
   Date.today() : this.fromDateTime(DateTime.now());
 
-  Date.fromDateTime(DateTime dateTime)
+  /// Shifts the date to the previous day if it is before 6am
+  Date.fromDateTime(DateTime dateTime) : this._internal(dateTime.shift());
+
+  Date._internal(DateTime dateTime)
       : year = dateTime.year,
         month = dateTime.month,
         day = dateTime.day;
 
+  /// Returns the date with the hour set to 6am
+  DateTime toDateTime() => DateTime(year, month, day, 6);
+
   Date add({required int days}) {
-    final dateTime = toLocalDateTime().add(Duration(days: days));
+    final dateTime = toDateTime().add(Duration(days: days));
     return Date.fromDateTime(dateTime);
   }
 
   Date subtract({required int days}) {
-    final dateTime = toLocalDateTime().subtract(Duration(days: days));
+    final dateTime = toDateTime().subtract(Duration(days: days));
     return Date.fromDateTime(dateTime);
   }
 
-  bool isAfter(Date other) => toLocalDateTime().isAfter(other.toLocalDateTime());
+  bool isAfter(Date other) => toDateTime().isAfter(other.toDateTime());
 
   @override
   operator ==(Object other) => other is Date && other.year == year && other.month == month && other.day == day;
@@ -34,15 +41,11 @@ class Date {
   int get hashCode => year.hashCode ^ month.hashCode ^ day.hashCode;
 }
 
-extension DateTimeExtensions on Date {
-  DateTime toShiftedDateTime() => DateTime(year, month, day, 6);
-  DateTime toLocalDateTime() => DateTime(year, month, day);
-  DateTime toUtcDateTime() => DateTime.utc(year, month, day);
-}
-
 extension DateExtensions on DateTime {
   /// shifts the date to the previous day if it is before 6am
-  Date toDate() => (hour < 6) ? subtract(const Duration(days: 1))._toDate() : _toDate();
+  Date toDate() => Date.fromDateTime(this);
+}
 
-  Date _toDate() => Date.fromDateTime(this);
+extension _ShiftedDateTime on DateTime {
+  DateTime shift() => (hour < 6) ? subtract(const Duration(days: 1)) : this;
 }

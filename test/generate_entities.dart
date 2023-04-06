@@ -53,8 +53,8 @@ Drink generateDrinkOnDate({
       volume: volume,
       alcoholByVolume: alcoholByVolume,
       startTime: faker.date.dateTimeBetween(
-        date.toShiftedDateTime(),
-        date.add(days: 1).toShiftedDateTime(),
+        date.toDateTime(),
+        date.add(days: 1).toDateTime(),
       ),
       duration: duration,
       stomachFullness: stomachFullness,

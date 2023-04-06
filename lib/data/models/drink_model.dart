@@ -15,6 +15,7 @@ class _DrinkModel {
   late Milliliter volume;
   late Percentage alcoholByVolume;
   late DateTime startTime;
+  late String timezone;
   late int duration;
   late String stomachFullness;
 }

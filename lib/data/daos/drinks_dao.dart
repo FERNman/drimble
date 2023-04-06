@@ -23,32 +23,29 @@ class DrinksDAO extends DAO {
   }
 
   void deleteOnDate(Date date) {
-    final startTime = date.toShiftedDateTime();
-    final endTime = startTime.add(const Duration(days: 1));
-
     final results = databaseProvider.realm.query<DrinkModel>(
       'startTime BETWEEN {\$0, \$1}',
-      [startTime.toUtc(), endTime.toUtc()],
+      [date.toDateTime(), date.add(days: 1).toDateTime()],
     );
     databaseProvider.realm.deleteMany(results);
   }
 
   List<Drink> findOnDate(Date date) {
-    final startTime = date.toShiftedDateTime();
-    final endTime = startTime.add(const Duration(days: 1));
-
     return databaseProvider.realm
-        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .query<DrinkModel>(
+          'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
+          [date.toDateTime(), date.add(days: 1).toDateTime()],
+        )
         .map((e) => _Entity.fromModel(e))
         .toList();
   }
 
   Stream<List<Drink>> observeOnDate(Date date) {
-    final startTime = date.toShiftedDateTime();
-    final endTime = startTime.add(const Duration(days: 1));
-
     return databaseProvider.realm
-        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .query<DrinkModel>(
+          'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
+          [date.toDateTime(), date.add(days: 1).toDateTime()],
+        )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
@@ -57,7 +54,7 @@ class DrinksDAO extends DAO {
     return databaseProvider.realm
         .query<DrinkModel>(
           'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
-          [startDate.toShiftedDateTime().toUtc(), endDate.toShiftedDateTime().toUtc()],
+          [startDate.toDateTime(), endDate.toDateTime()],
         )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
@@ -79,7 +76,8 @@ extension _Entity on Drink {
         category.name,
         volume,
         alcoholByVolume,
-        startTime.toUtc(),
+        startTime,
+        startTime.timeZoneName,
         duration.inMilliseconds,
         stomachFullness.name,
       );

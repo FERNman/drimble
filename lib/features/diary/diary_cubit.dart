@@ -66,7 +66,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 
     final calculator = BACCalculator(user);
 
-    final startTime = state.date.toShiftedDateTime();
+    final startTime = state.date.toDateTime();
     final args = BACCalculationArgs(
       drinks: drinks,
       startTime: startTime,
@@ -101,8 +101,8 @@ class DiaryCubitState {
     this.diaryEntry,
     this.drinks = const [],
   })  : calculationResults = BACCalculationResults.empty(
-          startTime: date.toShiftedDateTime(),
-          endTime: date.add(days: 1).toShiftedDateTime(),
+          startTime: date.toDateTime(),
+          endTime: date.add(days: 1).toDateTime(),
           timestep: const Duration(minutes: 10),
         ),
         gramsOfAlcohol = 0,

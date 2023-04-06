@@ -141,8 +141,8 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     final calculator = BACCalculator(user);
     final args = BACCalculationArgs(
       drinks: drinks,
-      startTime: state.firstDayOfWeek.toShiftedDateTime(),
-      endTime: state.lastDayOfWeek.toShiftedDateTime(),
+      startTime: state.firstDayOfWeek.toDateTime(),
+      endTime: state.lastDayOfWeek.toDateTime(),
     );
 
     final results = await compute(calculator.calculate, args);
