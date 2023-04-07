@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/bac_calulation_results.dart';
+import '../../../domain/date.dart';
 import '../../../domain/diary/diary_entry.dart';
 import '../../common/build_context_extensions.dart';
 
 class BACChartTitle extends StatelessWidget {
-  final DateTime dateTime;
+  final Date date;
   final BACCalculationResults results;
   final DiaryEntry? diaryEntry;
 
   final GestureTapCallback onMarkAsDrinkFreeDay;
 
   const BACChartTitle({
-    required this.dateTime,
+    required this.date,
     required this.results,
     required this.diaryEntry,
     required this.onMarkAsDrinkFreeDay,
@@ -36,7 +37,7 @@ class BACChartTitle extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     if (_isDrunk()) {
       return Text(
-        '${results.getEntryAt(dateTime)}',
+        '${results.getEntryAt(DateTime.now())}',
         style: context.textTheme.headlineMedium,
       );
     }
@@ -51,9 +52,9 @@ class BACChartTitle extends StatelessWidget {
         context.l18n.diary_drinkFreeDay,
         style: context.textTheme.titleLarge,
       );
-    } else if (DateUtils.isSameDay(DateTime.now(), dateTime)) {
+    } else if (Date.today() == date) {
       return Text(
-        '${results.getEntryAt(dateTime)}',
+        '${results.getEntryAt(DateTime.now())}',
         style: context.textTheme.headlineMedium,
       );
     } else {

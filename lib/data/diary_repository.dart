@@ -1,5 +1,5 @@
+import '../domain/date.dart';
 import '../domain/diary/diary_entry.dart';
-import '../infra/extensions/floor_date_time.dart';
 import 'daos/diary_dao.dart';
 import 'daos/drinks_dao.dart';
 
@@ -9,16 +9,16 @@ class DiaryRepository {
 
   DiaryRepository(this._diaryDao, this._drinksDao);
 
-  Stream<List<DiaryEntry>> observeEntriesAfter(DateTime date) => _diaryDao.observeEntriesAfter(date.floorToDay());
+  Stream<List<DiaryEntry>> observeEntriesAfter(Date date) => _diaryDao.observeEntriesAfter(date);
 
-  Stream<DiaryEntry?> observeEntryOnDate(DateTime date) => _diaryDao.observeOnDate(date);
+  Stream<DiaryEntry?> observeEntryOnDate(Date date) => _diaryDao.observeOnDate(date);
 
-  Stream<List<DiaryEntry>> observeEntriesBetween(DateTime startDate, DateTime endDate) =>
+  Stream<List<DiaryEntry>> observeEntriesBetween(Date startDate, Date endDate) =>
       _diaryDao.observeBetweenDates(startDate, endDate);
 
-  DiaryEntry? findEntryOnDate(DateTime date) => _diaryDao.findOnDate(date);
+  DiaryEntry? findEntryOnDate(Date date) => _diaryDao.findOnDate(date);
 
-  void markAsDrinkFree(DateTime date) async {
+  void markAsDrinkFree(Date date) async {
     await _diaryDao.transaction(() {
       _drinksDao.deleteOnDate(date);
 

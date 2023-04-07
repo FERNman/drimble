@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../infra/extensions/floor_date_time.dart';
 import '../../router.gr.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../diary_calendar/diary_calendar.dart';
@@ -44,9 +43,9 @@ class DiaryPage extends StatelessWidget {
 
   Widget _buildCalendar() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => !DateUtils.isSameDay(previous.dateTime, current.dateTime),
+      buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) => DiaryCalendar(
-        selectedDay: state.dateTime.floorToDay(),
+        selectedDay: state.date,
         onSelectedDayChanged: (value) {
           context.read<DiaryCubit>().switchDate(value);
         },
@@ -59,7 +58,7 @@ class DiaryPage extends StatelessWidget {
       builder: (context, state) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BACChartTitle(
-          dateTime: state.dateTime,
+          date: state.date,
           results: state.calculationResults,
           diaryEntry: state.diaryEntry,
           onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
@@ -73,7 +72,7 @@ class DiaryPage extends StatelessWidget {
       buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
       builder: (context, state) => BACChart(
         results: state.calculationResults,
-        currentDate: state.dateTime,
+        currentDate: state.date,
       ),
     );
   }
@@ -120,7 +119,7 @@ class DiaryPage extends StatelessWidget {
             );
           },
           onViewAll: () {
-            context.router.push(TodaysDrinksRoute(date: state.dateTime));
+            context.router.push(TodaysDrinksRoute(date: state.date));
           },
         );
       },

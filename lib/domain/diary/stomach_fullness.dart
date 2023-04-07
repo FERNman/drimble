@@ -1,1 +1,5 @@
-enum StomachFullness { empty, normal, full }
+enum StomachFullness {
+  empty,
+  normal,
+  full,
+}

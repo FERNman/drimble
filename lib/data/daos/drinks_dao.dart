@@ -1,9 +1,9 @@
 import 'package:realm/realm.dart';
 
 import '../../domain/alcohol/drink_category.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
-import '../../infra/extensions/floor_date_time.dart';
 import '../models/drink_model.dart';
 import 'dao.dart';
 
@@ -22,42 +22,39 @@ class DrinksDAO extends DAO {
     }
   }
 
-  void deleteOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
-    final endTime = startTime.add(const Duration(days: 1));
-
+  void deleteOnDate(Date date) {
     final results = databaseProvider.realm.query<DrinkModel>(
       'startTime BETWEEN {\$0, \$1}',
-      [startTime.toUtc(), endTime.toUtc()],
+      [date.toDateTime(), date.add(days: 1).toDateTime()],
     );
     databaseProvider.realm.deleteMany(results);
   }
 
-  List<Drink> findOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
-    final endTime = startTime.add(const Duration(days: 1));
-
+  List<Drink> findOnDate(Date date) {
     return databaseProvider.realm
-        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .query<DrinkModel>(
+          'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
+          [date.toDateTime(), date.add(days: 1).toDateTime()],
+        )
         .map((e) => _Entity.fromModel(e))
         .toList();
   }
 
-  Stream<List<Drink>> observeOnDate(DateTime date) {
-    final startTime = date.floorToDay(hour: 6);
-    final endTime = startTime.add(const Duration(days: 1));
-
+  Stream<List<Drink>> observeOnDate(Date date) {
     return databaseProvider.realm
-        .query<DrinkModel>('startTime BETWEEN {\$0, \$1} SORT(startTime DESC)', [startTime.toUtc(), endTime.toUtc()])
+        .query<DrinkModel>(
+          'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
+          [date.toDateTime(), date.add(days: 1).toDateTime()],
+        )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
   }
 
-  Stream<List<Drink>> observeBetweenDates(DateTime startDate, DateTime endDate) {
+  Stream<List<Drink>> observeBetweenDates(Date startDate, Date endDate) {
     return databaseProvider.realm
         .query<DrinkModel>(
           'startTime BETWEEN {\$0, \$1} SORT(startTime DESC)',
-          [startDate.floorToDay(hour: 6).toUtc(), endDate.floorToDay(hour: 6).toUtc()],
+          [startDate.toDateTime(), endDate.toDateTime()],
         )
         .changes
         .map((event) => event.results.map((e) => _Entity.fromModel(e)).toList());
@@ -79,7 +76,8 @@ extension _Entity on Drink {
         category.name,
         volume,
         alcoholByVolume,
-        startTime.toUtc(),
+        startTime,
+        startTime.timeZoneName,
         duration.inMilliseconds,
         stomachFullness.name,
       );

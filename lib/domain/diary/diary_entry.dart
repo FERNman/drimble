@@ -1,17 +1,17 @@
-import '../../infra/extensions/floor_date_time.dart';
+import '../date.dart';
 
 class DiaryEntry {
   String? id;
-  final DateTime date;
+  final Date date;
   final bool isDrinkFreeDay;
 
   DiaryEntry({
     this.id,
-    required DateTime date,
+    required this.date,
     required this.isDrinkFreeDay,
-  }) : date = date.floorToDay();
+  });
 
-  DiaryEntry copyWith({DateTime? date, bool? isDrinkFreeDay}) => DiaryEntry(
+  DiaryEntry copyWith({Date? date, bool? isDrinkFreeDay}) => DiaryEntry(
         id: id,
         date: date ?? this.date,
         isDrinkFreeDay: isDrinkFreeDay ?? this.isDrinkFreeDay,

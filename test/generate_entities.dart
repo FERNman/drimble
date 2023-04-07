@@ -1,4 +1,5 @@
 import 'package:drimble/domain/alcohol/drink_category.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
 import 'package:drimble/domain/diary/drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
@@ -6,10 +7,14 @@ import 'package:drimble/domain/user/body_composition.dart';
 import 'package:drimble/domain/user/gender.dart';
 import 'package:drimble/domain/user/goals.dart';
 import 'package:drimble/domain/user/user.dart';
-import 'package:drimble/infra/extensions/floor_date_time.dart';
 import 'package:faker/faker.dart';
+import 'package:faker/src/date.dart' as FakerDate;
 
 final faker = Faker();
+
+extension DateGenerator on FakerDate.Date {
+  Date date() => dateTime().toDate();
+}
 
 User generateUser({
   String? name,
@@ -32,7 +37,7 @@ User generateUser({
 
 /// Generates a drink with a random start time between 6am on the given date and 6am on the next day.
 Drink generateDrinkOnDate({
-  required DateTime date,
+  required Date date,
   String? id,
   String? name,
   DrinkCategory? category,
@@ -48,8 +53,8 @@ Drink generateDrinkOnDate({
       volume: volume,
       alcoholByVolume: alcoholByVolume,
       startTime: faker.date.dateTimeBetween(
-        date.floorToDay(hour: 6),
-        date.add(const Duration(days: 1)).floorToDay(hour: 6),
+        date.toDateTime(),
+        date.add(days: 1).toDateTime(),
       ),
       duration: duration,
       stomachFullness: stomachFullness,
@@ -79,12 +84,12 @@ Drink generateDrink({
 
 DiaryEntry generateDiaryEntry({
   String? id,
-  DateTime? date,
+  Date? date,
   bool? isDrinkFreeDay,
 }) =>
     DiaryEntry(
       id: id,
-      date: date ?? faker.date.dateTime(),
+      date: date ?? faker.date.date(),
       isDrinkFreeDay: isDrinkFreeDay ?? faker.randomGenerator.boolean(),
     );
 
