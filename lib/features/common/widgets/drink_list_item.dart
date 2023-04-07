@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/diary/drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 import '../build_context_extensions.dart';
 
 class DrinkListItem extends StatelessWidget {
-  final Drink drink;
+  final ConsumedDrink drink;
   final GestureTapCallback onEdit;
   final GestureTapCallback onDelete;
 
@@ -20,7 +20,7 @@ class DrinkListItem extends StatelessWidget {
         child: Row(
           children: [
             Image(
-              image: AssetImage(drink.icon),
+              image: AssetImage(drink.iconPath),
               width: 42,
               height: 42,
             ),

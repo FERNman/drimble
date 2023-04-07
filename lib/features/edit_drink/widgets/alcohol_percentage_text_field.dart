@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../domain/alcohol/percentage.dart';
+import '../../../domain/alcohol/alcohol.dart';
 
 class AlcoholPercentageTextField extends StatelessWidget {
   static final _percentageRegex = RegExp(r'^\d{1,2}$');

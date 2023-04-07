@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/date.dart';
-import '../../domain/diary/drink.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../../infra/extensions/set_date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
@@ -21,7 +21,7 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddDrinkCubit(context.read()),
+      create: (context) => AddDrinkCubit(context.read(), context.read()),
       child: this,
     );
   }
@@ -82,8 +82,8 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  void _addDrink(BuildContext context, Drink drink) {
-    final newDrink = Drink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date.toDateTime()));
+  void _addDrink(BuildContext context, ConsumedDrink drink) {
+    final newDrink = ConsumedDrink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date.toDateTime()));
     context.router.push(EditDrinkRoute(drink: newDrink));
   }
 }

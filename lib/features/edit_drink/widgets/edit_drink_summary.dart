@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/diary/drink.dart';
+import '../../../domain/diary/consumed_drink.dart';
 import '../../common/build_context_extensions.dart';
 
 class EditDrinkSummary extends StatelessWidget {
-  final Drink drink;
+  final ConsumedDrink drink;
 
   const EditDrinkSummary(this.drink, {super.key});
 
@@ -23,7 +23,7 @@ class EditDrinkSummary extends StatelessWidget {
             ],
           ),
         ),
-        Image.asset(drink.icon, width: 96, height: 96, fit: BoxFit.fill)
+        Image.asset(drink.iconPath, width: 96, height: 96, fit: BoxFit.fill)
       ],
     );
   }

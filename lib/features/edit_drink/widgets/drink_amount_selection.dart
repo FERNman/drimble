@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/alcohol/milliliter.dart';
+import '../../../domain/alcohol/alcohol.dart';
 import '../../common/build_context_extensions.dart';
 
 class AmountSelection extends StatefulWidget {

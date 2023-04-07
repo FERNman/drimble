@@ -1,18 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/drinks_repository.dart';
-import '../../domain/alcohol/milliliter.dart';
-import '../../domain/alcohol/percentage.dart';
-import '../../domain/diary/drink.dart';
+import '../../data/diary_repository.dart';
+import '../../domain/alcohol/alcohol.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 
 class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
-  final DrinksRepository repository;
+  final DiaryRepository _diaryRepository;
 
-  EditDrinkCubit.createDrink(this.repository, {required Drink drink})
+  EditDrinkCubit.createDrink(this._diaryRepository, {required ConsumedDrink drink})
       : super(EditDrinkCubitState.create(drink));
 
-  EditDrinkCubit.editDrink(this.repository, {required Drink drink})
+  EditDrinkCubit.editDrink(this._diaryRepository, {required ConsumedDrink drink})
       : super(EditDrinkCubitState.edit(drink));
 
   void updateVolume(Milliliter volume) {
@@ -39,7 +38,7 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
   }
 
   void save() {
-    repository.save(state.drink);
+    _diaryRepository.addDrink(state.drink);
   }
 
   DateTime _shiftDate(DateTime newTime, DateTime previousTime) {
@@ -60,7 +59,7 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
 class EditDrinkCubitState {
   final bool isEditing;
 
-  Drink drink;
+  ConsumedDrink drink;
 
   EditDrinkCubitState.create(this.drink) : isEditing = false;
 
@@ -68,6 +67,6 @@ class EditDrinkCubitState {
 
   EditDrinkCubitState._({required this.isEditing, required this.drink});
 
-  EditDrinkCubitState copyWith({required Drink drink}) =>
+  EditDrinkCubitState copyWith({required ConsumedDrink drink}) =>
       EditDrinkCubitState._(isEditing: isEditing, drink: drink);
 }

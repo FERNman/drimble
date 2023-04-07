@@ -1,18 +1,20 @@
 import 'package:drimble/domain/alcohol/drink_category.dart';
+import 'package:drimble/domain/alcohol/ingredient.dart';
 import 'package:drimble/domain/date.dart';
+import 'package:drimble/domain/diary/consumed_cocktail.dart';
+import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
-import 'package:drimble/domain/diary/drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:drimble/domain/user/body_composition.dart';
 import 'package:drimble/domain/user/gender.dart';
 import 'package:drimble/domain/user/goals.dart';
 import 'package:drimble/domain/user/user.dart';
 import 'package:faker/faker.dart';
-import 'package:faker/src/date.dart' as FakerDate;
+import 'package:faker/src/date.dart' as faker_date;
 
 final faker = Faker();
 
-extension DateGenerator on FakerDate.Date {
+extension DateGenerator on faker_date.Date {
   Date date() => dateTime().toDate();
 }
 
@@ -36,7 +38,7 @@ User generateUser({
     );
 
 /// Generates a drink with a random start time between 6am on the given date and 6am on the next day.
-Drink generateDrinkOnDate({
+ConsumedDrink generateDrinkOnDate({
   required Date date,
   String? id,
   String? name,
@@ -60,9 +62,10 @@ Drink generateDrinkOnDate({
       stomachFullness: stomachFullness,
     );
 
-Drink generateDrink({
+ConsumedDrink generateDrink({
   String? id,
   String? name,
+  String? iconPath,
   DrinkCategory? category,
   int? volume,
   double? alcoholByVolume,
@@ -70,16 +73,84 @@ Drink generateDrink({
   Duration? duration,
   StomachFullness? stomachFullness,
 }) =>
-    Drink(
+    ConsumedDrink(
       id: id,
       name: name ?? faker.lorem.word(),
-      icon: '',
+      iconPath: iconPath ?? '',
       category: category ?? faker.randomGenerator.element(DrinkCategory.values),
-      volume: volume ?? faker.randomGenerator.integer(500),
+      volume: volume ?? faker.randomGenerator.integer(500, min: 1),
       alcoholByVolume: alcoholByVolume ?? faker.randomGenerator.decimal(),
       startTime: startTime ?? faker.date.dateTime(),
       duration: duration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
       stomachFullness: stomachFullness ?? faker.randomGenerator.element(StomachFullness.values),
+    );
+
+ConsumedCocktail generateCocktailOnDate({
+  required Date date,
+  String? id,
+  String? name,
+  String? iconPath,
+  int? volume,
+  Duration? duration,
+  StomachFullness? stomachFullness,
+  List<Ingredient>? ingredients,
+}) =>
+    generateCocktail(
+      id: id,
+      name: name,
+      volume: volume,
+      startTime: faker.date.dateTimeBetween(
+        date.toDateTime(),
+        date.add(days: 1).toDateTime(),
+      ),
+      duration: duration,
+      stomachFullness: stomachFullness,
+      ingredients: ingredients,
+    );
+
+ConsumedCocktail generateCocktail({
+  String? id,
+  String? name,
+  String? iconPath,
+  int? volume,
+  DateTime? startTime,
+  Duration? duration,
+  StomachFullness? stomachFullness,
+  List<Ingredient>? ingredients,
+}) {
+  volume = volume ?? faker.randomGenerator.integer(500, min: 1);
+
+  ingredients = ingredients ??
+      List.generate(
+        faker.randomGenerator.integer(5, min: 1),
+        (_) => generateIngredient(volume: faker.randomGenerator.integer((volume! / 5.0).floor(), min: 1)),
+      );
+
+  return ConsumedCocktail(
+    id: id,
+    name: name ?? faker.lorem.word(),
+    iconPath: iconPath ?? '',
+    volume: volume,
+    startTime: startTime ?? faker.date.dateTime(),
+    duration: duration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
+    stomachFullness: stomachFullness ?? faker.randomGenerator.element(StomachFullness.values),
+    ingredients: ingredients,
+  );
+}
+
+Ingredient generateIngredient({
+  String? name,
+  String? iconPath,
+  DrinkCategory? category,
+  int? volume,
+  double? alcoholByVolume,
+}) =>
+    Ingredient(
+      name: name ?? faker.lorem.word(),
+      iconPath: iconPath ?? '',
+      category: category ?? faker.randomGenerator.element(DrinkCategory.values),
+      volume: volume ?? faker.randomGenerator.integer(500, min: 1),
+      alcoholByVolume: alcoholByVolume ?? faker.randomGenerator.decimal(min: 0.01),
     );
 
 DiaryEntry generateDiaryEntry({
