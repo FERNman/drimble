@@ -2,12 +2,14 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../domain/date.dart';
 import '../../../domain/user/goals.dart';
+import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 
 class WeeklyDrinkFreeDays extends StatelessWidget {
-  final Map<DateTime, bool?> drinkFreeDays;
+  final Map<Date, bool?> drinkFreeDays;
   final Goals goals;
   final GestureTapCallback onTap;
 
@@ -116,7 +118,7 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
 /// depending on whether the diary entry of the user is marked as a drink-free day or not. If no diary entry exists yet (aka it's null),
 /// the circle is empty and it's border is a dashed line.
 class _DrinkFreeDaysIndicator extends StatelessWidget {
-  final Map<DateTime, bool?> drinkFreeDays;
+  final Map<Date, bool?> drinkFreeDays;
 
   const _DrinkFreeDaysIndicator({required this.drinkFreeDays});
 
@@ -177,9 +179,9 @@ class _DrinkFreeDaysIndicator extends StatelessWidget {
     );
   }
 
-  Widget _buildWeekdayText(BuildContext context, DateTime date) {
+  Widget _buildWeekdayText(BuildContext context, Date date) {
     final dateFormatter = DateFormat.E();
 
-    return Text(dateFormatter.format(date), style: context.textTheme.bodySmall?.copyWith(color: Colors.black54));
+    return Text(dateFormatter.formatDate(date), style: context.textTheme.bodySmall?.copyWith(color: Colors.black54));
   }
 }

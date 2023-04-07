@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../domain/date.dart';
 import '../../common/build_context_extensions.dart';
 
 class AnalyticsAppBar extends StatelessWidget {
-  final DateTime firstDayOfWeek;
-  final DateTime lastDayOfWeek;
+  final Date firstDayOfWeek;
+  final Date lastDayOfWeek;
 
   const AnalyticsAppBar({
     required this.firstDayOfWeek,

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/date.dart';
 import '../../domain/diary/drink.dart';
 import '../../infra/extensions/set_date.dart';
 import '../../router.gr.dart';
@@ -13,7 +14,7 @@ import 'widgets/recent_drinks.dart';
 
 @RoutePage()
 class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
-  final DateTime date;
+  final Date date;
 
   const AddDrinkPage({required this.date, super.key});
 
@@ -82,7 +83,7 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   void _addDrink(BuildContext context, Drink drink) {
-    final newDrink = Drink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date));
+    final newDrink = Drink.fromExistingDrink(drink, startTime: DateTime.now().setDate(date.toDateTime()));
     context.router.push(EditDrinkRoute(drink: newDrink));
   }
 }

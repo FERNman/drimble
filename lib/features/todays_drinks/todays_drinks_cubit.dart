@@ -1,13 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/drinks_repository.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/drink.dart';
 import '../../infra/disposable.dart';
 
 class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {
   final DrinksRepository _repository;
 
-  TodaysDrinksCubit(this._repository, {required DateTime date})
+  TodaysDrinksCubit(this._repository, {required Date date})
       : super(TodaysDrinksCubitState(date: date, drinks: [])) {
     _subscribeToRepository();
   }
@@ -22,7 +23,7 @@ class TodaysDrinksCubit extends Cubit<TodaysDrinksCubitState> with Disposable {
 }
 
 class TodaysDrinksCubitState {
-  final DateTime date;
+  final Date date;
   final List<Drink> drinks;
 
   const TodaysDrinksCubitState({required this.date, required this.drinks});

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import '../common/widgets/drink_list_item.dart';
@@ -10,7 +11,7 @@ import 'todays_drinks_cubit.dart';
 
 @RoutePage()
 class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
-  final DateTime date;
+  final Date date;
 
   const TodaysDrinksPage({required this.date, super.key});
 

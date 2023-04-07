@@ -4,13 +4,15 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 
+import '../../../domain/date.dart';
+import '../../../infra/extensions/format_date.dart';
 import '../../../infra/extensions/to_string_as_float.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/line_chart/draw_dashed_line.dart';
 import '../../common/number_text_style.dart';
 
 class WeeklyAlcoholPerDayChart extends StatelessWidget {
-  final Map<DateTime, double?> alcoholPerDayThisWeek;
+  final Map<Date, double?> alcoholPerDayThisWeek;
   final double averageThisWeek;
   final double changeToLastWeek;
 
@@ -30,7 +32,7 @@ class WeeklyAlcoholPerDayChart extends StatelessWidget {
     final labels = alcoholPerDayThisWeek.keys
         .map(
           (date) => TextSpan(
-            text: dateFormatter.format(date),
+            text: dateFormatter.formatDate(date),
             style: context.textTheme.labelMedium?.copyWith(color: Colors.black54),
           ),
         )

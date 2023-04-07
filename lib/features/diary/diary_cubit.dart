@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,10 +7,10 @@ import '../../data/drinks_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/diary_entry.dart';
 import '../../domain/diary/drink.dart';
 import '../../infra/disposable.dart';
-import '../../infra/extensions/floor_date_time.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final UserRepository _userRepository;
@@ -19,21 +18,21 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final DiaryRepository _diaryRepository;
 
   DiaryCubit(this._userRepository, this._diaryRepository, this._consumedDrinksRepository)
-      : super(DiaryCubitState.initial(dateTime: DateTime.now())) {
+      : super(DiaryCubitState.initial(date: Date.today())) {
     _subscribeToRepository();
   }
 
-  void switchDate(DateTime date) async {
-    if (!DateUtils.isSameDay(date, state.dateTime)) {
-      final drinks = await _consumedDrinksRepository.findDrinksOnDate(date);
-      final diaryEntry = await _diaryRepository.findEntryOnDate(date);
+  void switchDate(Date date) async {
+    if (date != state.date) {
+      final drinks = _consumedDrinksRepository.findDrinksOnDate(date);
+      final diaryEntry = _diaryRepository.findEntryOnDate(date);
 
-      emit(DiaryCubitState.initial(dateTime: date, drinks: drinks, diaryEntry: diaryEntry));
+      emit(DiaryCubitState.initial(date: date, drinks: drinks, diaryEntry: diaryEntry));
     }
   }
 
   void markAsDrinkFreeDay() {
-    _diaryRepository.markAsDrinkFree(state.dateTime);
+    _diaryRepository.markAsDrinkFree(state.date);
   }
 
   void deleteDrink(Drink drink) {
@@ -41,21 +40,21 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   void _subscribeToRepository() {
-    final dateChangedStream =
-        stream.distinct((previous, next) => previous.dateTime.isAtSameMomentAs(next.dateTime)).startWith(state);
+    final dateChangedStream = stream.distinct((previous, next) => previous.date == next.date).startWith(state);
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.observeEntryOnDate(value.dateTime))
+        .flatMap((value) => _diaryRepository.observeEntryOnDate(value.date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.dateTime))
+        .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.date))
         .listen((drinks) => emit(state.updateDrinks(drinks))));
 
     addSubscription(dateChangedStream
         .flatMap((value) => _consumedDrinksRepository.observeDrinksBetweenDays(
-            value.dateTime.floorToDay().subtract(const Duration(days: 1)),
-            value.dateTime.floorToDay().add(const Duration(days: 1))))
+              value.date.subtract(days: 1),
+              value.date.add(days: 1),
+            ))
         .listen(_calculateBAC));
   }
 
@@ -67,7 +66,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 
     final calculator = BACCalculator(user);
 
-    final startTime = state.dateTime.floorToDay(hour: 6);
+    final startTime = state.date.toDateTime();
     final args = BACCalculationArgs(
       drinks: drinks,
       startTime: startTime,
@@ -81,7 +80,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 }
 
 class DiaryCubitState {
-  final DateTime dateTime;
+  final Date date;
   final DiaryEntry? diaryEntry;
   final List<Drink> drinks;
   final BACCalculationResults calculationResults;
@@ -90,7 +89,7 @@ class DiaryCubitState {
   final int calories;
 
   DiaryCubitState({
-    required this.dateTime,
+    required this.date,
     required this.diaryEntry,
     required this.drinks,
     required this.calculationResults,
@@ -98,33 +97,33 @@ class DiaryCubitState {
         calories = drinks.fold(0, (calories, it) => calories + it.calories);
 
   DiaryCubitState.initial({
-    required this.dateTime,
+    required this.date,
     this.diaryEntry,
     this.drinks = const [],
   })  : calculationResults = BACCalculationResults.empty(
-          startTime: dateTime.floorToDay(hour: 6),
-          endTime: dateTime.floorToDay(hour: 6).add(const Duration(days: 1)),
+          startTime: date.toDateTime(),
+          endTime: date.add(days: 1).toDateTime(),
           timestep: const Duration(minutes: 10),
         ),
         gramsOfAlcohol = 0,
         calories = 0;
 
   DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(
-        dateTime: dateTime,
+        date: date,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
       );
 
   DiaryCubitState updateDrinks(List<Drink> drinks) => DiaryCubitState(
-        dateTime: dateTime,
+        date: date,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
       );
 
   DiaryCubitState updateBAC(BACCalculationResults calculationResults) => DiaryCubitState(
-        dateTime: dateTime,
+        date: date,
         diaryEntry: diaryEntry,
         drinks: drinks,
         calculationResults: calculationResults,
