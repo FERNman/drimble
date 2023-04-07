@@ -1,5 +1,6 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -14,16 +15,11 @@ import 'widgets/stomach_fullness_selection.dart';
 
 class EditDrinkForm extends StatelessWidget {
   static final _timespanRegex = RegExp(r'^(([0|1]\d)|(2[0-3])):[0-5]\d$');
+  static final _numberRegex = RegExp(r'^\d+$');
 
   const EditDrinkForm({super.key});
 
   static String _formatDateTimeAsTime(DateTime time) => DateFormat.Hm().format(time);
-
-  static String _formatDurationAsTime(Duration duration) {
-    final hours = '${duration.inHours}'.padLeft(2, '0');
-    final minutes = '${duration.inMinutes.remainder(60)}'.padLeft(2, '0');
-    return '$hours:$minutes';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,7 @@ class EditDrinkForm extends StatelessWidget {
             children: [
               Expanded(child: _buildStartTimePicker()),
               const SizedBox(width: 8),
-              Expanded(child: _buildDurationPicker()),
+              Expanded(child: _buildDurationInput()),
             ],
           )
         ],
@@ -120,29 +116,28 @@ class EditDrinkForm extends StatelessWidget {
     }
   }
 
-  Widget _buildDurationPicker() {
+  Widget _buildDurationInput() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.duration != current.drink.duration,
       builder: (context, state) {
-        return DateTimePicker(
-          type: DateTimePickerType.time,
-          initialValue: _formatDurationAsTime(state.drink.duration),
-          onChanged: (value) => _onDurationChanged(context, value),
+        return TextFormField(
+          initialValue: '${state.drink.duration.inMinutes}',
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           decoration: InputDecoration(
             prefixIcon: const Icon(Icons.hourglass_empty_outlined),
-            label: Text(context.l18n.edit_drink_duration),
+            labelText: context.l18n.edit_drink_duration,
+            suffixText: context.l18n.edit_drink_minutes,
           ),
+          onChanged: (value) => _onDurationChanged(context, value),
         );
       },
     );
   }
 
   void _onDurationChanged(BuildContext context, String rawValue) {
-    if (_timespanRegex.hasMatch(rawValue)) {
-      final duration = Duration(
-        hours: int.parse(rawValue.substring(0, 2)),
-        minutes: int.parse(rawValue.substring(3, 5)),
-      );
+    if (_numberRegex.hasMatch(rawValue)) {
+      final duration = Duration(minutes: int.parse(rawValue));
 
       context.read<EditDrinkCubit>().updateDuration(duration);
     }

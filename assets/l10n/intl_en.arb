@@ -153,6 +153,7 @@
   "edit_drink_startTime": "Start time",
   "edit_drink_endTime": "End time",
   "edit_drink_duration": "Duration",
+  "edit_drink_minutes": "minutes",
   "edit_drink_done": "Done",
   "profile_title": "Profile",
   "profile_signOut": "Sign out",
