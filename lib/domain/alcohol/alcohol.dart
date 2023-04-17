@@ -1,6 +1,7 @@
 import 'drink_category.dart';
-import 'milliliter.dart';
-import 'percentage.dart';
+
+typedef Milliliter = int;
+typedef Percentage = double;
 
 abstract class Alcohol {
   static const eliminationRate = 0.12;
@@ -10,7 +11,7 @@ abstract class Alcohol {
   static const caloriesPerGramOfAlcohol = 7.1;
 
   final String name;
-  final String icon;
+  final String iconPath;
   final DrinkCategory category;
   final Milliliter volume;
   final Percentage alcoholByVolume;
@@ -20,7 +21,7 @@ abstract class Alcohol {
 
   const Alcohol({
     required this.name,
-    required this.icon,
+    required this.iconPath,
     required this.category,
     required this.volume,
     required this.alcoholByVolume,

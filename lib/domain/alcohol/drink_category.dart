@@ -1,5 +1,4 @@
-import 'milliliter.dart';
-import 'percentage.dart';
+import 'alcohol.dart';
 
 enum DrinkCategory {
   beer,

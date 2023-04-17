@@ -15,7 +15,7 @@ import 'widgets/weekly_statistics.dart';
 class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => AnalyticsCubit(context.read(), context.read(), context.read()),
+        create: (context) => AnalyticsCubit(context.read(), context.read()),
         child: this,
       );
 

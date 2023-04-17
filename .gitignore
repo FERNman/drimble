@@ -55,3 +55,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Realm
+default.realm.management
+default.realm.note
+binary

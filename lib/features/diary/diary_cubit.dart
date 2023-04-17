@@ -3,28 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
-import '../../data/drinks_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
 import '../../domain/bac_calulation_results.dart';
 import '../../domain/date.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/diary/drink.dart';
 import '../../infra/disposable.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   final UserRepository _userRepository;
-  final DrinksRepository _consumedDrinksRepository;
   final DiaryRepository _diaryRepository;
 
-  DiaryCubit(this._userRepository, this._diaryRepository, this._consumedDrinksRepository)
-      : super(DiaryCubitState.initial(date: Date.today())) {
+  DiaryCubit(this._userRepository, this._diaryRepository) : super(DiaryCubitState.initial(date: Date.today())) {
     _subscribeToRepository();
   }
 
   void switchDate(Date date) async {
     if (date != state.date) {
-      final drinks = _consumedDrinksRepository.findDrinksOnDate(date);
+      final drinks = _diaryRepository.findDrinksOnDate(date);
       final diaryEntry = _diaryRepository.findEntryOnDate(date);
 
       emit(DiaryCubitState.initial(date: date, drinks: drinks, diaryEntry: diaryEntry));
@@ -35,8 +32,8 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
     _diaryRepository.markAsDrinkFree(state.date);
   }
 
-  void deleteDrink(Drink drink) {
-    _consumedDrinksRepository.removeDrink(drink);
+  void deleteDrink(ConsumedDrink drink) {
+    _diaryRepository.removeDrink(drink);
   }
 
   void _subscribeToRepository() {
@@ -47,18 +44,18 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _consumedDrinksRepository.observeDrinksOnDate(value.date))
+        .flatMap((value) => _diaryRepository.observeDrinksOnDate(value.date))
         .listen((drinks) => emit(state.updateDrinks(drinks))));
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _consumedDrinksRepository.observeDrinksBetweenDays(
+        .flatMap((value) => _diaryRepository.observeDrinksBetweenDays(
               value.date.subtract(days: 1),
               value.date.add(days: 1),
             ))
         .listen(_calculateBAC));
   }
 
-  void _calculateBAC(List<Drink> drinks) async {
+  void _calculateBAC(List<ConsumedDrink> drinks) async {
     final user = await _userRepository.user;
     if (user == null) {
       return;
@@ -82,7 +79,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 class DiaryCubitState {
   final Date date;
   final DiaryEntry? diaryEntry;
-  final List<Drink> drinks;
+  final List<ConsumedDrink> drinks;
   final BACCalculationResults calculationResults;
 
   final double gramsOfAlcohol;
@@ -115,7 +112,7 @@ class DiaryCubitState {
         calculationResults: calculationResults,
       );
 
-  DiaryCubitState updateDrinks(List<Drink> drinks) => DiaryCubitState(
+  DiaryCubitState updateDrinks(List<ConsumedDrink> drinks) => DiaryCubitState(
         date: date,
         diaryEntry: diaryEntry,
         drinks: drinks,

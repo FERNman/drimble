@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:realm/realm.dart';
 
 class DatabaseProvider {
@@ -12,10 +13,15 @@ class DatabaseProvider {
 
   DatabaseProvider(this._objects);
 
+  /// <b>Meant for testing!</b>
+  DatabaseProvider.initialized(Realm realm)
+      : _objects = realm.schema.toList(),
+        _realm = realm;
+
   void openOfflineInstance() {
     _realm?.close();
 
-    final config = Configuration.local(_objects, schemaVersion: 0);
+    final config = Configuration.local(_objects, schemaVersion: 0, shouldDeleteIfMigrationNeeded: kDebugMode);
     _realm = Realm(config);
   }
 
