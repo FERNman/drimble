@@ -44,8 +44,7 @@ class _AmountSelectionState extends State<AmountSelection> {
     for (final serving in widget.standardServings) {
       servingSelectionChoices.add(Expanded(
         child: InputChip(
-          avatar: const Icon(Icons.abc_outlined),
-          label: SizedBox(width: double.infinity, child: Text('${serving}ml')),
+          label: SizedBox(width: double.infinity, child: Text(context.l18n.common_amountInMilliliters(serving))),
           selected: !_isCustomAmount && _internalValue == serving,
           onSelected: (selected) => {_toggleChoiceChip(serving)},
         ),
@@ -73,10 +72,14 @@ class _AmountSelectionState extends State<AmountSelection> {
       ),
     );
 
-    return Row(children: [
-      ...servingSelectionChoices,
-      customInput,
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.l18n.edit_drink_amount, style: context.textTheme.titleMedium),
+        const SizedBox(height: 4),
+        Row(children: [...servingSelectionChoices, customInput]),
+      ],
+    );
   }
 
   @override
@@ -88,7 +91,7 @@ class _AmountSelectionState extends State<AmountSelection> {
   InputDecoration _getInputDecoration(BuildContext context) {
     final inputDecoration = InputDecoration.collapsed(hintText: context.l18n.edit_drink_enterAmount);
     if (_customAmountTextController.text.isNotEmpty) {
-      return inputDecoration.copyWith(suffix: const Text('ml'));
+      return inputDecoration.copyWith(suffixText: context.l18n.common_milliliters);
     }
 
     return inputDecoration;

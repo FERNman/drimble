@@ -1,4 +1,5 @@
 import 'package:drimble/data/diary_repository.dart';
+import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/features/edit_drink/edit_drink_cubit.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,6 +44,24 @@ void main() {
       cubit.updateStartTime(at12pm);
 
       expect(cubit.state.drink.startTime.day, at5Am.subtract(const Duration(days: 1)).day);
+    });
+
+    group('Cocktails', () {
+      test('should still be a cocktail after changing the amount', () {
+        final drink = generateCocktail();
+        final cubit = EditDrinkCubit.createDrink(MockDiaryRepository(), drink: drink);
+
+        cubit.updateVolume(100);
+
+        expect(cubit.state.drink, isA<ConsumedCocktail>());
+      });
+
+      test('should throw an exception when trying to change the percentage', () {
+        final drink = generateCocktail();
+        final cubit = EditDrinkCubit.createDrink(MockDiaryRepository(), drink: drink);
+
+        expect(() => cubit.updatePercentage(50), throwsA(isA<AssertionError>()));
+      });
     });
   });
 }

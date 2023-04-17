@@ -2,36 +2,40 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/diary/stomach_fullness.dart';
 import '../../../infra/l18n/stomach_fullness_translations.dart';
+import '../../common/build_context_extensions.dart';
 
-class StomachFullnessSelection extends StatefulWidget {
-  final StomachFullness initialValue;
+class StomachFullnessSelection extends StatelessWidget {
+  final StomachFullness value;
   final ValueChanged<StomachFullness> onChanged;
 
-  const StomachFullnessSelection({required this.initialValue, required this.onChanged, super.key});
-
-  @override
-  State<StomachFullnessSelection> createState() => _StomachFullnessSelectionState();
-}
-
-class _StomachFullnessSelectionState extends State<StomachFullnessSelection> {
-  late StomachFullness _stomachFullness;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _stomachFullness = widget.initialValue;
-  }
+  const StomachFullnessSelection({
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(context.l18n.edit_drink_stomachFullness, style: context.textTheme.titleMedium),
+        const SizedBox(height: 4),
+        Text(context.l18n.edit_drink_priorToConsumption, style: context.textTheme.bodySmall),
+        const SizedBox(height: 8),
+        _buildSelectionOptions(context),
+      ],
+    );
+  }
+
+  Widget _buildSelectionOptions(BuildContext context) {
     final children = StomachFullness.values
         // ignore: unnecessary_cast
-        .map((e) => Expanded(
+        .map((el) => Expanded(
               child: InputChip(
-                label: SizedBox(width: double.infinity, child: Text(e.translate(context))),
-                selected: _stomachFullness == e,
-                onSelected: (selected) => _setValue(e),
+                label: SizedBox(width: double.infinity, child: Text(el.translate(context))),
+                selected: value == el,
+                onSelected: (selected) => onChanged(el),
               ),
             ) as Widget)
         .toList();
@@ -41,13 +45,5 @@ class _StomachFullnessSelectionState extends State<StomachFullnessSelection> {
     }
 
     return Row(children: children);
-  }
-
-  void _setValue(StomachFullness element) {
-    setState(() {
-      _stomachFullness = element;
-    });
-
-    widget.onChanged(_stomachFullness);
   }
 }

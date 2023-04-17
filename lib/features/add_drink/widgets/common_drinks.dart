@@ -55,7 +55,7 @@ class _CommonDrink extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Image.asset(drink.iconPath),
+            Image.asset(drink.iconPath, width: 48, height: 48),
             const SizedBox(height: 8),
             Text(
               drink.name,

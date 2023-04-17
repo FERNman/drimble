@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/diary_repository.dart';
 import '../../domain/alcohol/alcohol.dart';
+import '../../domain/diary/consumed_cocktail.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
 
@@ -19,6 +20,7 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
   }
 
   void updatePercentage(Percentage abv) {
+    assert(state.drink is! ConsumedCocktail);
     emit(state.copyWith(drink: state.drink.copyWith(alcoholByVolume: abv)));
   }
 

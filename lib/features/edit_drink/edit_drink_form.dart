@@ -4,37 +4,40 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../domain/diary/consumed_cocktail.dart';
 import '../../infra/extensions/copy_date_time.dart';
 import '../common/build_context_extensions.dart';
 import 'edit_drink_cubit.dart';
 import 'widgets/alcohol_percentage_text_field.dart';
+import 'widgets/cocktail_ingredients.dart';
 import 'widgets/drink_amount_selection.dart';
-import 'widgets/edit_drink_form_subtitle.dart';
-import 'widgets/edit_drink_form_title.dart';
 import 'widgets/stomach_fullness_selection.dart';
 
 class EditDrinkForm extends StatelessWidget {
   static final _timespanRegex = RegExp(r'^(([0|1]\d)|(2[0-3])):[0-5]\d$');
   static final _numberRegex = RegExp(r'^\d+$');
 
-  const EditDrinkForm({super.key});
+  final GlobalKey<FormState> formKey;
+
+  const EditDrinkForm({required this.formKey, super.key});
 
   static String _formatDateTimeAsTime(DateTime time) => DateFormat.Hm().format(time);
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EditDrinkFormTitle(context.l18n.edit_drink_amount),
           _buildAmountSelection(),
-          EditDrinkFormTitle(context.l18n.edit_drink_strength),
-          _buildPercentageTextField(),
-          EditDrinkFormTitle(context.l18n.edit_drink_stomachFullness),
-          EditDrinkFormSubtitle(context.l18n.edit_drink_priorToConsumption),
+          const SizedBox(height: 16),
+          _buildAlcoholSelection(),
+          const SizedBox(height: 16),
           _buildStomachFullnessSelection(),
-          EditDrinkFormTitle(context.l18n.edit_drink_timing),
+          const SizedBox(height: 16),
+          Text(context.l18n.edit_drink_timing, style: context.textTheme.titleMedium),
+          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(child: _buildStartTimePicker()),
@@ -60,21 +63,24 @@ class EditDrinkForm extends StatelessWidget {
     );
   }
 
-  Widget _buildPercentageTextField() {
+  Widget _buildAlcoholSelection() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.alcoholByVolume != current.drink.alcoholByVolume,
-      builder: (context, state) => Row(children: [
-        Expanded(
-          child: AlcoholPercentageTextField(
-            value: state.drink.alcoholByVolume,
-            onChanged: (it) {
-              context.read<EditDrinkCubit>().updatePercentage(it);
-            },
-          ),
-        ),
-        const SizedBox(width: 8),
-        const Spacer()
-      ]),
+      builder: (context, state) => (state.drink is ConsumedCocktail)
+          ? CocktailIngredients((state.drink as ConsumedCocktail).ingredients)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(context.l18n.edit_drink_strength, style: context.textTheme.titleMedium),
+                const SizedBox(height: 8),
+                AlcoholPercentageTextField(
+                  value: state.drink.alcoholByVolume,
+                  onChanged: (it) {
+                    context.read<EditDrinkCubit>().updatePercentage(it);
+                  },
+                ),
+              ],
+            ),
     );
   }
 
@@ -82,7 +88,7 @@ class EditDrinkForm extends StatelessWidget {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.drink.stomachFullness != current.drink.stomachFullness,
       builder: (context, state) => StomachFullnessSelection(
-        initialValue: state.drink.stomachFullness,
+        value: state.drink.stomachFullness,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateStomachFullness(it);
         },

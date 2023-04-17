@@ -17,12 +17,15 @@ class AlcoholPercentageTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      initialValue: '${(value * 100).round()}',
-      keyboardType: TextInputType.number,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: const InputDecoration(prefixIcon: Icon(Icons.percent_outlined)),
-      onChanged: _onChanged,
+    return SizedBox(
+      width: 128,
+      child: TextFormField(
+        initialValue: '${(value * 100).round()}',
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        decoration: const InputDecoration(prefixIcon: Icon(Icons.percent_outlined)),
+        onChanged: _onChanged,
+      ),
     );
   }
 

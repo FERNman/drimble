@@ -1,4 +1,13 @@
 {
+  "common_milliliters": "ml",
+  "common_amountInMilliliters": "{amount}ml",
+  "@common_amountInMilliliters": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
   "common_continue": "Continue",
   "common_genderMale": "Male",
   "common_genderFemale": "Female",
@@ -135,15 +144,16 @@
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
   "add_drink_common": "Common",
-  "edit_drink_alcoholContent": "This drink contains about {grams}g of alcohol.",
-  "@edit_drink_alcoholContent": {
+  "edit_drink_youreAboutToConsume": "You're about to consume",
+  "edit_drink_youreAboutToConsumeGrams": "{grams}g",
+  "@edit_drink_youreAboutToConsumeGrams": {
     "placeholders": {
       "grams": {
-        "type": "double",
-        "format": "decimalPattern"
+        "type": "int"
       }
     }
   },
+  "edit_drink_youreAboutToConsumeOfAlcohol": "of alcohol.",
   "edit_drink_amount": "Amount",
   "edit_drink_enterAmount": "enter",
   "edit_drink_strength": "Strength",
@@ -167,5 +177,7 @@
   "editWeeklyAlcoholGoal_description": "Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!",
   "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
   "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
-  "editWeeklyGoal_setGoal": "Set goal!"
+  "editWeeklyGoal_setGoal": "Set goal!",
+  "edit_drink_alcoholicIngredients": "Alcoholic ingredients",
+  "edit_drink_spiritsLiquors": "Spirits & Liquors"
 }

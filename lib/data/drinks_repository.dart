@@ -1,4 +1,6 @@
 import '../domain/alcohol/drink_category.dart';
+import '../domain/alcohol/ingredient.dart';
+import '../domain/diary/consumed_cocktail.dart';
 import '../domain/diary/consumed_drink.dart';
 import '../domain/diary/stomach_fullness.dart';
 
@@ -14,7 +16,7 @@ class DrinksRepository {
         _champagne,
         _whisky,
         _rum,
-        _vodka,
+        _aperol,
       ]);
 
   static final _beer = _drinkFromCategory(DrinkCategory.beer, name: 'Beer', icon: 'assets/icons/beer_small.png');
@@ -44,6 +46,31 @@ class DrinksRepository {
   static final _rum = _drinkFromCategory(DrinkCategory.spirit, name: 'Rum', icon: 'assets/icons/rum.png');
 
   static final _vodka = _drinkFromCategory(DrinkCategory.spirit, name: 'Vodka', icon: 'assets/icons/vodka.png');
+
+  static final _aperol = ConsumedCocktail(
+    name: 'Aperol Spritz',
+    iconPath: 'assets/icons/aperol.png',
+    volume: DrinkCategory.cocktail.defaultServings.first,
+    startTime: DateTime.now(),
+    duration: DrinkCategory.cocktail.defaultDuration,
+    stomachFullness: StomachFullness.empty,
+    ingredients: const [
+      Ingredient(
+        name: 'Aperol',
+        category: DrinkCategory.liqueur,
+        iconPath: 'assets/icons/aperol.png',
+        volume: 25,
+        alcoholByVolume: 0.11,
+      ),
+      Ingredient(
+        name: 'Prosecco',
+        category: DrinkCategory.champagne,
+        iconPath: 'assets/icons/champagne_bottle.png',
+        volume: 50,
+        alcoholByVolume: 0.11,
+      ),
+    ],
+  );
 
   static ConsumedDrink _drinkFromCategory(DrinkCategory category, {required String name, required String icon}) =>
       ConsumedDrink(
