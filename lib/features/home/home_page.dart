@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
   // There might be a better way, and it would be preferrable to host this at the level of the diary page IMO
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => DiaryCubit(context.read(), context.read(), context.read()),
+        create: (context) => DiaryCubit(context.read(), context.read()),
         child: this,
       );
 

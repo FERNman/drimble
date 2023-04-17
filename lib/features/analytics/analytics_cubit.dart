@@ -6,22 +6,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
-import '../../data/drinks_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/bac_calculator.dart';
 import '../../domain/date.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/diary/drink.dart';
 import '../../domain/user/goals.dart';
 import '../../domain/user/user.dart';
 import '../../infra/disposable.dart';
 
 class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
-  final DrinksRepository _drinksRepository;
   final DiaryRepository _diaryRepository;
   final UserRepository _userRepository;
 
-  AnalyticsCubit(this._drinksRepository, this._diaryRepository, this._userRepository, {Date? date})
+  AnalyticsCubit(this._diaryRepository, this._userRepository, {Date? date})
       : super(AnalyticsCubitState(
           date: date ?? Date.today(),
           averageAlcoholPerSession: 0,
@@ -37,8 +35,8 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
 
   void _initState() {
     final firstDayOfLastWeek = state.firstDayOfWeek.subtract(days: AnalyticsCubitState.daysInOneWeek);
-    final drinksLastWeek = _drinksRepository.observeDrinksBetweenDays(firstDayOfLastWeek, state.firstDayOfWeek);
-    final drinksThisWeek = _drinksRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek);
+    final drinksLastWeek = _diaryRepository.observeDrinksBetweenDays(firstDayOfLastWeek, state.firstDayOfWeek);
+    final drinksThisWeek = _diaryRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek);
     final diaryEntries = _diaryRepository.observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek);
     final user = _userRepository.observeUser().whereNotNull();
 
@@ -50,8 +48,8 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   }
 
   Future<AnalyticsCubitState> _calculateState(
-    List<Drink> lastWeeksDrinks,
-    List<Drink> thisWeeksDrinks,
+    List<ConsumedDrink> lastWeeksDrinks,
+    List<ConsumedDrink> thisWeeksDrinks,
     List<DiaryEntry> diaryEntries,
     User user,
   ) async {
@@ -103,7 +101,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     return (alcoholThisWeek / alcoholLastWeek) - 1;
   }
 
-  Map<Date, double?> _foldDrinksAndDiaryEntries(List<Drink> drinks, List<DiaryEntry> diaryEntries) {
+  Map<Date, double?> _foldDrinksAndDiaryEntries(List<ConsumedDrink> drinks, List<DiaryEntry> diaryEntries) {
     // There is at most one diary entry per day
     final diaryEntriesByDay = diaryEntries.groupFoldBy((el) => el.date, (_, el) => el);
     final gramsOfAlcoholByDay = _foldDrinksByDay(drinks);
@@ -128,14 +126,14 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     return results;
   }
 
-  Map<Date, double> _foldDrinksByDay(List<Drink> drinks) {
+  Map<Date, double> _foldDrinksByDay(List<ConsumedDrink> drinks) {
     return drinks.groupFoldBy(
       (el) => el.date,
       (sum, el) => (sum ?? 0.0) + el.gramsOfAlcohol,
     );
   }
 
-  Future<double> _calculateHighestBAC(User user, List<Drink> drinks) async {
+  Future<double> _calculateHighestBAC(User user, List<ConsumedDrink> drinks) async {
     // This is a bad way of doing it since it requires a lot of computation.
     // However, it's the only way to do it without having to store the BAC for every day in the database.
     final calculator = BACCalculator(user);

@@ -1,17 +1,17 @@
 import 'package:drimble/domain/alcohol/drink_category.dart';
 import 'package:drimble/domain/date.dart';
-import 'package:drimble/domain/diary/drink.dart';
+import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
 
 void main() {
-  group(Drink, () {
+  group(ConsumedDrink, () {
     group('fromExistingDrink', () {
-      final existingDrink = Drink(
+      final existingDrink = ConsumedDrink(
         id: ObjectId().hexString,
         name: 'Beer',
-        icon: 'test',
+        iconPath: 'test',
         category: DrinkCategory.beer,
         volume: 500,
         alcoholByVolume: 0.05,
@@ -21,16 +21,16 @@ void main() {
       );
 
       test('should not copy the id', () {
-        final drink = Drink.fromExistingDrink(existingDrink, startTime: DateTime(1999));
+        final drink = ConsumedDrink.fromExistingDrink(existingDrink, startTime: DateTime(1999));
         expect(drink.id, null);
       });
     });
 
     group('copyWith', () {
-      final drink = Drink(
+      final drink = ConsumedDrink(
         id: ObjectId().hexString,
         name: 'Beer',
-        icon: 'test',
+        iconPath: 'test',
         category: DrinkCategory.beer,
         volume: 500,
         alcoholByVolume: 0.05,
@@ -46,10 +46,10 @@ void main() {
 
     group('date', () {
       test('should be shifted by 1 day if the startTime is before 6am', () {
-        final drink = Drink(
+        final drink = ConsumedDrink(
           id: ObjectId().hexString,
           name: 'Beer',
-          icon: 'test',
+          iconPath: 'test',
           category: DrinkCategory.beer,
           volume: 500,
           alcoholByVolume: 0.05,
@@ -61,10 +61,10 @@ void main() {
       });
 
       test('should not be shifted if the startTime is after 6am', () {
-        final drink = Drink(
+        final drink = ConsumedDrink(
           id: ObjectId().hexString,
           name: 'Beer',
-          icon: 'test',
+          iconPath: 'test',
           category: DrinkCategory.beer,
           volume: 500,
           alcoholByVolume: 0.05,

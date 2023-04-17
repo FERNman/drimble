@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 // ignore: implementation_imports
 import 'package:intl/src/intl_helpers.dart' as helpers;
 
-import '../../../domain/alcohol/percentage.dart';
+import '../../../domain/alcohol/alcohol.dart';
 import 'bac_format_symbols.dart';
 
 class BacFormat {

@@ -1,54 +1,86 @@
-import 'dart:async';
-
-import '../domain/date.dart';
-import '../domain/diary/diary_entry.dart';
-import '../domain/diary/drink.dart';
-import 'daos/diary_dao.dart';
-import 'daos/drinks_dao.dart';
+import '../domain/alcohol/drink_category.dart';
+import '../domain/alcohol/ingredient.dart';
+import '../domain/diary/consumed_cocktail.dart';
+import '../domain/diary/consumed_drink.dart';
+import '../domain/diary/stomach_fullness.dart';
 
 class DrinksRepository {
-  final DrinksDAO _drinksDao;
-  final DiaryDAO _diaryDao;
+  DrinksRepository();
 
-  DrinksRepository(this._drinksDao, this._diaryDao);
+  Stream<List<ConsumedDrink>> observeCommonDrinks() => Stream.value([
+        _beer,
+        _ale,
+        _cider,
+        _whiteWine,
+        _redWine,
+        _champagne,
+        _whisky,
+        _rum,
+        _aperol,
+      ]);
 
-  Stream<List<Drink>> observeDrinksBetweenDays(Date startDate, Date endDate) =>
-      _drinksDao.observeBetweenDates(startDate, endDate);
+  static final _beer = _drinkFromCategory(DrinkCategory.beer, name: 'Beer', icon: 'assets/icons/beer_small.png');
+  static final _ale = _drinkFromCategory(DrinkCategory.beer, name: 'Ale', icon: 'assets/icons/ale.png');
+  static final _cider = _drinkFromCategory(DrinkCategory.beer, name: 'Cider', icon: 'assets/icons/cider.png');
 
-  Stream<List<Drink>> observeDrinksOnDate(Date date) => _drinksDao.observeOnDate(date);
+  static final _whiteWine = _drinkFromCategory(
+    DrinkCategory.wine,
+    name: 'White Wine',
+    icon: 'assets/icons/white_wine.png',
+  );
 
-  Stream<List<Drink>> observeLatestDrinks() => _drinksDao.observeLatest();
+  static final _redWine = _drinkFromCategory(
+    DrinkCategory.wine,
+    name: 'Red Wine',
+    icon: 'assets/icons/red_wine.png',
+  );
 
-  List<Drink> findDrinksOnDate(Date date) => _drinksDao.findOnDate(date);
+  static final _champagne = _drinkFromCategory(
+    DrinkCategory.champagne,
+    name: 'Champagne',
+    icon: 'assets/icons/champagne.png',
+  );
 
-  void save(Drink drink) async {
-    await _drinksDao.transaction(() {
-      _drinksDao.save(drink);
-      _markAsNonDrinkFree(drink.date);
-    });
-  }
+  static final _whisky = _drinkFromCategory(DrinkCategory.spirit, name: 'Whisky', icon: 'assets/icons/whisky.png');
 
-  void _markAsNonDrinkFree(Date date) {
-    final existingEntry = _diaryDao.findOnDate(date);
-    final diaryEntry = existingEntry?.copyWith(isDrinkFreeDay: false) ?? DiaryEntry(date: date, isDrinkFreeDay: false);
-    _diaryDao.save(diaryEntry);
-  }
+  static final _rum = _drinkFromCategory(DrinkCategory.spirit, name: 'Rum', icon: 'assets/icons/rum.png');
 
-  void removeDrink(Drink drink) async {
-    await _drinksDao.transaction(() {
-      _drinksDao.delete(drink);
+  static final _vodka = _drinkFromCategory(DrinkCategory.spirit, name: 'Vodka', icon: 'assets/icons/vodka.png');
 
-      final remainingDrinksOnThisDay = _drinksDao.findOnDate(drink.date);
-      if (remainingDrinksOnThisDay.isEmpty) {
-        _markAsUntracked(drink.date);
-      }
-    });
-  }
+  static final _aperol = ConsumedCocktail(
+    name: 'Aperol Spritz',
+    iconPath: 'assets/icons/aperol.png',
+    volume: DrinkCategory.cocktail.defaultServings.first,
+    startTime: DateTime.now(),
+    duration: DrinkCategory.cocktail.defaultDuration,
+    stomachFullness: StomachFullness.empty,
+    ingredients: const [
+      Ingredient(
+        name: 'Aperol',
+        category: DrinkCategory.liqueur,
+        iconPath: 'assets/icons/aperol.png',
+        volume: 25,
+        alcoholByVolume: 0.11,
+      ),
+      Ingredient(
+        name: 'Prosecco',
+        category: DrinkCategory.champagne,
+        iconPath: 'assets/icons/champagne_bottle.png',
+        volume: 50,
+        alcoholByVolume: 0.11,
+      ),
+    ],
+  );
 
-  void _markAsUntracked(Date date) {
-    final diaryEntry = _diaryDao.findOnDate(date);
-    if (diaryEntry != null) {
-      _diaryDao.delete(diaryEntry);
-    }
-  }
+  static ConsumedDrink _drinkFromCategory(DrinkCategory category, {required String name, required String icon}) =>
+      ConsumedDrink(
+        name: name,
+        iconPath: icon,
+        category: category,
+        volume: category.defaultServings.first,
+        alcoholByVolume: category.defaultABV,
+        startTime: DateTime.now(),
+        duration: category.defaultDuration,
+        stomachFullness: StomachFullness.empty,
+      );
 }
