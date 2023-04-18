@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/diary/consumed_drink.dart';
+import '../../../domain/alcohol/drink.dart';
 import '../../common/build_context_extensions.dart';
 
-typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink);
+typedef DrinkTapCallback = void Function(Drink);
 
 class RecentDrinks extends StatelessWidget {
-  final List<ConsumedDrink> recentDrinks;
-  final ConsumedDrinkTapCallback onTap;
+  final List<Drink> recentDrinks;
+  final DrinkTapCallback onTap;
 
   const RecentDrinks(this.recentDrinks, {required this.onTap, super.key});
 
@@ -41,7 +41,7 @@ class RecentDrinks extends StatelessWidget {
 }
 
 class _RecentDrink extends StatelessWidget {
-  final ConsumedDrink drink;
+  final Drink drink;
   final GestureTapCallback onTap;
 
   const _RecentDrink(this.drink, {required this.onTap});

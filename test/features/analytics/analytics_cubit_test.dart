@@ -52,8 +52,8 @@ void main() {
 
     group('state.alcoholPerDayThisWeek', () {
       test('should equal the grams of alcohol in the current week', () async {
-        final drinksOnFirstDay = [generateDrinkOnDate(date: date), generateDrinkOnDate(date: date)];
-        final drinksOnThirdDay = [generateDrinkOnDate(date: date.add(days: 2))];
+        final drinksOnFirstDay = [generateConsumedDrinkOnDate(date: date), generateConsumedDrinkOnDate(date: date)];
+        final drinksOnThirdDay = [generateConsumedDrinkOnDate(date: date.add(days: 2))];
 
         final drinks = [...drinksOnFirstDay, ...drinksOnThirdDay];
         when(mockDiaryRepository.observeDrinksBetweenDays(date, date.add(days: oneWeekInDays)))
@@ -106,7 +106,7 @@ void main() {
           [0, 0, null, null, null, null, null],
         );
 
-        final drink = generateDrinkOnDate(date: date);
+        final drink = generateConsumedDrinkOnDate(date: date);
         drinksSubject.add([drink]);
         await cubit.stream.first;
 
@@ -120,9 +120,9 @@ void main() {
     group('state.totalAlcoholThisWeek', () {
       test('should equal the total amount of alcohol consumed', () async {
         final drinks = [
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
         ];
 
         final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
@@ -143,9 +143,9 @@ void main() {
     group('state.calories', () {
       test('should be equal to the sum of the calories of all drinks consumed this week', () async {
         final drinks = [
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
         ];
 
         final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
@@ -166,12 +166,12 @@ void main() {
     group('state.numberOfDrinks', () {
       test('should be equal to the number of drinks consumed this week', () async {
         final drinks = [
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date),
-          generateDrinkOnDate(date: date.add(days: 1)),
-          generateDrinkOnDate(date: date.add(days: 1)),
-          generateDrinkOnDate(date: date.add(days: 2)),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date),
+          generateConsumedDrinkOnDate(date: date.add(days: 1)),
+          generateConsumedDrinkOnDate(date: date.add(days: 1)),
+          generateConsumedDrinkOnDate(date: date.add(days: 2)),
         ];
 
         final diaryEntries = [
@@ -195,12 +195,12 @@ void main() {
     group('state.averageAlcoholPerSession', () {
       test('should be the average alcohol per drinking session', () async {
         final drinks = [
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.add(days: 2), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.add(days: 2), alcoholByVolume: 0.5, volume: 500),
         ];
         final diaryEntries = [
           generateDiaryEntry(date: date, isDrinkFreeDay: false),
@@ -225,13 +225,13 @@ void main() {
     group('state.changeOfAverageAlcohol', () {
       test('should be the relative change in the average alcohol consumed compared to last week', () async {
         final lastWeeksDrinks = [
-          generateDrinkOnDate(date: date.subtract(days: oneWeekInDays), alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.subtract(days: oneWeekInDays), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.subtract(days: oneWeekInDays), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.subtract(days: oneWeekInDays), alcoholByVolume: 0.5, volume: 500),
         ];
         final drinks = [
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
         ];
         final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
 
@@ -251,13 +251,13 @@ void main() {
       test('should be 0 if on average as much alcohol per session was consumed as last week', () async {
         final lastWeek = date.subtract(days: oneWeekInDays);
         final lastWeeksDrinks = [
-          generateDrinkOnDate(date: lastWeek, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: lastWeek.add(days: 1), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: lastWeek, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: lastWeek.add(days: 1), alcoholByVolume: 0.5, volume: 500),
         ];
         final drinks = [
-          generateDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
-          generateDrinkOnDate(date: date.add(days: 2), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date, alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.add(days: 1), alcoholByVolume: 0.5, volume: 500),
+          generateConsumedDrinkOnDate(date: date.add(days: 2), alcoholByVolume: 0.5, volume: 500),
         ];
         final diaryEntries = [
           generateDiaryEntry(date: date, isDrinkFreeDay: false),
@@ -279,7 +279,7 @@ void main() {
       });
 
       test('should be 1 if there was no alcohol consumed last week, but this week', () async {
-        final drinks = [generateDrinkOnDate(date: date)];
+        final drinks = [generateConsumedDrinkOnDate(date: date)];
         final diaryEntries = [generateDiaryEntry(date: date, isDrinkFreeDay: false)];
         when(mockDiaryRepository.observeDrinksBetweenDays(date, date.add(days: oneWeekInDays)))
             .thenAnswer((_) => Stream.value(drinks));
@@ -301,7 +301,7 @@ void main() {
         when(mockDiaryRepository.observeEntriesBetween(date, date.add(days: oneWeekInDays)))
             .thenAnswer((_) => Stream.value(diaryEntries));
 
-        final lastWeeksDrinks = [generateDrinkOnDate(date: date)];
+        final lastWeeksDrinks = [generateConsumedDrinkOnDate(date: date)];
         when(mockDiaryRepository.observeDrinksBetweenDays(date.subtract(days: oneWeekInDays), date))
             .thenAnswer((_) => Stream.value(lastWeeksDrinks));
 
@@ -339,7 +339,7 @@ void main() {
           generateDiaryEntry(date: date.add(days: 6), isDrinkFreeDay: true),
         ];
         final drinks = diaryEntries
-            .map((e) => e.isDrinkFreeDay ? null : generateDrinkOnDate(date: e.date))
+            .map((e) => e.isDrinkFreeDay ? null : generateConsumedDrinkOnDate(date: e.date))
             .whereNotNull()
             .toList();
 
@@ -362,7 +362,7 @@ void main() {
           generateDiaryEntry(date: date.add(days: 5), isDrinkFreeDay: true),
         ];
         final drinks = [
-          generateDrinkOnDate(date: date.add(days: 1)),
+          generateConsumedDrinkOnDate(date: date.add(days: 1)),
         ];
 
         when(mockDiaryRepository.observeDrinksBetweenDays(date, date.add(days: oneWeekInDays)))
