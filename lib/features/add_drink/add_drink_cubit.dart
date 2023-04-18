@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/drinks_repository.dart';
+import '../../domain/alcohol/drink.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../infra/disposable.dart';
 
@@ -20,30 +20,31 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
 
   void _initState() async {
     addSubscription(
-      Rx.combineLatest2(_loadRecentDrinks(), _drinksRepository.observeCommonDrinks(), _calculateState).listen(emit),
+      _diaryRepository.observeLatestDrinks().map(_calculateState).asyncMap((event) => event).listen(emit),
     );
   }
 
-  AddDrinkCubitState _calculateState(List<ConsumedDrink> recentDrinks, List<ConsumedDrink> commonDrinks) {
-    return state.copyWith(recentDrinks: recentDrinks, commonDrinks: commonDrinks);
-  }
+  Future<AddDrinkCubitState> _calculateState(List<ConsumedDrink> recentlyConsumedDrinks) async {
+    final commonDrinks = await _drinksRepository.getCommonDrinks();
+    final recentDrinks = await Future.wait(
+      // This is ugly, but recentlyConsumedDrinks only contains up to 3 elements, so we should be fine performance-wise
+      recentlyConsumedDrinks.map((e) async => await _drinksRepository.findDrinkByName(e.name)).toList(),
+    );
 
-  Stream<List<ConsumedDrink>> _loadRecentDrinks() {
-    // TODO: This should use the DrinksRepository as well
-    return _diaryRepository.observeLatestDrinks().map((items) => items.sublist(0, 3 > items.length ? items.length : 3));
+    return state.copyWith(recentDrinks: recentDrinks, commonDrinks: commonDrinks);
   }
 }
 
 class AddDrinkCubitState {
-  final List<ConsumedDrink> commonDrinks;
-  final List<ConsumedDrink> recentDrinks;
+  final List<Drink> commonDrinks;
+  final List<Drink> recentDrinks;
   final String search;
 
   AddDrinkCubitState({this.recentDrinks = const [], this.commonDrinks = const [], this.search = ''});
 
   AddDrinkCubitState copyWith({
-    List<ConsumedDrink>? recentDrinks,
-    List<ConsumedDrink>? commonDrinks,
+    List<Drink>? recentDrinks,
+    List<Drink>? commonDrinks,
     String? search,
   }) =>
       AddDrinkCubitState(

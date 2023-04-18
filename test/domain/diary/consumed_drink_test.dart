@@ -5,27 +5,10 @@ import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
 
+import '../../generate_entities.dart';
+
 void main() {
   group(ConsumedDrink, () {
-    group('fromExistingDrink', () {
-      final existingDrink = ConsumedDrink(
-        id: ObjectId().hexString,
-        name: 'Beer',
-        iconPath: 'test',
-        category: DrinkCategory.beer,
-        volume: 500,
-        alcoholByVolume: 0.05,
-        startTime: DateTime(2020),
-        duration: const Duration(hours: 1),
-        stomachFullness: StomachFullness.full,
-      );
-
-      test('should not copy the id', () {
-        final drink = ConsumedDrink.fromExistingDrink(existingDrink, startTime: DateTime(1999));
-        expect(drink.id, null);
-      });
-    });
-
     group('copyWith', () {
       final drink = ConsumedDrink(
         id: ObjectId().hexString,
@@ -74,6 +57,32 @@ void main() {
         );
 
         expect(drink.date, const Date(2020, 1, 1));
+      });
+    });
+
+    group('FromDrink', () {
+      test('should initialize the id with null', () {
+        final drink = generateDrink();
+
+        final startTime = faker.date.dateTime();
+        final newDrink = ConsumedDrink.fromDrink(drink, startTime: startTime);
+
+        expect(newDrink.id, isNull);
+      });
+
+      test('should copy all the properties', () {
+        final drink = generateDrink();
+
+        final startTime = faker.date.dateTime();
+        final newDrink = ConsumedDrink.fromDrink(drink, startTime: startTime);
+
+        expect(newDrink.name, drink.name);
+        expect(newDrink.iconPath, drink.iconPath);
+        expect(newDrink.category, drink.category);
+        expect(newDrink.volume, drink.defaultServings.first);
+        expect(newDrink.alcoholByVolume, drink.alcoholByVolume);
+        expect(newDrink.startTime, startTime);
+        expect(newDrink.duration, drink.defaultDuration);
       });
     });
   });

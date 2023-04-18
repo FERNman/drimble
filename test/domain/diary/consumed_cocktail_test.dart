@@ -29,5 +29,29 @@ void main() {
       final expectedAlcoholByVolume = volumePerIngredient / volume * abvPerIngredient * ingredients.length;
       expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);
     });
+
+    group('FromCocktail', () {
+      test('should initialize the id with null', () {
+        final cocktail = generateCocktail();
+        final startTime = faker.date.dateTime();
+        final newCocktail = ConsumedCocktail.fromCocktail(cocktail, startTime: startTime);
+
+        expect(newCocktail.id, isNull);
+      });
+
+      test('should copy all the properties', () {
+        final cocktail = generateCocktail();
+        final startTime = faker.date.dateTime();
+        final newCocktail = ConsumedCocktail.fromCocktail(cocktail, startTime: startTime);
+
+        expect(newCocktail.name, cocktail.name);
+        expect(newCocktail.iconPath, cocktail.iconPath);
+        expect(newCocktail.ingredients, cocktail.ingredients);
+        expect(newCocktail.startTime, startTime);
+        expect(newCocktail.volume, cocktail.defaultServings.first);
+        expect(newCocktail.duration, cocktail.defaultDuration);
+        expect(newCocktail.stomachFullness, StomachFullness.empty);
+      });
+    });
   });
 }

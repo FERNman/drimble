@@ -13,6 +13,7 @@ import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
 import 'data/models/consumed_drink_model.dart';
 import 'data/models/diary_entry_model.dart';
+import 'data/models/ingredient_model.dart';
 import 'data/user_repository.dart';
 import 'features/home/home_guard.dart';
 import 'infra/l18n/l10n.dart';
@@ -68,8 +69,8 @@ class _DrimbleAppState extends State<DrimbleApp> {
       providers: [
         RepositoryProvider(
           create: (context) => DatabaseProvider([
-            ConsumedDrinkModel.schema,
             IngredientModel.schema,
+            ConsumedDrinkModel.schema,
             DiaryEntryModel.schema,
           ]),
         ),

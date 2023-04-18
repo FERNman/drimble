@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 
 import '../alcohol/alcohol.dart';
+import '../alcohol/cocktail.dart';
 import '../alcohol/drink_category.dart';
 import '../alcohol/ingredient.dart';
 import 'consumed_drink.dart';
@@ -24,22 +25,20 @@ class ConsumedCocktail extends ConsumedDrink {
           alcoholByVolume: _calculateAlcoholByVolume(ingredients, volume),
         );
 
-  static Percentage _calculateAlcoholByVolume(List<Alcohol> ingredients, int volume) {
+  static Percentage _calculateAlcoholByVolume(List<Ingredient> ingredients, int volume) {
     return ingredients.map((e) => e.alcoholByVolume * (e.volume / volume)).sum;
   }
 
-  @override
-  ConsumedCocktail.fromExistingDrink(ConsumedDrink drink, {required super.startTime})
-      : assert(drink is ConsumedCocktail),
-        ingredients = (drink as ConsumedCocktail).ingredients,
+  ConsumedCocktail.fromCocktail(Cocktail cocktail, {required super.startTime})
+      : ingredients = cocktail.ingredients,
         super(
-          name: drink.name,
-          iconPath: drink.iconPath,
-          volume: drink.volume,
-          duration: drink.duration,
-          stomachFullness: drink.stomachFullness,
-          alcoholByVolume: drink.alcoholByVolume,
-          category: drink.category,
+          name: cocktail.name,
+          iconPath: cocktail.iconPath,
+          volume: cocktail.defaultServings.first,
+          duration: cocktail.defaultDuration,
+          stomachFullness: StomachFullness.empty,
+          alcoholByVolume: cocktail.alcoholByVolume,
+          category: cocktail.category,
         );
 
   @override
