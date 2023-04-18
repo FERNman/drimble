@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../domain/alcohol/alcohol.dart';
 import '../../common/build_context_extensions.dart';
 
-class AmountSelection extends StatefulWidget {
+class DrinkVolumeSelection extends StatefulWidget {
   final List<Milliliter> standardServings;
   final Milliliter initialValue;
   final ValueChanged<Milliliter> onChanged;
 
-  const AmountSelection({
+  const DrinkVolumeSelection({
     required this.standardServings,
     required this.initialValue,
     required this.onChanged,
@@ -16,14 +17,27 @@ class AmountSelection extends StatefulWidget {
   });
 
   @override
-  State<AmountSelection> createState() => _AmountSelectionState();
+  State<DrinkVolumeSelection> createState() => _DrinkVolumeSelectionState();
 }
 
-class _AmountSelectionState extends State<AmountSelection> {
+class _DrinkVolumeSelectionState extends State<DrinkVolumeSelection> {
   final _customAmountTextController = TextEditingController();
 
   late Milliliter _internalValue;
   bool _isCustomAmount = false;
+
+  String? get _errorText {
+    if (!_isCustomAmount) {
+      return null;
+    }
+
+    final customAmount = _parseTextValue();
+    if (customAmount > 0) {
+      return null;
+    } else {
+      return context.l18n.edit_drink_invalidAmount;
+    }
+  }
 
   @override
   void initState() {
@@ -42,24 +56,29 @@ class _AmountSelectionState extends State<AmountSelection> {
     final servingSelectionChoices = <Widget>[];
 
     for (final serving in widget.standardServings) {
-      servingSelectionChoices.add(Expanded(
-        child: InputChip(
-          label: SizedBox(width: double.infinity, child: Text(context.l18n.common_amountInMilliliters(serving))),
-          selected: !_isCustomAmount && _internalValue == serving,
-          onSelected: (selected) => {_toggleChoiceChip(serving)},
+      servingSelectionChoices.add(
+        Expanded(
+          child: InputChip(
+            label: SizedBox(width: double.infinity, child: Text(context.l18n.common_amountInMilliliters(serving))),
+            selected: !_isCustomAmount && _internalValue == serving,
+            onSelected: (selected) => {_toggleChoiceChip(serving)},
+          ),
         ),
-      ));
+      );
 
       servingSelectionChoices.add(const SizedBox(width: 8));
     }
 
-    final customInput = Expanded(
+    final customInput = SizedBox(
+      width: 132,
       child: InputChip(
         avatar: const Icon(Icons.edit_outlined),
-        label: TextField(
-          decoration: _getInputDecoration(context),
-          keyboardType: TextInputType.number,
+        label: TextFormField(
           controller: _customAmountTextController,
+          decoration: _getInputDecoration(context).copyWith(errorStyle: const TextStyle(height: 0)),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          validator: (value) => !_isCustomAmount || (value != null && _parseTextValue() > 0) ? null : '',
           onChanged: (it) {
             setState(() {
               _setValue(_parseTextValue());
@@ -68,17 +87,31 @@ class _AmountSelectionState extends State<AmountSelection> {
           onTap: _selectCustomAmount,
         ),
         selected: _isCustomAmount,
-        onSelected: (selected) => {_selectCustomAmount()},
+        onSelected: (_) => _selectCustomAmount(),
       ),
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(context.l18n.edit_drink_amount, style: context.textTheme.titleMedium),
-        const SizedBox(height: 4),
-        Row(children: [...servingSelectionChoices, customInput]),
+        Row(
+          children: [
+            ...servingSelectionChoices,
+            customInput,
+          ],
+        ),
+        _errorText == null ? const SizedBox() : _buildError(context),
       ],
+    );
+  }
+
+  Widget _buildError(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, top: 4),
+      child: Text(
+        _errorText!,
+        style: context.textTheme.bodySmall!.copyWith(color: context.colorScheme.error),
+      ),
     );
   }
 

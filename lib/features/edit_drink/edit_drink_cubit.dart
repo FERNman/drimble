@@ -15,7 +15,7 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
     emit(EditDrinkCubitState(state.drink.copyWith(volume: volume)));
   }
 
-  void updatePercentage(Percentage abv) {
+  void updateABV(Percentage abv) {
     assert(state.drink is! ConsumedCocktail);
     emit(EditDrinkCubitState(state.drink.copyWith(alcoholByVolume: abv)));
   }
