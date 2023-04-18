@@ -1,6 +1,8 @@
 import '../alcohol/alcohol.dart';
+import '../alcohol/cocktail.dart';
 import '../alcohol/drink.dart';
 import '../date.dart';
+import 'consumed_cocktail.dart';
 import 'stomach_fullness.dart';
 
 class ConsumedDrink extends Alcohol {
@@ -41,16 +43,30 @@ class ConsumedDrink extends Alcohol {
     required this.stomachFullness,
   }) : assert(alcoholByVolume >= 0.0 && alcoholByVolume <= 1.0);
 
-  ConsumedDrink.fromDrink(Drink drink, {required this.startTime})
-      : duration = drink.defaultDuration,
-        stomachFullness = StomachFullness.empty,
-        super(
-          name: drink.name,
-          iconPath: drink.iconPath,
-          category: drink.category,
-          volume: drink.defaultServings.first,
-          alcoholByVolume: drink.alcoholByVolume,
-        );
+  factory ConsumedDrink.fromDrink(Drink drink, {required DateTime startTime}) {
+    if (drink is Cocktail) {
+      return ConsumedCocktail(
+        name: drink.name,
+        iconPath: drink.iconPath,
+        volume: drink.volume,
+        ingredients: drink.ingredients,
+        startTime: startTime,
+        duration: drink.defaultDuration,
+        stomachFullness: StomachFullness.empty,
+      );
+    }
+
+    return ConsumedDrink(
+      name: drink.name,
+      iconPath: drink.iconPath,
+      category: drink.category,
+      volume: drink.volume,
+      alcoholByVolume: drink.alcoholByVolume,
+      startTime: startTime,
+      duration: drink.defaultDuration,
+      stomachFullness: StomachFullness.empty,
+    );
+  }
 
   ConsumedDrink copyWith({
     Milliliter? volume,

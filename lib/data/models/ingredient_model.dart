@@ -11,7 +11,7 @@ class $IngredientModel {
   late String name;
   late String iconPath;
   late String category;
-  late Milliliter volume;
+  late Percentage percentOfCocktailVolume;
   late Percentage alcoholByVolume;
 }
 
@@ -20,7 +20,7 @@ extension IngredientEntity on Ingredient {
         name,
         iconPath,
         category.name,
-        volume,
+        percentOfCocktailVolume,
         alcoholByVolume,
       );
 
@@ -28,7 +28,7 @@ extension IngredientEntity on Ingredient {
         name: model.name,
         iconPath: model.iconPath,
         category: DrinkCategory.values.firstWhere((e) => e.name == model.category),
-        volume: model.volume,
+        percentOfCocktailVolume: model.percentOfCocktailVolume,
         alcoholByVolume: model.alcoholByVolume,
       );
 }
