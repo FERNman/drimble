@@ -11,29 +11,20 @@ import 'widgets/edit_drink_title.dart';
 @RoutePage()
 class EditDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   final ConsumedDrink drink;
-  final bool isEditing;
 
   final _formKey = GlobalKey<FormState>();
 
   EditDrinkPage({
     required this.drink,
-    this.isEditing = false,
     super.key,
   });
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    if (isEditing) {
-      return BlocProvider(
-        create: (context) => EditDrinkCubit.editDrink(context.read(), drink: drink),
-        child: this,
-      );
-    } else {
-      return BlocProvider(
-        create: (context) => EditDrinkCubit.createDrink(context.read(), drink: drink),
-        child: this,
-      );
-    }
+    return BlocProvider(
+      create: (context) => EditDrinkCubit(context.read(), drink: drink),
+      child: this,
+    );
   }
 
   @override
@@ -61,18 +52,23 @@ class EditDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
         child: Column(
           children: [
-            BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-              buildWhen: (previous, current) => previous.drink.gramsOfAlcohol != current.drink.gramsOfAlcohol,
-              builder: (context, state) => EditDrinkTitle(
-                name: state.drink.name,
-                iconPath: state.drink.iconPath,
-                gramsOfAlcohol: state.drink.gramsOfAlcohol,
-              ),
-            ),
+            _buildTitle(),
             const SizedBox(height: 24),
             EditDrinkForm(formKey: _formKey),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
+      // Name and icon cannot change (as of now at least)
+      buildWhen: (previous, current) => previous.drink.gramsOfAlcohol != current.drink.gramsOfAlcohol,
+      builder: (context, state) => EditDrinkTitle(
+        name: state.drink.name,
+        iconPath: state.drink.iconPath,
+        gramsOfAlcohol: state.drink.gramsOfAlcohol,
       ),
     );
   }
