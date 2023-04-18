@@ -9,34 +9,30 @@ import '../../domain/diary/stomach_fullness.dart';
 class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
   final DiaryRepository _diaryRepository;
 
-  EditDrinkCubit.createDrink(this._diaryRepository, {required ConsumedDrink drink})
-      : super(EditDrinkCubitState.create(drink));
-
-  EditDrinkCubit.editDrink(this._diaryRepository, {required ConsumedDrink drink})
-      : super(EditDrinkCubitState.edit(drink));
+  EditDrinkCubit(this._diaryRepository, {required ConsumedDrink drink}) : super(EditDrinkCubitState(drink));
 
   void updateVolume(Milliliter volume) {
-    emit(state.copyWith(drink: state.drink.copyWith(volume: volume)));
+    emit(EditDrinkCubitState(state.drink.copyWith(volume: volume)));
   }
 
-  void updatePercentage(Percentage abv) {
+  void updateABV(Percentage abv) {
     assert(state.drink is! ConsumedCocktail);
-    emit(state.copyWith(drink: state.drink.copyWith(alcoholByVolume: abv)));
+    emit(EditDrinkCubitState(state.drink.copyWith(alcoholByVolume: abv)));
   }
 
   void updateStartTime(DateTime startTime) {
     // Drinks that were consumed before 0600 count to the previous day
     final shiftedTime = _shiftDate(startTime, state.drink.startTime);
 
-    emit(state.copyWith(drink: state.drink.copyWith(startTime: shiftedTime)));
+    emit(EditDrinkCubitState(state.drink.copyWith(startTime: shiftedTime)));
   }
 
   void updateDuration(Duration duration) {
-    emit(state.copyWith(drink: state.drink.copyWith(duration: duration)));
+    emit(EditDrinkCubitState(state.drink.copyWith(duration: duration)));
   }
 
   void updateStomachFullness(StomachFullness value) {
-    emit(state.copyWith(drink: state.drink.copyWith(stomachFullness: value)));
+    emit(EditDrinkCubitState(state.drink.copyWith(stomachFullness: value)));
   }
 
   void save() {
@@ -59,16 +55,7 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
 }
 
 class EditDrinkCubitState {
-  final bool isEditing;
-
   ConsumedDrink drink;
 
-  EditDrinkCubitState.create(this.drink) : isEditing = false;
-
-  EditDrinkCubitState.edit(this.drink) : isEditing = true;
-
-  EditDrinkCubitState._({required this.isEditing, required this.drink});
-
-  EditDrinkCubitState copyWith({required ConsumedDrink drink}) =>
-      EditDrinkCubitState._(isEditing: isEditing, drink: drink);
+  EditDrinkCubitState(this.drink);
 }

@@ -11,19 +11,6 @@ class CocktailIngredients extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(context.l18n.edit_drink_alcoholicIngredients, style: context.textTheme.titleMedium),
-        const SizedBox(height: 2),
-        Text(context.l18n.edit_drink_spiritsLiquors, style: context.textTheme.bodySmall),
-        const SizedBox(height: 12),
-        _buildIngredientList(context),
-      ],
-    );
-  }
-
-  Widget _buildIngredientList(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

@@ -38,7 +38,7 @@ class ConsumedDrink extends Alcohol {
     required this.startTime,
     required this.duration,
     required this.stomachFullness,
-  }) : assert(alcoholByVolume > 0.0 && alcoholByVolume <= 1.0);
+  }) : assert(alcoholByVolume >= 0.0 && alcoholByVolume <= 1.0);
 
   ConsumedDrink.fromExistingDrink(ConsumedDrink drink, {required this.startTime})
       : duration = drink.duration,
