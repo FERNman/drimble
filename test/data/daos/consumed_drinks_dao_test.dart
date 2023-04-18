@@ -1,6 +1,7 @@
 import 'package:drimble/data/daos/consumed_drinks_dao.dart';
 import 'package:drimble/data/database_provider.dart';
 import 'package:drimble/data/models/consumed_drink_model.dart';
+import 'package:drimble/data/models/ingredient_model.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +25,7 @@ void main() {
     });
 
     test('should allow saving and loading a drink', () {
-      final drink = generateDrink();
+      final drink = generateConsumedDrink();
 
       final dao = ConsumedDrinksDAO(databaseProvider);
       realm.write(() {
@@ -37,7 +38,7 @@ void main() {
     });
 
     test('should allow saving and loading a cocktail', () {
-      final cocktail = generateCocktail();
+      final cocktail = generateConsumedCocktail();
 
       final dao = ConsumedDrinksDAO(databaseProvider);
       realm.write(() {
@@ -54,8 +55,8 @@ void main() {
 
     test('should correctly instantiate drinks and cocktails', () {
       final date = faker.date.date();
-      final drink = generateDrinkOnDate(date: date);
-      final cocktail = generateCocktailOnDate(date: date);
+      final drink = generateConsumedDrinkOnDate(date: date);
+      final cocktail = generateConsumedCocktailOnDate(date: date);
 
       final dao = ConsumedDrinksDAO(databaseProvider);
       realm.write(() {

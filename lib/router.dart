@@ -25,6 +25,7 @@ class DrimbleRouter extends $DrimbleRouter {
     ),
     AutoRoute(page: AddDrinkRoute.page),
     AutoRoute(page: EditDrinkRoute.page),
+    AutoRoute(page: CreateDrinkRoute.page),
     AutoRoute(page: TodaysDrinksRoute.page),
     AutoRoute(page: ProfileRoute.page),
     AutoRoute(page: EditWeeklyAlcoholGoalRoute.page),

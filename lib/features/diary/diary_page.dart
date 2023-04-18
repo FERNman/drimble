@@ -102,7 +102,7 @@ class DiaryPage extends StatelessWidget {
         return DiaryConsumedDrinks(
           state.drinks,
           onEdit: (drink) {
-            context.router.push(EditDrinkRoute(drink: drink));
+            context.router.push(EditDrinkRoute(consumedDrink: drink));
           },
           onDelete: (drink) {
             showDialog(

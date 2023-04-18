@@ -52,10 +52,10 @@ class EditDrinkForm extends StatelessWidget {
 
   Widget _buildAmountSelection() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.drink.volume != current.drink.volume,
+      buildWhen: (previous, current) => previous.consumedDrink.volume != current.consumedDrink.volume,
       builder: (context, state) => DrinkVolumeSelection(
-        standardServings: state.drink.category.defaultServings,
-        initialValue: state.drink.volume,
+        standardServings: (state as EditDrinkCubitLoadedState).drink.defaultServings,
+        initialValue: state.consumedDrink.volume,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateVolume(it);
         },
@@ -65,8 +65,8 @@ class EditDrinkForm extends StatelessWidget {
 
   Widget _buildAlcoholSelection() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.drink.alcoholByVolume != current.drink.alcoholByVolume,
-      builder: (context, state) => (state.drink is ConsumedCocktail)
+      buildWhen: (previous, current) => previous.consumedDrink.alcoholByVolume != current.consumedDrink.alcoholByVolume,
+      builder: (context, state) => (state.consumedDrink is ConsumedCocktail)
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -74,7 +74,7 @@ class EditDrinkForm extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(context.l18n.edit_drink_spiritsLiquors, style: context.textTheme.bodySmall),
                 const SizedBox(height: 12),
-                CocktailIngredients((state.drink as ConsumedCocktail).ingredients),
+                CocktailIngredients((state.consumedDrink as ConsumedCocktail).ingredients),
               ],
             )
           : Column(
@@ -83,7 +83,7 @@ class EditDrinkForm extends StatelessWidget {
                 Text(context.l18n.edit_drink_strength, style: context.textTheme.titleMedium),
                 const SizedBox(height: 8),
                 DrinkABVTextField(
-                  value: state.drink.alcoholByVolume,
+                  value: state.consumedDrink.alcoholByVolume,
                   onChanged: (it) {
                     context.read<EditDrinkCubit>().updateABV(it);
                   },
@@ -95,9 +95,9 @@ class EditDrinkForm extends StatelessWidget {
 
   Widget _buildStomachFullnessSelection() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.drink.stomachFullness != current.drink.stomachFullness,
+      buildWhen: (previous, current) => previous.consumedDrink.stomachFullness != current.consumedDrink.stomachFullness,
       builder: (context, state) => StomachFullnessSelection(
-        value: state.drink.stomachFullness,
+        value: state.consumedDrink.stomachFullness,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateStomachFullness(it);
         },
@@ -107,9 +107,9 @@ class EditDrinkForm extends StatelessWidget {
 
   Widget _buildStartTimePicker() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.drink.startTime != current.drink.startTime,
+      buildWhen: (previous, current) => previous.consumedDrink.startTime != current.consumedDrink.startTime,
       builder: (context, state) => DrinkStartTimeTextField(
-        value: state.drink.startTime,
+        value: state.consumedDrink.startTime,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateStartTime(it);
         },
@@ -119,9 +119,9 @@ class EditDrinkForm extends StatelessWidget {
 
   Widget _buildDurationInput() {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.drink.duration != current.drink.duration,
+      buildWhen: (previous, current) => previous.consumedDrink.duration != current.consumedDrink.duration,
       builder: (context, state) => DrinkDurationTextField(
-        value: state.drink.duration,
+        value: state.consumedDrink.duration,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateDuration(it);
         },

@@ -38,7 +38,7 @@ class DiaryRepository {
     });
   }
 
-  void addDrink(ConsumedDrink drink) async {
+  void saveDrink(ConsumedDrink drink) async {
     await _drinksDao.transaction(() {
       _drinksDao.save(drink);
       _markAsNonDrinkFree(drink.date);

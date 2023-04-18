@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/date.dart';
-import '../../domain/diary/consumed_cocktail.dart';
-import '../../domain/diary/consumed_drink.dart';
-import '../../infra/extensions/set_date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import '../common/widgets/extended_app_bar.dart';
@@ -64,7 +61,7 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         if (state.recentDrinks.isNotEmpty) {
           return RecentDrinks(
             state.recentDrinks,
-            onTap: (drink) => _addDrink(context, drink),
+            onTap: (drink) => context.router.push(CreateDrinkRoute(date: date, drink: drink)),
           );
         } else {
           return const SizedBox();
@@ -78,19 +75,8 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (previous, current) => previous.commonDrinks != current.commonDrinks,
       builder: (context, state) => CommonDrinks(
         state.commonDrinks,
-        onTap: (drink) => _addDrink(context, drink),
+        onTap: (drink) => context.router.push(CreateDrinkRoute(date: date, drink: drink)),
       ),
     );
-  }
-
-  void _addDrink(BuildContext context, ConsumedDrink drink) {
-    final startTime = DateTime.now().setDate(date.toDateTime());
-    if (drink is ConsumedCocktail) {
-      final newCocktail = ConsumedCocktail.fromExistingDrink(drink, startTime: startTime);
-      context.router.push(EditDrinkRoute(drink: newCocktail));
-    } else {
-      final newDrink = ConsumedDrink.fromExistingDrink(drink, startTime: startTime);
-      context.router.push(EditDrinkRoute(drink: newDrink));
-    }
   }
 }

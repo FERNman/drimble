@@ -127,8 +127,8 @@ class _BACChartState extends State<BACChart> {
 
       _startRedrawTimer();
     } else {
-      _displayStart = widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset) ??
-          DateTime.now().setDate(widget.currentDate.toDateTime());
+      _displayStart =
+          widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset) ?? DateTime.now().setDate(widget.currentDate);
     }
   }
 

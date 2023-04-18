@@ -1,4 +1,5 @@
 import '../alcohol/alcohol.dart';
+import '../alcohol/drink.dart';
 import '../date.dart';
 import 'stomach_fullness.dart';
 
@@ -40,14 +41,14 @@ class ConsumedDrink extends Alcohol {
     required this.stomachFullness,
   }) : assert(alcoholByVolume >= 0.0 && alcoholByVolume <= 1.0);
 
-  ConsumedDrink.fromExistingDrink(ConsumedDrink drink, {required this.startTime})
-      : duration = drink.duration,
-        stomachFullness = drink.stomachFullness,
+  ConsumedDrink.fromDrink(Drink drink, {required this.startTime})
+      : duration = drink.defaultDuration,
+        stomachFullness = StomachFullness.empty,
         super(
           name: drink.name,
           iconPath: drink.iconPath,
           category: drink.category,
-          volume: drink.volume,
+          volume: drink.defaultServings.first,
           alcoholByVolume: drink.alcoholByVolume,
         );
 
