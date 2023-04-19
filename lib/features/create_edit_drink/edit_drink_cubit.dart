@@ -69,10 +69,12 @@ class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
 }
 
 class EditDrinkCubitState {
-  final Drink drink;
   final ConsumedDrink consumedDrink;
+  final Drink _drink;
 
-  const EditDrinkCubitState(this.drink, this.consumedDrink);
+  List<Milliliter> get defaultServings => _drink.defaultServings;
 
-  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(drink, consumedDrink);
+  const EditDrinkCubitState(this._drink, this.consumedDrink);
+
+  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(_drink, consumedDrink);
 }

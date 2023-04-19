@@ -1,5 +1,6 @@
 import 'package:drimble/domain/alcohol/drink_category.dart';
 import 'package:drimble/domain/date.dart';
+import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,14 @@ import '../../generate_entities.dart';
 
 void main() {
   group(ConsumedDrink, () {
+    test('should use the first default serving as the volume', () {
+      final drink = generateDrink();
+      final startTime = faker.date.dateTime();
+      final consumedDrink = ConsumedDrink.fromDrink(drink, startTime: startTime);
+
+      expect(consumedDrink.volume, drink.defaultServings.first);
+    });
+
     group('copyWith', () {
       final drink = ConsumedDrink(
         id: ObjectId().hexString,
@@ -83,6 +92,15 @@ void main() {
         expect(newDrink.alcoholByVolume, drink.alcoholByVolume);
         expect(newDrink.startTime, startTime);
         expect(newDrink.duration, drink.defaultDuration);
+      });
+
+      test('should return a ConsumedCocktail if the given drink is a Cocktail', () {
+        final drink = generateCocktail();
+
+        final startTime = faker.date.dateTime();
+        final newDrink = ConsumedDrink.fromDrink(drink, startTime: startTime);
+
+        expect(newDrink, isA<ConsumedCocktail>());
       });
     });
   });

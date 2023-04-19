@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 
 import '../alcohol/alcohol.dart';
-import '../alcohol/cocktail.dart';
 import '../alcohol/drink_category.dart';
 import '../alcohol/ingredient.dart';
 import 'consumed_drink.dart';
@@ -22,24 +21,12 @@ class ConsumedCocktail extends ConsumedDrink {
   })  : assert(ingredients.isNotEmpty),
         super(
           category: DrinkCategory.cocktail,
-          alcoholByVolume: _calculateAlcoholByVolume(ingredients, volume),
+          alcoholByVolume: _calculateAlcoholByVolume(ingredients),
         );
 
-  static Percentage _calculateAlcoholByVolume(List<Ingredient> ingredients, int volume) {
-    return ingredients.map((e) => e.alcoholByVolume * (e.volume / volume)).sum;
+  static Percentage _calculateAlcoholByVolume(List<Ingredient> ingredients) {
+    return ingredients.map((e) => e.alcoholByVolume * e.percentOfCocktailVolume).sum;
   }
-
-  ConsumedCocktail.fromCocktail(Cocktail cocktail, {required super.startTime})
-      : ingredients = cocktail.ingredients,
-        super(
-          name: cocktail.name,
-          iconPath: cocktail.iconPath,
-          volume: cocktail.defaultServings.first,
-          duration: cocktail.defaultDuration,
-          stomachFullness: StomachFullness.empty,
-          alcoholByVolume: cocktail.alcoholByVolume,
-          category: cocktail.category,
-        );
 
   @override
   ConsumedCocktail copyWith({
@@ -48,13 +35,14 @@ class ConsumedCocktail extends ConsumedDrink {
     DateTime? startTime,
     Duration? duration,
     StomachFullness? stomachFullness,
+    List<Ingredient>? ingredients,
   }) =>
       ConsumedCocktail(
         id: id,
         name: name,
         iconPath: iconPath,
         volume: volume ?? this.volume,
-        ingredients: ingredients,
+        ingredients: ingredients ?? this.ingredients,
         startTime: startTime ?? this.startTime,
         duration: duration ?? this.duration,
         stomachFullness: stomachFullness ?? this.stomachFullness,

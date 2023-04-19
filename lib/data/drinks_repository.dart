@@ -1,5 +1,3 @@
-import 'package:collection/collection.dart';
-
 import '../domain/alcohol/cocktail.dart';
 import '../domain/alcohol/drink.dart';
 import '../domain/alcohol/drink_category.dart';
@@ -8,7 +6,7 @@ import '../domain/alcohol/ingredient.dart';
 class DrinksRepository {
   DrinksRepository();
 
-  List<Drink> getCommonDrinks() => _drinks.slice(0, 9);
+  List<Drink> getCommonDrinks() => _drinks;
 
   /// Returns all drinks that contain the given [name] in their name.
   List<Drink> searchDrinksByName(String name) {
@@ -104,14 +102,14 @@ class DrinksRepository {
           name: 'Aperol',
           iconPath: 'assets/icons/aperol.png',
           category: DrinkCategory.liqueur,
-          volume: 25,
+          percentOfCocktailVolume: 0.25,
           alcoholByVolume: 0.11,
         ),
         Ingredient(
           name: 'Prosecco',
           category: DrinkCategory.champagne,
           iconPath: 'assets/icons/champagne_bottle.png',
-          volume: 50,
+          percentOfCocktailVolume: 0.5,
           alcoholByVolume: 0.11,
         ),
       ],

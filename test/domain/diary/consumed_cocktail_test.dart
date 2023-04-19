@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,14 +7,14 @@ import '../../generate_entities.dart';
 
 void main() {
   group(ConsumedCocktail, () {
-    test('should correctly calculate the alcoholByVolume from the volume and the ingredients', () {
+    test('should correctly calculate the alcoholByVolume from the ingredients', () {
       const volume = 500;
-      final volumePerIngredient = (volume / 4).floor();
+      const percentPerIngredient = 0.25;
       const abvPerIngredient = 0.5;
 
       final ingredients = [
-        generateIngredient(volume: volumePerIngredient, alcoholByVolume: abvPerIngredient),
-        generateIngredient(volume: volumePerIngredient, alcoholByVolume: abvPerIngredient),
+        generateIngredient(percentOfCocktailVolume: percentPerIngredient, alcoholByVolume: abvPerIngredient),
+        generateIngredient(percentOfCocktailVolume: percentPerIngredient, alcoholByVolume: abvPerIngredient),
       ];
       final consumedCocktail = ConsumedCocktail(
         id: 'id',
@@ -26,32 +27,29 @@ void main() {
         stomachFullness: StomachFullness.empty,
       );
 
-      final expectedAlcoholByVolume = volumePerIngredient / volume * abvPerIngredient * ingredients.length;
+      final expectedAlcoholByVolume = percentPerIngredient * abvPerIngredient * ingredients.length;
       expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);
     });
 
-    group('FromCocktail', () {
-      test('should initialize the id with null', () {
-        final cocktail = generateCocktail();
-        final startTime = faker.date.dateTime();
-        final newCocktail = ConsumedCocktail.fromCocktail(cocktail, startTime: startTime);
+    test('should correclty calculate the alcoholByVolume even if the volume is 0', () {
+      const volume = 0;
+      final ingredients = [
+        generateIngredient(percentOfCocktailVolume: 0.25, alcoholByVolume: 0.5),
+        generateIngredient(percentOfCocktailVolume: 0.5, alcoholByVolume: 0.5),
+      ];
+      final consumedCocktail = ConsumedCocktail(
+        id: 'id',
+        name: 'name',
+        iconPath: 'iconPath',
+        volume: volume,
+        ingredients: ingredients,
+        startTime: DateTime.now(),
+        duration: Duration.zero,
+        stomachFullness: StomachFullness.empty,
+      );
 
-        expect(newCocktail.id, isNull);
-      });
-
-      test('should copy all the properties', () {
-        final cocktail = generateCocktail();
-        final startTime = faker.date.dateTime();
-        final newCocktail = ConsumedCocktail.fromCocktail(cocktail, startTime: startTime);
-
-        expect(newCocktail.name, cocktail.name);
-        expect(newCocktail.iconPath, cocktail.iconPath);
-        expect(newCocktail.ingredients, cocktail.ingredients);
-        expect(newCocktail.startTime, startTime);
-        expect(newCocktail.volume, cocktail.defaultServings.first);
-        expect(newCocktail.duration, cocktail.defaultDuration);
-        expect(newCocktail.stomachFullness, StomachFullness.empty);
-      });
+      final expectedAlcoholByVolume = ingredients.map((e) => e.alcoholByVolume * e.percentOfCocktailVolume).sum;
+      expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);
     });
   });
 }

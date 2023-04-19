@@ -64,18 +64,17 @@ Drink generateDrink({
 Cocktail generateCocktail({
   String? name,
   String? iconPath,
-  DrinkCategory? category,
-  double? alcoholByVolume,
   List<int>? defaultServings,
   Duration? defaultDuration,
   List<Ingredient>? ingredients,
 }) {
+  defaultServings = defaultServings ?? _generateServings();
   return Cocktail(
     name: name ?? faker.lorem.word(),
     iconPath: iconPath ?? '',
-    defaultServings: defaultServings ?? _generateServings(),
+    defaultServings: defaultServings,
     defaultDuration: defaultDuration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
-    ingredients: ingredients ?? _generateIngredients(Drink.defaultVolume),
+    ingredients: ingredients ?? _generateIngredients(),
   );
 }
 
@@ -157,11 +156,31 @@ ConsumedCocktail generateConsumedCocktailOnDate({
       ingredients: ingredients,
     );
 
+ConsumedCocktail generateConsumedCocktailFromCocktail(
+  Cocktail cocktail, {
+  Milliliter? volume,
+  DateTime? startTime,
+  Duration? duration,
+  StomachFullness? stomachFullness,
+}) {
+  volume = volume ?? cocktail.defaultServings.first;
+
+  return generateConsumedCocktail(
+    name: cocktail.name,
+    iconPath: cocktail.iconPath,
+    volume: volume,
+    startTime: startTime,
+    duration: duration ?? cocktail.defaultDuration,
+    stomachFullness: stomachFullness,
+    ingredients: cocktail.ingredients,
+  );
+}
+
 ConsumedCocktail generateConsumedCocktail({
   String? id,
   String? name,
   String? iconPath,
-  int? volume,
+  Milliliter? volume,
   DateTime? startTime,
   Duration? duration,
   StomachFullness? stomachFullness,
@@ -177,16 +196,18 @@ ConsumedCocktail generateConsumedCocktail({
     startTime: startTime ?? faker.date.dateTime(),
     duration: duration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
     stomachFullness: stomachFullness ?? faker.randomGenerator.element(StomachFullness.values),
-    ingredients: ingredients ?? _generateIngredients(volume),
+    ingredients: ingredients ?? _generateIngredients(),
   );
 }
 
-List<Ingredient> _generateIngredients(int volume) {
+List<Ingredient> _generateIngredients() {
   final numberOfIngredients = faker.randomGenerator.integer(5, min: 1);
 
   return List.generate(
     numberOfIngredients,
-    (_) => generateIngredient(volume: faker.randomGenerator.integer((volume / numberOfIngredients).floor(), min: 1)),
+    (_) => generateIngredient(
+      percentOfCocktailVolume: faker.randomGenerator.decimal(scale: 1 / numberOfIngredients),
+    ),
   );
 }
 
@@ -194,14 +215,14 @@ Ingredient generateIngredient({
   String? name,
   String? iconPath,
   DrinkCategory? category,
-  int? volume,
+  Percentage? percentOfCocktailVolume,
   double? alcoholByVolume,
 }) =>
     Ingredient(
       name: name ?? faker.lorem.word(),
       iconPath: iconPath ?? '',
       category: category ?? faker.randomGenerator.element(DrinkCategory.values),
-      volume: volume ?? faker.randomGenerator.integer(100, min: 1),
+      percentOfCocktailVolume: percentOfCocktailVolume ?? faker.randomGenerator.decimal(),
       alcoholByVolume: alcoholByVolume ?? faker.randomGenerator.decimal(min: 0.01),
     );
 

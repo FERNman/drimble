@@ -4,7 +4,6 @@ import 'alcohol.dart';
 /// when this drink was consumed.
 /// The name of the [ConsumedDrink] must match the name of the [Drink] it is based on.
 class Drink extends Alcohol {
-  static const defaultVolume = 100;
   final List<Milliliter> defaultServings;
   final Duration defaultDuration;
 
