@@ -214,14 +214,12 @@ List<Ingredient> _generateIngredients() {
 Ingredient generateIngredient({
   String? name,
   String? iconPath,
-  DrinkCategory? category,
   Percentage? percentOfCocktailVolume,
   double? alcoholByVolume,
 }) =>
     Ingredient(
       name: name ?? faker.lorem.word(),
       iconPath: iconPath ?? '',
-      category: category ?? faker.randomGenerator.element(DrinkCategory.values),
       percentOfCocktailVolume: percentOfCocktailVolume ?? faker.randomGenerator.decimal(),
       alcoholByVolume: alcoholByVolume ?? faker.randomGenerator.decimal(min: 0.01),
     );
