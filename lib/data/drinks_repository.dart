@@ -101,13 +101,11 @@ class DrinksRepository {
         Ingredient(
           name: 'Aperol',
           iconPath: 'assets/icons/aperol.png',
-          category: DrinkCategory.liqueur,
           percentOfCocktailVolume: 0.25,
           alcoholByVolume: 0.11,
         ),
         Ingredient(
           name: 'Prosecco',
-          category: DrinkCategory.champagne,
           iconPath: 'assets/icons/champagne_bottle.png',
           percentOfCocktailVolume: 0.5,
           alcoholByVolume: 0.11,

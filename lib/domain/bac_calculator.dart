@@ -111,7 +111,7 @@ class BACCalculator {
   double _calculateRateOfMetabolism(double currentBAC) {
     // Between 5 and 15 mmol/min/mg
     const vmax = 15.0; // TODO: Adapt to BAC and user
-    // Betwee 0.2 and 8 mM
+    // Between 0.15 and 0.25 mg/mL
     const km = 6; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);
