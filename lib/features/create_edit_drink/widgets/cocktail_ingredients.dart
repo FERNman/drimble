@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/alcohol/ingredient.dart';
+import '../../../domain/diary/consumed_cocktail.dart';
 import '../../common/build_context_extensions.dart';
 
 class CocktailIngredients extends StatelessWidget {
+  final ConsumedCocktail _cocktail;
   final List<Ingredient> _ingredients;
 
-  const CocktailIngredients(this._ingredients, {super.key});
+  const CocktailIngredients(this._cocktail, this._ingredients, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,10 @@ class CocktailIngredients extends StatelessWidget {
             ],
           ),
         ),
-        Text(context.l18n.common_amountInMilliliters(ingredient.volume), style: context.textTheme.labelLarge),
+        Text(
+          context.l18n.common_amountInMilliliters(ingredient.actualVolume(_cocktail.volume)),
+          style: context.textTheme.labelLarge,
+        ),
       ],
     );
   }

@@ -54,7 +54,7 @@ class EditDrinkForm extends StatelessWidget {
     return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
       buildWhen: (previous, current) => previous.consumedDrink.volume != current.consumedDrink.volume,
       builder: (context, state) => DrinkVolumeSelection(
-        standardServings: (state as EditDrinkCubitLoadedState).drink.defaultServings,
+        standardServings: state.defaultServings,
         initialValue: state.consumedDrink.volume,
         onChanged: (it) {
           context.read<EditDrinkCubit>().updateVolume(it);
@@ -74,7 +74,10 @@ class EditDrinkForm extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(context.l18n.edit_drink_spiritsLiquors, style: context.textTheme.bodySmall),
                 const SizedBox(height: 12),
-                CocktailIngredients((state.consumedDrink as ConsumedCocktail).ingredients),
+                CocktailIngredients(
+                  (state.consumedDrink as ConsumedCocktail),
+                  (state.consumedDrink as ConsumedCocktail).ingredients,
+                ),
               ],
             )
           : Column(
