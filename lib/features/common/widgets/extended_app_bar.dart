@@ -45,5 +45,5 @@ class ExtendedAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(92.0 + spacing);
+  Size get preferredSize => Size.fromHeight(92.0 + spacing); // TODO: Remove hard-coded height
 }

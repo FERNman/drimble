@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../domain/alcohol/drink.dart';
 import '../../common/build_context_extensions.dart';
@@ -48,29 +47,11 @@ class _RecentDrink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return ListTile(
+      leading: Image.asset(drink.iconPath, height: 38),
+      title: Text(drink.name),
+      trailing: const Icon(Icons.add),
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          children: [
-            Image(image: AssetImage(drink.iconPath), width: 32, height: 32),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(drink.name, style: context.textTheme.bodyLarge),
-                Text(
-                  '${drink.volume}ml - ${NumberFormat.percentPattern().format(drink.alcoholByVolume)}',
-                  style: context.textTheme.bodySmall,
-                ),
-              ],
-            ),
-            const Spacer(),
-            IconButton(onPressed: onTap, icon: const Icon(Icons.add))
-          ],
-        ),
-      ),
     );
   }
 }

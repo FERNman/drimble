@@ -25,8 +25,10 @@ class CommonDrinks extends StatelessWidget {
           GridView.count(
             crossAxisCount: 3,
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
+            childAspectRatio: 1.2,
             physics: const NeverScrollableScrollPhysics(),
             children: beverages,
           ),
@@ -48,19 +50,22 @@ class _CommonDrink extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           border: Border.all(color: context.colorScheme.outline),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(drink.iconPath, width: 48, height: 48),
+            Image.asset(drink.iconPath, width: 36, height: 36),
             const SizedBox(height: 8),
             Text(
               drink.name,
               overflow: TextOverflow.ellipsis,
-              style: context.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+              style: context.textTheme.bodySmall,
             ),
           ],
         ),
