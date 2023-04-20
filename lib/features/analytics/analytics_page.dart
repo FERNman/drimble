@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import 'analytics_cubit.dart';
@@ -59,7 +60,17 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
       builder: (context, state) {
         // Subtract a day because the last day would be monday otherwise
         final sunday = state.lastDayOfWeek.subtract(days: 1);
-        return AnalyticsAppBar(firstDayOfWeek: state.firstDayOfWeek, lastDayOfWeek: sunday);
+        return AnalyticsAppBar(
+          firstDayOfWeek: state.firstDayOfWeek,
+          lastDayOfWeek: sunday,
+          onChangeWeek: () async {
+            final result =
+                await context.router.push<Date?>(AnalyticsSwitchWeekRoute(initialDate: state.firstDayOfWeek));
+            if (result != null && context.mounted) {
+              context.read<AnalyticsCubit>().setDate(result);
+            }
+          },
+        );
       },
     );
   }
