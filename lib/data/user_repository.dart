@@ -30,10 +30,10 @@ class UserRepository {
   }
 
   Future<void> signInOffline(User user) async {
+    _database.openOfflineInstance();
+
     _user.add(user);
     await _persistUser(user);
-
-    _database.openOfflineInstance();
   }
 
   Future<void> signOut() async {
