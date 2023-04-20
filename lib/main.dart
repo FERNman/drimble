@@ -103,7 +103,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
                 labelStyle: textTheme.labelMedium,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 backgroundColor: Colors.transparent,
                 selectedColor: colorScheme.primaryContainer,
                 pressElevation: 0,
@@ -129,6 +129,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               ),
+              
             ),
             localizationsDelegates: const [
               AppLocalizations.delegate,

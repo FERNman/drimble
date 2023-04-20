@@ -182,5 +182,7 @@
   "editWeeklyAlcoholGoal_description": "Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!",
   "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
   "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
-  "editWeeklyGoal_setGoal": "Set goal!"
+  "editWeeklyGoal_setGoal": "Set goal!",
+  "analytics_switch_week_selectWeek": "Select week",
+  "analytics_switch_week_apply": "Apply"
 }

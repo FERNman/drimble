@@ -38,6 +38,16 @@ void main() {
         const date = Date(2020, 1, 1);
         expect(date.add(days: 366), const Date(2021, 1, 1));
       });
+
+      test('should correctly handle adding months', () {
+        const date = Date(2020, 1, 1);
+        expect(date.add(months: 1), const Date(2020, 2, 1));
+      });
+
+      test('should correctly handle adding years', () {
+        const date = Date(2020, 1, 1);
+        expect(date.add(years: 1), const Date(2021, 1, 1));
+      });
     });
 
     group('subtract', () {
@@ -49,6 +59,16 @@ void main() {
       test('should keep the date valid when subtracting days', () {
         const date = Date(2021, 1, 1);
         expect(date.subtract(days: 1), const Date(2020, 12, 31));
+      });
+
+      test('should correctly handle subtracting months', () {
+        const date = Date(2021, 1, 1);
+        expect(date.subtract(months: 1), const Date(2020, 12, 1));
+      });
+
+      test('should correctly handle subtracting years', () {
+        const date = Date(2021, 1, 1);
+        expect(date.subtract(years: 1), const Date(2020, 1, 1));
       });
     });
   });
@@ -62,6 +82,20 @@ void main() {
     test('should not shift the date if it is after 6am', () {
       final date = DateTime(2021, 1, 1, 6, 0, 0);
       expect(date.toDate(), const Date(2021, 1, 1));
+    });
+  });
+
+  group('difference', () {
+    test('should accurately return the difference between two dates', () {
+      const date1 = Date(2021, 1, 1);
+      const date2 = Date(2021, 1, 3);
+      expect(date2.difference(date1), const Duration(days: 2));
+    });
+
+    test('should work for full years', () {
+      const date1 = Date(2021, 1, 1);
+      const date2 = Date(2022, 1, 1);
+      expect(date2.difference(date1), const Duration(days: 365));
     });
   });
 }
