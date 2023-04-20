@@ -37,20 +37,20 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   void _subscribeToRepository() {
-    final dateChangedStream = stream.distinct((previous, next) => previous.date == next.date).startWith(state);
+    final dateChangedStream = stream.map((value) => value.date).distinct().startWith(state.date);
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.observeEntryOnDate(value.date))
+        .flatMap((date) => _diaryRepository.observeEntryOnDate(date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.observeDrinksOnDate(value.date))
+        .flatMap((date) => _diaryRepository.observeDrinksOnDate(date))
         .listen((drinks) => emit(state.updateDrinks(drinks))));
 
     addSubscription(dateChangedStream
-        .flatMap((value) => _diaryRepository.observeDrinksBetweenDays(
-              value.date.subtract(days: 1),
-              value.date.add(days: 1),
+        .flatMap((date) => _diaryRepository.observeDrinksBetweenDays(
+              date.subtract(days: 1),
+              date.add(days: 1),
             ))
         .listen(_calculateBAC));
   }

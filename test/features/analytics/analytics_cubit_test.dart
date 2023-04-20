@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/user_repository.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/features/analytics/analytics_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +49,47 @@ void main() {
       final firstDayOfWeek = date.subtract(days: date.weekday - 1);
       expect(cubit.state.lastDayOfWeek.weekday, 1); // Should be monday
       expect(cubit.state.lastDayOfWeek, firstDayOfWeek.add(days: oneWeekInDays));
+    });
+
+    group('setDate', () {
+      test('should set the correct date as the first day of the week', () async {
+        final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
+
+        final newDate = faker.date.date();
+        cubit.setDate(newDate);
+
+        await cubit.stream.first;
+
+        final firstDayOfWeek = newDate.subtract(days: newDate.weekday - 1);
+        expect(cubit.state.firstDayOfWeek, firstDayOfWeek);
+        expect(cubit.state.firstDayOfWeek.weekday, 1);
+      });
+
+      test('should reset the state but keep the goals', () async {
+        final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
+
+        final newDate = faker.date.date();
+        cubit.setDate(newDate);
+
+        await cubit.stream.first;
+
+        expect(cubit.state.goals, user.goals);
+        expect(cubit.state.averageAlcoholPerSession, 0);
+      });
+
+      test('should reload the drinks and diary entries', () async {
+        final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
+
+        final newDate = faker.date.date();
+        cubit.setDate(newDate);
+
+        await cubit.stream.first;
+
+        final firstDayOfWeek = newDate.floorToWeek();
+        final lastDayOfWeek = firstDayOfWeek.add(days: oneWeekInDays);
+        verify(mockDiaryRepository.observeDrinksBetweenDays(firstDayOfWeek, lastDayOfWeek));
+        verify(mockDiaryRepository.observeEntriesBetween(firstDayOfWeek, lastDayOfWeek));
+      });
     });
 
     group('state.alcoholPerDayThisWeek', () {
@@ -108,7 +150,7 @@ void main() {
 
         final drink = generateConsumedDrinkOnDate(date: date);
         drinksSubject.add([drink]);
-        await cubit.stream.first;
+        await cubit.stream.elementAt(2);
 
         expect(
           cubit.state.alcoholByDay.values.toList(),

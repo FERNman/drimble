@@ -20,24 +20,24 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   final UserRepository _userRepository;
 
   AnalyticsCubit(this._diaryRepository, this._userRepository, {Date? date})
-      : super(AnalyticsCubitState(
-          date: date ?? Date.today(),
-          averageAlcoholPerSession: 0,
-          changeOfAverageAlcohol: 0,
-          alcoholByDay: {},
-          numberOfDrinks: 0,
-          highestBAC: 0,
-          calories: 0,
-          goals: const Goals(),
-        )) {
+      : super(AnalyticsCubitState(date: date ?? Date.today())) {
     _initState();
   }
 
+  void setDate(Date date) {
+    emit(AnalyticsCubitState(date: date, goals: state.goals));
+  }
+
   void _initState() {
-    final firstDayOfLastWeek = state.firstDayOfWeek.subtract(days: AnalyticsCubitState.daysInOneWeek);
-    final drinksLastWeek = _diaryRepository.observeDrinksBetweenDays(firstDayOfLastWeek, state.firstDayOfWeek);
-    final drinksThisWeek = _diaryRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek);
-    final diaryEntries = _diaryRepository.observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek);
+    final dateChanged = stream.map((event) => event.firstDayOfWeek).distinct().startWith(state.firstDayOfWeek);
+
+    final drinksLastWeek =
+        dateChanged.flatMap((date) => _diaryRepository.observeDrinksBetweenDays(date.subtract(days: 7), date));
+    final drinksThisWeek = dateChanged
+        .flatMap((date) => _diaryRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek));
+    final diaryEntries = dateChanged
+        .flatMap((date) => _diaryRepository.observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek));
+
     final user = _userRepository.observeUser().whereNotNull();
 
     addSubscription(
@@ -171,25 +171,21 @@ class AnalyticsCubitState {
 
   AnalyticsCubitState({
     required Date date,
-    required this.changeOfAverageAlcohol,
-    required this.averageAlcoholPerSession,
-    required this.alcoholByDay,
-    required this.numberOfDrinks,
-    required this.highestBAC,
-    required this.calories,
-    required this.goals,
+    this.changeOfAverageAlcohol = 0,
+    this.averageAlcoholPerSession = 0,
+    this.alcoholByDay = const {},
+    this.numberOfDrinks = 0,
+    this.highestBAC = 0,
+    this.calories = 0,
+    this.goals = const Goals(),
   })  : firstDayOfWeek = date.floorToWeek(),
         lastDayOfWeek = date.floorToWeek().add(days: daysInOneWeek),
         totalAlcohol = _sum(alcoholByDay),
-        drinkFreeDays = _mapAlcoholToDrinkFreeDays(alcoholByDay) {}
+        drinkFreeDays = _mapAlcoholToDrinkFreeDays(alcoholByDay);
 
   static Map<Date, bool?> _mapAlcoholToDrinkFreeDays(Map<Date, double?> alcoholPerDay) =>
       alcoholPerDay.map((key, value) => MapEntry(key, value == null ? null : value == 0.0));
 
   static double _sum(Map<Date, double?> alcoholPerDay) =>
       alcoholPerDay.values.whereNotNull().fold(0.0, (total, el) => total + el);
-}
-
-extension Week on Date {
-  Date floorToWeek() => subtract(days: weekday - 1);
 }

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../domain/date.dart';
+import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 
 class AnalyticsAppBar extends StatelessWidget {
   final Date firstDayOfWeek;
   final Date lastDayOfWeek;
 
+  final GestureTapCallback onChangeWeek;
+
   const AnalyticsAppBar({
     required this.firstDayOfWeek,
     required this.lastDayOfWeek,
+    required this.onChangeWeek,
     super.key,
   });
 
@@ -23,14 +28,29 @@ class AnalyticsAppBar extends StatelessWidget {
       centerTitle: false,
       actions: [
         ActionChip(
-          onPressed: () {},
+          onPressed: onChangeWeek,
           avatar: const Icon(Icons.calendar_today_outlined),
-          label: Text(context.l18n.analytics_date_thisWeek, style: context.textTheme.labelLarge),
+          label: Text(_getDateText(context), style: context.textTheme.labelLarge),
           surfaceTintColor: context.colorScheme.primaryContainer,
           side: BorderSide.none,
         ),
         const SizedBox(width: 16),
       ],
     );
+  }
+
+  String _getDateText(BuildContext context) {
+    final firstDayOfThisWeek = Date.today().floorToWeek();
+    final firstDayOflastWeek = firstDayOfThisWeek.subtract(days: 7);
+
+    if (firstDayOfWeek == firstDayOfThisWeek) {
+      return context.l18n.analytics_date_thisWeek;
+    } else if (firstDayOfWeek == firstDayOflastWeek) {
+      return 'Last week';
+    } else {
+      final dateFormat = DateFormat(DateFormat.ABBR_MONTH_DAY);
+
+      return '${dateFormat.formatDate(firstDayOfWeek)} - ${dateFormat.formatDate(lastDayOfWeek)}';
+    }
   }
 }
