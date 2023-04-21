@@ -1,51 +1,26 @@
 import 'package:flutter/material.dart';
 
-class SearchField extends StatefulWidget {
-  final ValueChanged<String> onChange;
+import '../../common/build_context_extensions.dart';
 
-  const SearchField({required this.onChange, super.key});
+class SearchField extends StatelessWidget {
+  final GestureTapCallback onSearch;
 
-  @override
-  State<SearchField> createState() => _SearchFieldState();
-}
-
-class _SearchFieldState extends State<SearchField> {
-  final _controller = TextEditingController();
+  const SearchField({
+    required this.onSearch,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: _controller,
+      onTap: () => onSearch(),
+      readOnly: true,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        hintText: 'Search...',
-        suffixIcon: _trailingIcon(),
+        focusedBorder: const OutlineInputBorder(),
+        hintText: context.l18n.add_drink_search,
+        suffixIcon: const Icon(Icons.search),
       ),
-      onChanged: (value) {
-        widget.onChange(value);
-        setState(() {});
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Widget _trailingIcon() {
-    if (_controller.text.isEmpty) {
-      return const Icon(Icons.search);
-    }
-
-    return IconButton(
-      onPressed: () {
-        FocusScope.of(context).unfocus();
-        _controller.clear();
-        setState(() {});
-      },
-      icon: const Icon(Icons.clear),
     );
   }
 }
