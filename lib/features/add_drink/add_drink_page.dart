@@ -9,6 +9,7 @@ import '../common/widgets/extended_app_bar.dart';
 import 'add_drink_cubit.dart';
 import 'widgets/common_drinks.dart';
 import 'widgets/recent_drinks.dart';
+import 'widgets/search_field.dart';
 
 @RoutePage()
 class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
@@ -27,15 +28,16 @@ class AddDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // TODO: Search functionality
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: SearchField(onChange: _search),
-            // ),
+            _buildAppBar(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SearchField(
+                onSearch: () => context.router.push(SearchDrinkRoute(date: date)),
+              ),
+            ),
             _buildRecentDrinks(),
             _buildCommonDrinks(),
           ],

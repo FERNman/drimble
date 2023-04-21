@@ -184,5 +184,8 @@
   "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
   "editWeeklyGoal_setGoal": "Set goal!",
   "analytics_switch_week_selectWeek": "Select week",
-  "analytics_switch_week_apply": "Apply"
+  "analytics_switch_week_apply": "Apply",
+  "add_drink_search": "Search...",
+  "search_drink_whatAreYouLookingFor": "What are you looking for?",
+  "search_drink_noResults": "We couldn't find any drinks matching your search..."
 }
