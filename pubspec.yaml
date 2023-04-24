@@ -1,7 +1,7 @@
 name: drimble
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.1.0+2
 environment:
   sdk: '>=2.19.0 <3.0.0'
 

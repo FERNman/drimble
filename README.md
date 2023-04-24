@@ -23,3 +23,17 @@ The default path is `C:\Users\USERNAME\.android\debug.keystore` on Windows and `
 The default password for both the key and the store is `android`, the default alias is `androiddebugkey`.
 
 Then, run `flutter build appbundle --release` to build the release version.
+
+## Releasing a new version
+
+All our release management is done using `fastlane` to ensure consistency across machines.
+
+Beta versions are released using Firebase App Distribution.
+
+### iOS
+
+Navigate into the iOS directory and run `fastlane beta`. This should build and release the app to Firebase App Distribution.
+
+### Android
+
+Navigate into the Android directory and run `fastlane beta`. This should build and release the app to Firebase App Distribution.
