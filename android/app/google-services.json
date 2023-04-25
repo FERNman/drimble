@@ -29,6 +29,13 @@
             {
               "client_id": "159589082657-hkalv4lm1bbjp2pg9bp16goeb3kstrmf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "159589082657-a5r5dve50q1aaqa8j1fvoar4f5ubvnb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "drimble.app"
+              }
             }
           ]
         }

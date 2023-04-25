@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,11 +17,14 @@ import 'data/models/diary_entry_model.dart';
 import 'data/models/ingredient_model.dart';
 import 'data/user_repository.dart';
 import 'features/home/home_guard.dart';
+import 'firebase_options.dart';
 import 'infra/l18n/l10n.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const DrimbleApp());
 }
@@ -129,7 +133,6 @@ class _DrimbleAppState extends State<DrimbleApp> {
                 selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
               ),
-              
             ),
             localizationsDelegates: const [
               AppLocalizations.delegate,

@@ -1,4 +1,25 @@
 PODS:
+  - Firebase/Analytics (10.7.0):
+    - Firebase/Core
+  - Firebase/Core (10.7.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 10.7.0)
+  - Firebase/CoreOnly (10.7.0):
+    - FirebaseCore (= 10.7.0)
+  - Firebase/Crashlytics (10.7.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 10.7.0)
+  - firebase_analytics (10.2.1):
+    - Firebase/Analytics (= 10.7.0)
+    - firebase_core
+    - Flutter
+  - firebase_core (2.10.0):
+    - Firebase/CoreOnly (= 10.7.0)
+    - Flutter
+  - firebase_crashlytics (3.1.1):
+    - Firebase/Crashlytics (= 10.7.0)
+    - firebase_core
+    - Flutter
   - FirebaseAnalytics (10.7.0):
     - FirebaseAnalytics/AdIdSupport (= 10.7.0)
     - FirebaseCore (~> 10.0)
@@ -17,11 +38,6 @@ PODS:
     - GoogleUtilities/Network (~> 7.8)
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAppDistribution (10.7.0-beta):
-    - FirebaseCore (~> 10.0)
-    - FirebaseInstallations (~> 10.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
-    - GoogleUtilities/UserDefaults (~> 7.8)
   - FirebaseCore (10.7.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
@@ -113,9 +129,9 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
-  - FirebaseAnalytics (~> 10.7)
-  - FirebaseAppDistribution (~> 10.7-beta)
-  - FirebaseCrashlytics (~> 10.7)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - realm (from `.symlinks/plugins/realm/ios`)
@@ -123,8 +139,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Firebase
     - FirebaseAnalytics
-    - FirebaseAppDistribution
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
@@ -139,6 +155,12 @@ SPEC REPOS:
     - PromisesSwift
 
 EXTERNAL SOURCES:
+  firebase_analytics:
+    :path: ".symlinks/plugins/firebase_analytics/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_crashlytics:
+    :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
   path_provider_foundation:
@@ -149,8 +171,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
 
 SPEC CHECKSUMS:
+  Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
+  firebase_analytics: e8e294333de66e5429d4aac365966281b4dbfb7d
+  firebase_core: 18d44f087248303a4a8f05d0099a000c46e3c77a
+  firebase_crashlytics: 6c15c2f507d82746dd62214964acf56146eab53f
   FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
-  FirebaseAppDistribution: f990e8a748106da0f1a67960b13f3c4a7bba21f7
   FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
   FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
   FirebaseCoreInternal: 8845798510aae74703467480f71ac613788d0696
@@ -168,6 +193,6 @@ SPEC CHECKSUMS:
   realm: 6d5098d78294cdd302945a8f23ed8acedb6ce923
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
 
-PODFILE CHECKSUM: f4c8909b096baf831744086f184d658f802e800f
+PODFILE CHECKSUM: 88d4d113ac8b6e614d7e53464c42d3551ee19165
 
 COCOAPODS: 1.12.0
