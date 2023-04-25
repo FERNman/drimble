@@ -32,11 +32,6 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-
-  # Add the Firebase pod for Google Analytics
-  pod 'FirebaseAnalytics', '~> 10.7'
-  pod 'FirebaseCrashlytics', '~> 10.7'
-  pod 'FirebaseAppDistribution', '~> 10.7-beta'
 end
 
 post_install do |installer|
