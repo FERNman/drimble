@@ -5,6 +5,6 @@ extension SetDate on DateTime {
   DateTime setDate(Date toDate) => copyWith(
         year: toDate.year,
         month: toDate.month,
-        day: toDate.day,
+        day: hour < 6 ? toDate.day + 1 : toDate.day,
       );
 }
