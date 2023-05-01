@@ -1,4 +1,5 @@
 import 'package:drimble/domain/date.dart';
+import 'package:drimble/infra/extensions/set_date.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -96,6 +97,18 @@ void main() {
       const date1 = Date(2021, 1, 1);
       const date2 = Date(2022, 1, 1);
       expect(date2.difference(date1), const Duration(days: 365));
+    });
+  });
+  
+  group('DateTime.setDate', () {
+    test('should shift the day by 1 if the hour is before 6am', () {
+      final date = DateTime(2021, 1, 1, 5, 59, 59);
+      expect(date.setDate(const Date(2021, 1, 2)), DateTime(2021, 1, 3, 5, 59, 59));
+    });
+
+    test('should not shift the date if the hour is at 6am', () {
+      final date = DateTime(2021, 1, 1, 6, 0, 0);
+      expect(date.setDate(const Date(2020, 1, 2)), DateTime(2020, 1, 2, 6, 0, 0));
     });
   });
 }
