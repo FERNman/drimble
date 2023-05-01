@@ -25,11 +25,9 @@ class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
   }
 
   Future<AddDrinkCubitState> _calculateState(List<ConsumedDrink> recentlyConsumedDrinks) async {
-    final commonDrinks = await _drinksRepository.getCommonDrinks();
-    final recentDrinks = await Future.wait(
-      // This is ugly, but recentlyConsumedDrinks only contains up to 3 elements, so we should be fine performance-wise
-      recentlyConsumedDrinks.map((e) async => await _drinksRepository.findDrinkByName(e.name)).toList(),
-    );
+    final commonDrinks = _drinksRepository.getCommonDrinks();
+    // This is ugly, but recentlyConsumedDrinks only contains up to 3 elements, so we should be fine performance-wise
+    final recentDrinks = recentlyConsumedDrinks.map((e) => _drinksRepository.findDrinkByName(e.name)).toList();
 
     return state.copyWith(recentDrinks: recentDrinks, commonDrinks: commonDrinks);
   }
