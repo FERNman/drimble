@@ -62,7 +62,7 @@ class BACCalculator {
       final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
 
-      results.add(BACEntry(time, currentBAC * 0.1 / user.weight));
+      results.add(BACEntry(time, currentBAC / user.weight));
     }
 
     return BACCalculationResults(results);

@@ -27,8 +27,7 @@ class LineChart extends StatelessWidget {
     this.color,
     super.key,
   })  : assert(data.isNotEmpty),
-        // TODO: Division by 10 is a magic number, should be improved
-        _valueRange = _oneIfZero((maxValue * 10.0).ceilToNiceDouble() / 10.0),
+        _valueRange = _oneIfZero(maxValue.ceilToNiceDouble()),
         _showSpotIndicator = indexForSpotIndicator >= 0 && indexForSpotIndicator < data.length;
 
   static double _oneIfZero(double number) => number == 0.0 ? 1.0 : number;
@@ -58,7 +57,7 @@ class LineChart extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      top: 8, // TODO: Remove hard-coded offsets, they are basecd on the labels' size
+      top: 8, // TODO: Remove hard-coded offsets, they are based on the labels' size
       bottom: 8,
       child: CustomPaint(
         size: Size(double.infinity, height),
