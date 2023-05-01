@@ -62,7 +62,7 @@ class BACCalculator {
       final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
 
-      results.add(BACEntry(time, currentBAC / user.weight));
+      results.add(BACEntry(time, currentBAC * 0.1 / user.weight));
     }
 
     return BACCalculationResults(results);
@@ -86,8 +86,7 @@ class BACCalculator {
     return currentBAC;
   }
 
-  // TODO: Verify this multiplication by 10 is actually correct
-  double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent * 10.0;
+  double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
 
   double _calculateAbsorbedAlcohol(List<ConsumedDrink> drinks, DateTime at) {
     return drinks.fold<double>(0.0, (absorbedAlcohol, drink) {
@@ -110,9 +109,9 @@ class BACCalculator {
 
   double _calculateRateOfMetabolism(double currentBAC) {
     // Between 5 and 15 mmol/min/mg
-    const vmax = 15.0; // TODO: Adapt to BAC and user
+    const vmax = 20.0; // TODO: Adapt to BAC and user
     // Between 0.15 and 0.25 mg/mL
-    const km = 6; // TODO: Look up values
+    const km = 8.0; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);
   }
