@@ -20,10 +20,10 @@ class BACCalculationArgs {
 /// This class calculates the BAC for a given user and a given time range.
 /// It uses a modified version of the Watson formula.
 /// 
-/// It does only account for the activity of Aldehyde Dehydrogenase (ADH), Cytochrome P450 and Catalase 
-/// are not yet taken into account.
-/// It also doesn't yet take into account other pathways of elimination alcohol, such as excretion, breath, and perspiration.
-/// However, those are not as important as elimination through metabolism.
+/// It does only account for the activity of Aldehyde Dehydrogenase (ADH), 
+/// Cytochrome P450 and Catalase are not yet taken into account.
+/// It also doesn't yet take into account the first pass metabolism of alcohol.
+/// However, the impact of that is often negligible, especially for higher amounts of alcohol.
 class BACCalculator {
   static const _deltaTime = Duration(minutes: 5);
 
@@ -59,7 +59,7 @@ class BACCalculator {
 
       previousAbsorbedAlcohol = absorbedAlcohol;
 
-      final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
+      final metabolizedAlcohol = _calculateMetabolismPerHour(currentBAC) * (_deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
 
       results.add(BACEntry(time, currentBAC / user.weight));
@@ -79,7 +79,7 @@ class BACCalculator {
 
       previousAbsorbedAlcohol = absorbedAlcohol;
 
-      final metabolizedAlcohol = _calculateRateOfMetabolism(currentBAC) * (_deltaTime.inMinutes / 60.0);
+      final metabolizedAlcohol = _calculateMetabolismPerHour(currentBAC) * (_deltaTime.inMinutes / 60.0);
       currentBAC -= metabolizedAlcohol;
     }
 
@@ -107,10 +107,11 @@ class BACCalculator {
     return ingestedAlcohol * amountAbsorbed;
   }
 
-  double _calculateRateOfMetabolism(double currentBAC) {
-    // Between 5 and 15 mmol/min/mg
+  double _calculateMetabolismPerHour(double currentBAC) {
+    // Between 5 and 25 mg/100mL
     const vmax = 20.0; // TODO: Adapt to BAC and user
-    // Between 0.15 and 0.25 mg/mL
+    // ADH is saturated between 15 and 20 mg/100mL,
+    // meaning km should be between 0.075g/L and 0.125/L 
     const km = 8.0; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);
