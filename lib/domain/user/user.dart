@@ -3,14 +3,14 @@ import 'gender.dart';
 import 'goals.dart';
 
 class User {
-  String name;
-  Gender gender;
-  int age;
-  int height; // In centimeters
-  int weight; // In kilograms
-  BodyComposition bodyComposition;
+  final String name;
+  final Gender gender;
+  final int age;
+  final int height; // In centimeters
+  final int weight; // In kilograms
+  final BodyComposition bodyComposition;
 
-  Goals goals;
+  final Goals goals;
 
   double get totalBodyWater {
     switch (gender) {
@@ -40,13 +40,20 @@ class User {
     this.goals = const Goals(),
   });
 
-  User copyWith({Goals? goals}) => User(
+  User copyWith({
+    int? age,
+    int? height,
+    int? weight,
+    BodyComposition? bodyComposition,
+    Goals? goals,
+  }) =>
+      User(
         name: name,
         gender: gender,
-        age: age,
-        height: height,
-        weight: weight,
-        bodyComposition: bodyComposition,
+        age: age ?? this.age,
+        height: height ?? this.height,
+        weight: weight ?? this.weight,
+        bodyComposition: bodyComposition ?? this.bodyComposition,
         goals: goals ?? this.goals,
       );
 }

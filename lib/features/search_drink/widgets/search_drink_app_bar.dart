@@ -19,10 +19,7 @@ class SearchDrinkAppBar extends StatelessWidget implements PreferredSizeWidget {
           autofocus: true,
           onChanged: onSearchChanged,
           decoration: InputDecoration(
-            prefixIcon: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back),
-            ),
+            prefixIcon: const BackButton(),
             hintText: context.l18n.search_drink_whatAreYouLookingFor,
           ),
         ),

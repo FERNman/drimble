@@ -35,13 +35,6 @@ class BACChartTitle extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    if (_isDrunk()) {
-      return Text(
-        '${results.getEntryAt(DateTime.now())}',
-        style: context.textTheme.headlineMedium,
-      );
-    }
-
     if (diaryEntry == null) {
       return Text(
         context.l18n.diary_notDrinkingToday,
@@ -52,25 +45,34 @@ class BACChartTitle extends StatelessWidget {
         context.l18n.diary_drinkFreeDay,
         style: context.textTheme.titleLarge,
       );
-    } else if (Date.today() == date) {
-      return Text(
-        '${results.getEntryAt(DateTime.now())}',
-        style: context.textTheme.headlineMedium,
-      );
     } else {
-      final maxBAC = results.maxBAC;
-      return Text(
-        '$maxBAC max',
-        style: context.textTheme.titleLarge,
-      );
+      return _buildBAC(context);
     }
   }
 
-  Widget _buildSubtitle(BuildContext context) {
-    if (_isDrunk()) {
-      return Text(_drunkSubtitle(context), style: context.textTheme.bodyMedium);
-    }
+  Widget _buildBAC(BuildContext context) {
+    final text = Date.today() == date
+        ? TextSpan(
+            text: '${results.getEntryAt(DateTime.now())}',
+            style: context.textTheme.displaySmall,
+          )
+        : TextSpan(
+            children: [
+              TextSpan(
+                text: results.maxBAC.toString(),
+                style: context.textTheme.displaySmall,
+              ),
+              TextSpan(
+                text: context.l18n.diary_maxBAC,
+                style: context.textTheme.bodySmall?.copyWith(color: Colors.black54),
+              ),
+            ],
+          );
 
+    return RichText(text: text);
+  }
+
+  Widget _buildSubtitle(BuildContext context) {
     if (diaryEntry == null) {
       return FilledButton(
         onPressed: onMarkAsDrinkFreeDay,
@@ -79,29 +81,22 @@ class BACChartTitle extends StatelessWidget {
     } else if (diaryEntry!.isDrinkFreeDay) {
       return Text(context.l18n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium);
     } else {
+      return _buildSobrietyText(context);
+    }
+  }
+
+  Widget _buildSobrietyText(BuildContext context) {
+    final now = DateTime.now();
+    final soberAt = results.soberAt;
+
+    if (soberAt.isAfter(now)) {
+      if (soberAt.day > now.day) {
+        return Text(context.l18n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);
+      } else {
+        return Text(context.l18n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
+      }
+    } else {
       return Text(context.l18n.diary_youreSober, style: context.textTheme.bodyMedium);
     }
   }
-
-  String _drunkSubtitle(BuildContext context) {
-    final now = DateTime.now();
-    final soberAt = results.soberAt;
-    final maxBAC = results.findMaxEntryAfter(now);
-    final currentBAC = results.getEntryAt(now);
-
-    if (maxBAC.value > currentBAC.value && maxBAC.time.isAfter(now)) {
-      return context.l18n.diary_reachesMaxBACAt('$maxBAC', maxBAC.time);
-    } else if (soberAt.isAfter(now)) {
-      if (soberAt.day > now.day) {
-        return context.l18n.diary_soberTomorrowAt(soberAt);
-      } else {
-        return context.l18n.diary_soberAt(soberAt);
-      }
-    } else {
-      // This should never happen
-      return context.l18n.diary_youreSober;
-    }
-  }
-
-  bool _isDrunk() => results.soberAt.isAfter(DateTime.now());
 }
