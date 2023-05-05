@@ -7,7 +7,6 @@ import '../../domain/date.dart';
 import '../common/build_context_extensions.dart';
 import 'edit_drink_cubit.dart';
 import 'edit_drink_form.dart';
-import 'widgets/create_edit_drink_app_bar.dart';
 import 'widgets/edit_drink_title.dart';
 
 @RoutePage()
@@ -43,18 +42,22 @@ class CreateDrinkPage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildBody(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-        child: Column(
-          children: [
-            CreateEditDrinkAppBar(
-              onBack: () => context.router.pop(),
+      child: Column(
+        children: [
+          AppBar(
+            leading: const BackButton(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
+            child: Column(
+              children: [
+                _buildTitle(),
+                const SizedBox(height: 24),
+                EditDrinkForm(formKey: _formKey),
+              ],
             ),
-            _buildTitle(),
-            const SizedBox(height: 24),
-            EditDrinkForm(formKey: _formKey),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

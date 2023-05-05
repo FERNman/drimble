@@ -77,15 +77,27 @@ class _BACChartState extends State<BACChart> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragUpdate: (details) => _updateAfterScrolling(details.delta.dx),
-      child: LineChart(
-        _getChartData(),
-        height: 140,
-        labels: _buildLabels(context),
-        indexForSpotIndicator: _currentBacIndex,
-        maxValue: widget.results.maxBAC.value,
-      ),
+    return Column(
+      children: [
+        GestureDetector(
+          onHorizontalDragUpdate: (details) => _updateAfterScrolling(details.delta.dx),
+          child: LineChart(
+            _getChartData(),
+            height: 140,
+            labels: _buildLabels(context),
+            indexForSpotIndicator: _currentBacIndex,
+            maxValue: widget.results.maxBAC.value,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            context.l18n.diary_bacChartDisclaimer,
+            style: context.textTheme.bodySmall?.copyWith(fontSize: 10, color: Colors.black54),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 

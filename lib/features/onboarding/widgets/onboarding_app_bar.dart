@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/widgets/extended_app_bar.dart';
@@ -12,10 +11,7 @@ class OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return ExtendedAppBar.large(
-      leading: IconButton(
-        onPressed: () => context.router.pop(),
-        icon: const Icon(Icons.arrow_back_ios_new),
-      ),
+      leading: const BackButton(),
       actions: [Text('$stepNumber/5')],
       title: Text(title),
     );
