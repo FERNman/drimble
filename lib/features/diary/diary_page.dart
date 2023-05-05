@@ -31,11 +31,11 @@ class DiaryPage extends StatelessWidget {
           _buildTitle(),
           const SizedBox(height: 18),
           _buildChart(),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
           _buildStatistics(),
           const SizedBox(height: 24),
           _buildRecentDrinks(),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
         ],
       ),
     );

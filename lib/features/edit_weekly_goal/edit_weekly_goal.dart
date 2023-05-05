@@ -46,10 +46,7 @@ class EditWeeklyGoal extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return ExtendedAppBar.large(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios),
-        onPressed: () => context.router.pop(),
-      ),
+      leading: const BackButton(),
       title: title,
     );
   }

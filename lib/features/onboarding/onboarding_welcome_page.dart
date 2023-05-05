@@ -59,6 +59,7 @@ class OnboardingWelcomePage extends StatelessWidget {
         focusedBorder: const UnderlineInputBorder(),
         hintText: context.l18n.onboarding_enterFirstName,
       ),
+      textCapitalization: TextCapitalization.words,
       onChanged: (value) {
         final cubit = context.read<OnboardingCubit>();
         cubit.setFirstName(value);
