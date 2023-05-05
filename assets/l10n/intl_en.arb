@@ -91,6 +91,8 @@
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
+  "diary_bacChartDisclaimer": "These values are estimates and may not reflect your actual blood alcohol level",
+  "diary_maxBAC": " max",
   "analytics_title": "Analytics",
   "analytics_weekFromTo": "{start} - {end}",
   "@analytics_weekFromTo": {
@@ -178,6 +180,11 @@
   "profile_height": "Height",
   "profile_weight": "Weight",
   "profile_bodyComposition": "Body composition",
+  "profile_howIsTheBacEstimated": "How is the BAC estimated?",
+  "profile_signOutDialog_title": "Sign out",
+  "profile_signOutDialog_content": "Are you sure you want to sign out? This will delete all your data.",
+  "profile_signOutDialog_cancel": "Cancel",
+  "profile_signOutDialog_confirm": "Sign out",
   "editWeeklyAlcoholGoal_title": "Weekly alcohol consumption",
   "editWeeklyAlcoholGoal_description": "Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!",
   "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
@@ -187,5 +194,12 @@
   "analytics_switch_week_apply": "Apply",
   "add_drink_search": "Search...",
   "search_drink_whatAreYouLookingFor": "What are you looking for?",
-  "search_drink_noResults": "We couldn't find any drinks matching your search..."
+  "search_drink_noResults": "We couldn't find any drinks matching your search...",
+  "faq_title": "FAQ",
+  "faq_howIsTheBloodAlcoholLevelEstimated": "How is the blood alcohol level estimated?",
+  "faq_howIsTheBloodAlcoholLevelEstimatedText": "To estimate the BAC, an adapted version of the Watson formula is used. The estimate is based on the amount of alcohol consumed, the time of consumption, and the amount of water in your body. To estimate those values, the formula takes gender, weight, height, and age into account. In addition, the formula assumes an average metabolism of up to 20mg/100ml (depending on the BAC) per hour.",
+  "faq_canTheAppReplaceABreathalyzer": "Can the app replace a breathalyzer?",
+  "faq_canTheAppReplaceABreathalyzerText": "No! The app is only intended to give an approximate indication of the blood alcohol level. The actual blood alcohol level can only be determined by a breathalyzer or a blood test.",
+  "faq_doesTheEstimatedBACCorrespondToTheActualBAC": "Does the estimated blood alcohol level correspond to the actual blood alcohol level?",
+  "faq_doesTheEstimatedBACCorrespondToTheActualBACText": "No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb."
 }
