@@ -1,0 +1,20 @@
+name: Run tests
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.11'
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - run: flutter pub run realm install
+      - run: flutter pub run build_runner build
+      - run: flutter test
