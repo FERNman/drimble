@@ -1,0 +1,84 @@
+name: Deploy to Firebase App Distribution
+
+concurrency: app-distribution
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  bump-build-number:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump-build-number.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+      - name: Increment build number based on the latest git tag
+        id: bump-build-number
+        run: |
+          # Get the latest git tag and extract version and build number
+          latest_tag=$(git describe --tags --abbrev=0)
+          version=$(echo $latest_tag | awk -F '[v+]' '{print $2}')
+          build_number=$(echo $latest_tag | awk -F '+' '{print $2}')
+          if [ -z "$build_number" ]; then
+            build_number=0
+          fi
+
+          new_build_number=$((build_number + 1))
+
+          # Store new version in outputs
+          echo "version=$version+$new_build_number" >> "$GITHUB_OUTPUT"
+      - name: Tag the commit with the new version
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          # git tag -a "v$version+$new_build_number"  -m "Pre-release $version+$new_build_number"
+          # git push --follow-tags
+
+  deploy-android:
+    runs-on: ubuntu-latest
+    environment: app-distribution
+    needs: bump-build-number
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set version
+        env:
+          VERSION: ${{needs.bump-build-number.outputs.version}}
+        run: | 
+          sed -i -e "s/version: \d*\.\d*\.\d*\(\+\d*\)\?/version: $VERSION/g" pubspec.yaml
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.11'
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - run: flutter pub run build_runner build
+      - name: Deploy
+        working-directory: ./android
+        run: fastlane beta
+
+  deploy-ios:
+    runs-on: macos-latest
+    environment: app-distribution
+    needs: bump-build-number
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set version
+        env:
+          VERSION: ${{needs.bump-build-number.outputs.version}}
+        run: |
+          sed -i '' -e "s/version: \d*\.\d*\.\d*\(\+\d*\)\?/version: $VERSION/g" pubspec.yaml
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.11'
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - run: flutter pub run build_runner build
+      - name: Deploy
+        working-directory: ./ios
+        run: fastlane beta
