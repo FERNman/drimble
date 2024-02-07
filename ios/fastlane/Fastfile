@@ -5,19 +5,23 @@ default_platform(:ios)
 platform :ios do
   desc "Submit a new beta build to Firebase App Distribution"
   lane :beta do
-    run_cmd(command: "flutter build ipa --release --no-codesign")
-
     match(type: "adhoc", readonly: true)
+    
+    # In the future, it will hopefully be possible to build using `flutter build ipa`.
+    # As of now, this doesn't work with custom provisioning profiles. 
+    # See https://github.com/flutter/flutter/issues/106612 for more information.
+    # run_cmd(command: "flutter build ipa --release --no-codesign")
     
     build_app(
       scheme: "Runner",
       archive_path: "#{root_path}/build/ios/archive/Runner.xcarchive",
+      output_directory: "#{root_path}/build/ios/ipa",
       export_method: "ad-hoc"
     )
 
     firebase_app_distribution(
       app: "1:159589082657:ios:a3ae69b9b171834122e560",
-      ipa_path: "#{root_path}/build/ios/archive/Runner.xcarchive",
+      ipa_path: "#{root_path}/build/ios/ipa/Runner.ipa",
       groups: "alpha-testers"
     )
   end

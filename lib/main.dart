@@ -64,7 +64,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
         systemNavigationBarColor: Colors.white,
       ));
 
-      // https://github.com/flutter/flutter/issues/40590
+      // https://github.com/flutter/flutter/issues/40590 TODO: Should be fixed (verify)
       final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
       binding.renderView.automaticSystemUiAdjustment = false;
     }

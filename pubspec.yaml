@@ -1,7 +1,7 @@
 name: drimble
-description: A new Flutter project.
+description: Make yesterdays hangover the last.
 publish_to: 'none'
-version: 0.1.0+2
+version: 0.1.0+3
 environment:
   sdk: '>=2.19.0 <3.0.0'
 
@@ -11,28 +11,26 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  http: ^0.13.5
+  http: ^1.2.0
   flutter_bloc: ^8.1.1
-  google_fonts: ^4.0.3
-  intl: ^0.17.0
-  date_time_picker: ^2.1.0
+  google_fonts: ^6.1.0
+  intl: ^0.18.0
   shared_preferences: ^2.0.15
   rxdart: ^0.27.5
-  auto_route: ^6.0.5
+  auto_route: ^7.8.4
   numberpicker: ^2.1.1
   collection: ^1.16.0
   dotted_border: ^2.0.0+2
   realm: ^1.0.3
-  firebase_core: ^2.10.0
-  firebase_analytics: ^10.2.1
-  firebase_crashlytics: ^3.1.1
+  firebase_core: ^2.25.4
+  firebase_crashlytics: ^3.4.14
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   build_runner: ^2.2.0
-  auto_route_generator: ^6.0.3
+  auto_route_generator: ^7.3.2
   mockito: ^5.3.2
   faker: ^2.1.0
 
