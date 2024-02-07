@@ -26,11 +26,11 @@ class DrinkDurationTextField extends StatelessWidget {
         labelText: context.l18n.edit_drink_duration,
         suffixText: context.l18n.edit_drink_minutes,
       ),
-      onChanged: (value) => _onChanged(context, value),
+      onChanged: _onChanged,
     );
   }
 
-  void _onChanged(BuildContext context, String rawValue) {
+  void _onChanged(String rawValue) {
     if (_isValid(rawValue)) {
       final duration = Duration(minutes: int.parse(rawValue));
       onChanged(duration);
