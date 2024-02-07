@@ -15,6 +15,7 @@ dependencies:
   flutter_bloc: ^8.1.1
   google_fonts: ^6.1.0
   intl: ^0.18.0
+  intl_utils: ^2.8.7
   shared_preferences: ^2.0.15
   rxdart: ^0.27.5
   auto_route: ^7.8.4
@@ -42,6 +43,7 @@ flutter:
 
 flutter_intl:
   enabled: true
+  main_locale: en
   arb_dir: assets/l10n
   class_name: AppLocalizations
   output_dir: lib/infra/l18n

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/date.dart';
+import '../../domain/diary/consumed_drink.dart';
+import '../../infra/extensions/set_date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
 import 'search_drink_cubit.dart';
@@ -71,7 +73,11 @@ class SearchDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           leading: Image.asset(drink.iconPath, height: 38),
           title: Text(drink.name),
           trailing: const Icon(Icons.add),
-          onTap: () => context.router.push(CreateDrinkRoute(date: date, drink: drink)),
+          onTap: () => context.router.push(
+            EditConsumedDrinkRoute(
+              consumedDrink: ConsumedDrink.fromDrink(drink, startTime: DateTime.now().setDate(date)),
+            ),
+          ),
         );
       },
     );

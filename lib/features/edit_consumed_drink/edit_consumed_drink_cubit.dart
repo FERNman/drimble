@@ -4,22 +4,14 @@ import '../../data/diary_repository.dart';
 import '../../data/drinks_repository.dart';
 import '../../domain/alcohol/alcohol.dart';
 import '../../domain/alcohol/drink.dart';
-import '../../domain/date.dart';
 import '../../domain/diary/consumed_cocktail.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/stomach_fullness.dart';
-import '../../infra/extensions/set_date.dart';
 
-class EditDrinkCubit extends Cubit<EditDrinkCubitState> {
+class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   final DiaryRepository _diaryRepository;
 
-  EditDrinkCubit.createConsumedDrink(
-    this._diaryRepository, {
-    required Date date,
-    required Drink drink,
-  }) : super(EditDrinkCubitState(drink, ConsumedDrink.fromDrink(drink, startTime: DateTime.now().setDate(date))));
-
-  EditDrinkCubit.editConsumedDrink(
+  EditConsumedDrinkCubit(
     this._diaryRepository,
     DrinksRepository drinksRepository, {
     required ConsumedDrink consumedDrink,

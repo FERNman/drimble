@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../common/build_context_extensions.dart';
 
-class EditDrinkTitle extends StatelessWidget {
+class EditConsumedDrinkTitle extends StatelessWidget {
   final String name;
   final String iconPath;
   final double gramsOfAlcohol;
 
-  const EditDrinkTitle({
+  const EditConsumedDrinkTitle({
     required this.name,
     required this.iconPath,
     required this.gramsOfAlcohol,
