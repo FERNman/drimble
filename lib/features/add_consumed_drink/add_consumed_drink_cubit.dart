@@ -6,11 +6,11 @@ import '../../domain/alcohol/drink.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../infra/disposable.dart';
 
-class AddDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
+class AddConsumedDrinkCubit extends Cubit<AddDrinkCubitState> with Disposable {
   final DrinksRepository _drinksRepository;
   final DiaryRepository _diaryRepository;
 
-  AddDrinkCubit(this._diaryRepository, this._drinksRepository) : super(AddDrinkCubitState()) {
+  AddConsumedDrinkCubit(this._diaryRepository, this._drinksRepository) : super(AddDrinkCubitState()) {
     _initState();
   }
 

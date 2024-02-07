@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
       buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) => FloatingActionButton(
-        onPressed: () => context.router.push(AddDrinkRoute(date: state.date)),
+        onPressed: () => context.router.push(AddConsumedDrinkRoute(date: state.date)),
         child: const Icon(Icons.add),
       ),
     );

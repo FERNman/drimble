@@ -2,32 +2,26 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/alcohol/drink.dart';
-import '../../domain/date.dart';
+import '../../domain/diary/consumed_drink.dart';
 import '../common/build_context_extensions.dart';
-import 'edit_drink_cubit.dart';
-import 'edit_drink_form.dart';
-import 'widgets/edit_drink_title.dart';
+import 'edit_consumed_drink_cubit.dart';
+import 'edit_consumed_drink_form.dart';
+import 'widgets/edit_consumed_drink_title.dart';
 
 @RoutePage()
-class CreateDrinkPage extends StatelessWidget implements AutoRouteWrapper {
-  final Date date;
-  final Drink drink;
+class EditConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
+  final ConsumedDrink consumedDrink;
 
   final _formKey = GlobalKey<FormState>();
 
-  CreateDrinkPage({
-    required this.date,
-    required this.drink,
-    super.key,
-  });
+  EditConsumedDrinkPage({required this.consumedDrink, super.key});
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => EditDrinkCubit.createConsumedDrink(
+        create: (context) => EditConsumedDrinkCubit(
           context.read(),
-          date: date,
-          drink: drink,
+          context.read(),
+          consumedDrink: consumedDrink,
         ),
         child: this,
       );
@@ -53,7 +47,7 @@ class CreateDrinkPage extends StatelessWidget implements AutoRouteWrapper {
               children: [
                 _buildTitle(),
                 const SizedBox(height: 24),
-                EditDrinkForm(formKey: _formKey),
+                EditConsumedDrinkForm(formKey: _formKey),
               ],
             ),
           ),
@@ -63,10 +57,10 @@ class CreateDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   Widget _buildTitle() {
-    return BlocBuilder<EditDrinkCubit, EditDrinkCubitState>(
+    return BlocBuilder<EditConsumedDrinkCubit, EditDrinkCubitState>(
       // Name and icon cannot change anyways
       buildWhen: (previous, current) => previous.consumedDrink.gramsOfAlcohol != current.consumedDrink.gramsOfAlcohol,
-      builder: (context, state) => EditDrinkTitle(
+      builder: (context, state) => EditConsumedDrinkTitle(
         name: state.consumedDrink.name,
         iconPath: state.consumedDrink.iconPath,
         gramsOfAlcohol: state.consumedDrink.gramsOfAlcohol,
@@ -87,7 +81,7 @@ class CreateDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   void _saveAndNavigate(BuildContext context) {
-    context.read<EditDrinkCubit>().save();
+    context.read<EditConsumedDrinkCubit>().save();
     context.router.popUntilRoot();
   }
 }

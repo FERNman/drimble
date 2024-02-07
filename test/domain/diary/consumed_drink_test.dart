@@ -94,7 +94,15 @@ void main() {
         expect(newDrink.duration, drink.defaultDuration);
       });
 
-      test('should return a ConsumedCocktail if the given drink is a Cocktail', () {
+      test('should instantiate the consumed drink as a ConsumedDrink if the given drink is a Drink', () {
+        final drink = generateDrink();
+        final startTime = faker.date.dateTime();
+        final newDrink = ConsumedDrink.fromDrink(drink, startTime: startTime);
+
+        expect(newDrink, isA<ConsumedDrink>());
+      });
+
+      test('should instantiate the consumed drink as a ConsumedCocktail if the given drink is a Cocktail', () {
         final drink = generateCocktail();
 
         final startTime = faker.date.dateTime();
