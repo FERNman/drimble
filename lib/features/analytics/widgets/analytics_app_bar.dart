@@ -9,11 +9,13 @@ class AnalyticsAppBar extends StatelessWidget {
   final Date firstDayOfWeek;
   final Date lastDayOfWeek;
 
+  final GestureTapCallback onClose;
   final GestureTapCallback onChangeWeek;
 
   const AnalyticsAppBar({
     required this.firstDayOfWeek,
     required this.lastDayOfWeek,
+    required this.onClose,
     required this.onChangeWeek,
     super.key,
   });
@@ -21,6 +23,10 @@ class AnalyticsAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: onClose,
+      ),
       title: Text(
         context.l18n.analytics_title,
         style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75),

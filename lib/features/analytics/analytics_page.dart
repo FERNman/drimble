@@ -24,32 +24,34 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildAppBar(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                _buildAlcoholConsumption(),
-                const SizedBox(height: 24),
-                _buildDrinkFreeDays(),
-                const SizedBox(height: 24),
-                Text(context.l18n.analytics_statistics, style: context.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                _buildStatistics(),
-                const SizedBox(height: 24),
-                Text(context.l18n.analytics_drinkingTrends, style: context.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                _buildDrinkingTrends(),
-                const SizedBox(height: 24),
-              ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildAppBar(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  _buildAlcoholConsumption(),
+                  const SizedBox(height: 24),
+                  _buildDrinkFreeDays(),
+                  const SizedBox(height: 24),
+                  Text(context.l18n.analytics_statistics, style: context.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  _buildStatistics(),
+                  const SizedBox(height: 24),
+                  Text(context.l18n.analytics_drinkingTrends, style: context.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  _buildDrinkingTrends(),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -63,6 +65,7 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
         return AnalyticsAppBar(
           firstDayOfWeek: state.firstDayOfWeek,
           lastDayOfWeek: sunday,
+          onClose: () => context.router.pop(),
           onChangeWeek: () async {
             final result =
                 await context.router.push<Date?>(AnalyticsSwitchWeekRoute(initialDate: state.firstDayOfWeek));

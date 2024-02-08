@@ -13,31 +13,44 @@ import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_statistics.dart';
 
 @RoutePage()
-class DiaryPage extends StatelessWidget {
+class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
   const DiaryPage({super.key});
 
   @override
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+        create: (context) => DiaryCubit(context.read(), context.read()),
+        child: this,
+      );
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          HomeAppBar(
-            onTapProfile: () {
-              context.router.push(const ProfileRoute());
-            },
-          ),
-          _buildCalendar(),
-          const SizedBox(height: 24),
-          _buildTitle(),
-          const SizedBox(height: 18),
-          _buildChart(),
-          const SizedBox(height: 24),
-          _buildStatistics(),
-          const SizedBox(height: 24),
-          _buildRecentDrinks(),
-          const SizedBox(height: 16),
-        ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomeAppBar(
+              onTapAnalytics: () {
+                context.router.push(const AnalyticsRoute());
+              },
+              onTapProfile: () {
+                context.router.push(const ProfileRoute());
+              },
+            ),
+            _buildCalendar(),
+            const SizedBox(height: 24),
+            _buildTitle(),
+            const SizedBox(height: 18),
+            _buildChart(),
+            const SizedBox(height: 24),
+            _buildStatistics(),
+            const SizedBox(height: 24),
+            _buildRecentDrinks(),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
+      floatingActionButton: _buildFAB(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -123,6 +136,16 @@ class DiaryPage extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildFAB() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.date != current.date,
+      builder: (context, state) => FloatingActionButton(
+        onPressed: () => context.router.push(AddConsumedDrinkRoute(date: state.date)),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

@@ -16,7 +16,7 @@ import 'data/models/consumed_drink_model.dart';
 import 'data/models/diary_entry_model.dart';
 import 'data/models/ingredient_model.dart';
 import 'data/user_repository.dart';
-import 'features/home/home_guard.dart';
+import 'features/diary/diary_guard.dart';
 import 'firebase_options.dart';
 import 'infra/l18n/l10n.dart';
 import 'router.dart';
@@ -87,7 +87,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrimbleRouter(HomeGuard(context.read()));
+          _router ??= DrimbleRouter(DiaryGuard(context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
