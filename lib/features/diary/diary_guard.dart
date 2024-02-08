@@ -3,10 +3,10 @@ import 'package:auto_route/auto_route.dart';
 import '../../data/user_repository.dart';
 import '../../router.gr.dart';
 
-class HomeGuard extends AutoRouteGuard {
+class DiaryGuard extends AutoRouteGuard {
   final UserRepository _userRepository;
 
-  HomeGuard(this._userRepository);
+  DiaryGuard(this._userRepository);
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
