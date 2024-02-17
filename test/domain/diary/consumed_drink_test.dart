@@ -2,7 +2,6 @@ import 'package:drimble/domain/alcohol/drink_category.dart';
 import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
-import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
 
@@ -28,7 +27,6 @@ void main() {
         alcoholByVolume: 0.05,
         startTime: DateTime(2020),
         duration: const Duration(hours: 1),
-        stomachFullness: StomachFullness.full,
       );
 
       test('should also copy the id', () {
@@ -47,7 +45,6 @@ void main() {
           alcoholByVolume: 0.05,
           startTime: DateTime(2020, 1, 1, 5, 59),
           duration: const Duration(hours: 1),
-          stomachFullness: StomachFullness.full,
         );
         expect(drink.date, const Date(2019, 12, 31));
       });
@@ -62,7 +59,6 @@ void main() {
           alcoholByVolume: 0.05,
           startTime: DateTime(2020, 1, 1, 6, 0),
           duration: const Duration(hours: 1),
-          stomachFullness: StomachFullness.full,
         );
 
         expect(drink.date, const Date(2020, 1, 1));

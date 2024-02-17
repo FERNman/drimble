@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
-import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../generate_entities.dart';
@@ -24,7 +23,6 @@ void main() {
         ingredients: ingredients,
         startTime: DateTime.now(),
         duration: Duration.zero,
-        stomachFullness: StomachFullness.empty,
       );
 
       final expectedAlcoholByVolume = percentPerIngredient * abvPerIngredient * ingredients.length;
@@ -45,7 +43,6 @@ void main() {
         ingredients: ingredients,
         startTime: DateTime.now(),
         duration: Duration.zero,
-        stomachFullness: StomachFullness.empty,
       );
 
       final expectedAlcoholByVolume = ingredients.map((e) => e.alcoholByVolume * e.percentOfCocktailVolume).sum;

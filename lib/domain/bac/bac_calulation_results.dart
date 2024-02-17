@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 
-import '../features/common/bac_format/bac_format.dart';
-import 'alcohol/alcohol.dart';
+import '../../features/common/bac_format/bac_format.dart';
+import '../alcohol/alcohol.dart';
 
 class BACEntry {
   final DateTime time;

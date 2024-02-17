@@ -4,7 +4,6 @@ import '../alcohol/alcohol.dart';
 import '../alcohol/drink_category.dart';
 import '../alcohol/ingredient.dart';
 import 'consumed_drink.dart';
-import 'stomach_fullness.dart';
 
 class ConsumedCocktail extends ConsumedDrink {
   final List<Ingredient> ingredients;
@@ -17,7 +16,6 @@ class ConsumedCocktail extends ConsumedDrink {
     required this.ingredients,
     required super.startTime,
     required super.duration,
-    required super.stomachFullness,
   })  : assert(ingredients.isNotEmpty),
         super(
           category: DrinkCategory.cocktail,
@@ -34,7 +32,6 @@ class ConsumedCocktail extends ConsumedDrink {
     Percentage? alcoholByVolume,
     DateTime? startTime,
     Duration? duration,
-    StomachFullness? stomachFullness,
     List<Ingredient>? ingredients,
   }) =>
       ConsumedCocktail(
@@ -45,6 +42,5 @@ class ConsumedCocktail extends ConsumedDrink {
         ingredients: ingredients ?? this.ingredients,
         startTime: startTime ?? this.startTime,
         duration: duration ?? this.duration,
-        stomachFullness: stomachFullness ?? this.stomachFullness,
       );
 }

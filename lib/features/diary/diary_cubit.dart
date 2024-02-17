@@ -5,11 +5,12 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/user_repository.dart';
-import '../../domain/bac_calculator.dart';
-import '../../domain/bac_calulation_results.dart';
+import '../../domain/bac/bac_calculator.dart';
+import '../../domain/bac/bac_calulation_results.dart';
 import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/disposable.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
@@ -62,16 +63,10 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
       return;
     }
 
-    final calculator = BACCalculator(user);
+    // TODO: Move stomach fullness to diary entry
+    final calculator = BACCalculator(user, StomachFullness.normal);
 
-    final startTime = state.date.toDateTime();
-    final args = BACCalculationArgs(
-      drinks: drinks,
-      startTime: startTime,
-      endTime: startTime.add(const Duration(days: 1)),
-    );
-
-    final results = await compute(calculator.calculate, args);
+    final results = await compute(calculator.calculate, drinks);
 
     emit(state.updateBAC(results));
   }

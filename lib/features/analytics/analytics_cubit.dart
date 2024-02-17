@@ -7,10 +7,11 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/user_repository.dart';
-import '../../domain/bac_calculator.dart';
+import '../../domain/bac/bac_calculator.dart';
 import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../domain/diary/stomach_fullness.dart';
 import '../../domain/user/goals.dart';
 import '../../domain/user/user.dart';
 import '../../infra/disposable.dart';
@@ -136,14 +137,10 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   Future<double> _calculateHighestBAC(User user, List<ConsumedDrink> drinks) async {
     // This is a bad way of doing it since it requires a lot of computation.
     // However, it's the only way to do it without having to store the BAC for every day in the database.
-    final calculator = BACCalculator(user);
-    final args = BACCalculationArgs(
-      drinks: drinks,
-      startTime: state.firstDayOfWeek.toDateTime(),
-      endTime: state.lastDayOfWeek.toDateTime(),
-    );
+    // TODO: Remove this
+    final calculator = BACCalculator(user, StomachFullness.normal);
 
-    final results = await compute(calculator.calculate, args);
+    final results = await compute(calculator.calculate, drinks);
 
     return results.maxBAC.value;
   }

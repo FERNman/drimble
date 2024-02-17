@@ -13,7 +13,11 @@ abstract class Alcohol {
   final String name;
   final String iconPath;
   final DrinkCategory category;
+
+  /// The volume of the drink in milliliters
   final Milliliter volume;
+
+  /// The alcohol by volume (ABV) in percentage (v/v%)
   final Percentage alcoholByVolume;
 
   double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
