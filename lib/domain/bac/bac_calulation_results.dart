@@ -6,7 +6,7 @@ import '../alcohol/alcohol.dart';
 class BACEntry {
   final DateTime time;
 
-  /// In Permille, aka Grams per Liter (1g/L = 1‰)
+  /// In g/100mL
   final double value;
 
   BACEntry(this.time, this.value) {
@@ -68,11 +68,11 @@ class BACCalculationResults {
 
   BACEntry getEntryAt(DateTime time) {
     if (time.isBefore(_results.first.time)) {
-      return _results.first.copyWith(time: time);
+      return BACEntry.sober(time);
     }
 
     if (time.isAfter(_results.last.time)) {
-      return _results.last.copyWith(time: time);
+      return BACEntry.sober(time);
     }
 
     return _results
