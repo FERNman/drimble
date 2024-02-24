@@ -65,10 +65,16 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
 
     // TODO: Move stomach fullness to diary entry
     final calculator = BACCalculator(user, StomachFullness.normal);
-
-    final results = await compute(calculator.calculate, drinks);
-
-    emit(state.updateBAC(results));
+    if (drinks.isEmpty) {
+      emit(state.updateBAC(BACCalculationResults.empty(
+        startTime: state.date.toDateTime(),
+        endTime: state.date.add(days: 1).toDateTime(),
+        timestep: const Duration(minutes: 10),
+      )));
+    } else {
+      final results = await compute(calculator.calculate, drinks);
+      emit(state.updateBAC(results));
+    }
   }
 }
 
