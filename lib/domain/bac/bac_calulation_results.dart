@@ -68,11 +68,11 @@ class BACCalculationResults {
 
   BACEntry getEntryAt(DateTime time) {
     if (time.isBefore(_results.first.time)) {
-      return BACEntry.sober(time);
+      return _results.first.copyWith(time: time);
     }
 
     if (time.isAfter(_results.last.time)) {
-      return BACEntry.sober(time);
+      return _results.last.copyWith(time: time);
     }
 
     return _results
