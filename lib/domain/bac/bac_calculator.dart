@@ -13,9 +13,9 @@ import 'user_bac_extensions.dart';
 /// It is based on a simple 3-compartment PBPK model introduced by Pieters that estimates the concentration of alcohol
 /// in the body.
 ///
-/// The metabolism is only based on the activity of Aldehyde Dehydrogenase (ADH), Cytochrome P450 is not yet 
-/// taken into account. Also, first-pass metabolism and the impact of food on that as well as 
-/// metabolism speed is not yet modeled.
+/// The metabolism is only based on the activity of Aldehyde Dehydrogenase (ADH), Cytochrome P450 is not yet
+/// taken into account. Also, first-pass metabolism (reduced bioavailability by up to 10%)
+/// and the impact of food on that as well as on the speed of metabolism is not yet modeled.
 ///
 /// The ODEs are solved using the Euler method, accuracy could be improved by using a more sophisticated method.
 ///
@@ -58,9 +58,10 @@ class BACCalculator {
       alcoholInSmallIntestine = alcoholInSmallIntestine + gastricEmptying - absorption;
 
       // Step 3: Calculate the concentration of alcohol in the central compartment
-      final metabolism = _rateOfChangeForMetabolism(alcoholInCentralCompartment, deltaTime);
+      final metabolism = _rateOfChangeForADHMetabolism(alcoholInCentralCompartment, deltaTime);
       alcoholInCentralCompartment = alcoholInCentralCompartment + absorption - metabolism;
 
+      // Divide by 10 to convert from g/L to g/100mL
       results.add(BACEntry(time, alcoholInCentralCompartment / 10.0));
     }
 
@@ -95,17 +96,11 @@ class BACCalculator {
     return k2 * alcoholInSmallIntestine;
   }
 
-  double _rateOfChangeForMetabolism(double previousBAC, double dt) {
+  double _rateOfChangeForADHMetabolism(double previousBAC, double dt) {
     // TODO: Incorporate stomach fullness
-    // Alcohol metabolism:
-    // Empty stomach: ~0.01%/h
-    // Full stomach: ~0.02%/h
 
-    // Between 0.5 and 2.5 g/L/h
-    final vmax = 0.5 * dt;
-    // Between 0.05g/L and 0.1g/L
-    const km = 0.38;
-
-    return (vmax * previousBAC) / (km + previousBAC);
+    // vMax would be between 0.5 and 2.5 g/L/h in a one-compartment model, kM would be between 0.02 and 0.1g/L
+    // However, we need to use the adapted values for the model by Pieters' here
+    return (user.vMax * dt * previousBAC) / (user.kM + previousBAC);
   }
 }

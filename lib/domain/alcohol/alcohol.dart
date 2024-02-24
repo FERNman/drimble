@@ -6,8 +6,12 @@ typedef Percentage = double;
 abstract class Alcohol {
   static const eliminationRate = 0.12;
   static const bioavailability = 0.9;
+
+  /// The density of alcohol in g/ml
   static const density = 0.789;
-  static const soberLimit = 0.01;
+
+  /// The limit of alcohol in the blood to be considered sober in g/100mL
+  static const soberLimit = 0.001;
   static const caloriesPerGramOfAlcohol = 7.1;
 
   final String name;

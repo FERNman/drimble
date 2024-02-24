@@ -34,6 +34,26 @@ extension UserBACExtensions on User {
     }
   }
 
+  /// The constant vMax describes the maximum rate of alcohol metabolism by the liver in g/L/h
+  double get vMax {
+    switch (gender) {
+      case Gender.male:
+        return 0.47;
+      case Gender.female:
+        return 0.48;
+    }
+  }
+
+  /// The constant kM describes the Michaelis-Menten constant for alcohol metabolism by the liver in g/L
+  double get kM {
+    switch (gender) {
+      case Gender.male:
+        return 0.38;
+      case Gender.female:
+        return 0.405;
+    }
+  }
+
   Percentage get _bloodWaterContent {
     switch (gender) {
       case Gender.male:
@@ -45,5 +65,9 @@ extension UserBACExtensions on User {
 
   double get volumeOfDistribution => totalBodyWater;
 
+  /// The rho-factor describes the volume of distribution (V_d) in calculations specifically used for blood alcohol content.
+  /// It is expressed in liters per kilogram of body weight.
+  ///
+  /// It should be around 0.6L/kg for healthy women and 0.7L/kg for healthy men.
   double rhoFactor() => totalBodyWater / weight / _bloodWaterContent;
 }
