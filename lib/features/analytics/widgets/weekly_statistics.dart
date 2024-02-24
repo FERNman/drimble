@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../common/bac_format/bac_format.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 
 class WeeklyStatistics extends StatelessWidget {
-  final double highestBAC;
   final int numberOfDrinks;
   final int calories;
 
   const WeeklyStatistics({
-    required this.highestBAC,
     required this.numberOfDrinks,
     required this.calories,
     super.key,
@@ -18,43 +15,13 @@ class WeeklyStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHighestBACCard(context),
-        const SizedBox(height: 12),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildConsumedDrinksCard(context)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildCaloriesCard(context)),
-          ],
-        ),
+        Expanded(child: _buildConsumedDrinksCard(context)),
+        const SizedBox(width: 12),
+        Expanded(child: _buildCaloriesCard(context)),
       ],
-    );
-  }
-
-  Widget _buildHighestBACCard(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              BacFormat().format(highestBAC),
-              style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary).forNumbers(),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              context.l18n.analytics_highestBloodAlcoholLevel,
-              style: context.textTheme.bodySmall?.copyWith(color: Colors.black54),
-            ),
-            const SizedBox(height: 8),
-            Text(context.l18n.analytics_maxBACInfo, style: context.textTheme.bodyMedium),
-          ],
-        ),
-      ),
     );
   }
 

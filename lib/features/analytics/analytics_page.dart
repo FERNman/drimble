@@ -125,11 +125,8 @@ class AnalyticsPage extends StatelessWidget implements AutoRouteWrapper {
   Widget _buildStatistics() {
     return BlocBuilder<AnalyticsCubit, AnalyticsCubitState>(
       buildWhen: (previous, current) =>
-          previous.highestBAC != current.highestBAC ||
-          previous.calories != current.calories ||
-          previous.numberOfDrinks != current.numberOfDrinks,
+          previous.calories != current.calories || previous.numberOfDrinks != current.numberOfDrinks,
       builder: (context, state) => WeeklyStatistics(
-        highestBAC: state.highestBAC,
         calories: state.calories,
         numberOfDrinks: state.numberOfDrinks,
       ),

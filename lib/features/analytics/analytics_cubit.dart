@@ -1,17 +1,14 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/user_repository.dart';
-import '../../domain/bac/bac_calculator.dart';
 import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/diary/stomach_fullness.dart';
 import '../../domain/user/goals.dart';
 import '../../domain/user/user.dart';
 import '../../infra/disposable.dart';
@@ -57,8 +54,6 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     final alcoholByDayLastWeek = _foldDrinksByDay(lastWeeksDrinks);
     final alcoholByDayThisWeek = _foldDrinksAndDiaryEntries(thisWeeksDrinks, diaryEntries);
 
-    final highestBAC = await _calculateHighestBAC(user, thisWeeksDrinks);
-
     final averageAlcoholPerSessionThisWeek = _calculateAverageAlcoholPerSession(alcoholByDayThisWeek);
     final averageAlcoholPerSessionLastWeek = _calculateAverageAlcoholPerSession(alcoholByDayLastWeek);
 
@@ -74,7 +69,6 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
       alcoholByDay: alcoholByDayThisWeek,
       numberOfDrinks: thisWeeksDrinks.length,
       calories: thisWeeksDrinks.map((drink) => drink.calories).sum,
-      highestBAC: highestBAC,
       goals: user.goals,
     );
   }
@@ -133,17 +127,6 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
       (sum, el) => (sum ?? 0.0) + el.gramsOfAlcohol,
     );
   }
-
-  Future<double> _calculateHighestBAC(User user, List<ConsumedDrink> drinks) async {
-    // This is a bad way of doing it since it requires a lot of computation.
-    // However, it's the only way to do it without having to store the BAC for every day in the database.
-    // TODO: Remove this
-    final calculator = BACCalculator(user, StomachFullness.normal);
-
-    final results = await compute(calculator.calculate, drinks);
-
-    return results.maxBAC.value;
-  }
 }
 
 class AnalyticsCubitState {
@@ -155,7 +138,6 @@ class AnalyticsCubitState {
   final Map<Date, double?> alcoholByDay;
   final Map<Date, bool?> drinkFreeDays;
   final double totalAlcohol;
-  final double highestBAC;
   final int calories;
   final int numberOfDrinks;
 
@@ -172,7 +154,6 @@ class AnalyticsCubitState {
     this.averageAlcoholPerSession = 0,
     this.alcoholByDay = const {},
     this.numberOfDrinks = 0,
-    this.highestBAC = 0,
     this.calories = 0,
     this.goals = const Goals(),
   })  : firstDayOfWeek = date.floorToWeek(),
