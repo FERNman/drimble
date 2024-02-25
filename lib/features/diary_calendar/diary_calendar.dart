@@ -10,6 +10,8 @@ class DiaryCalendar extends StatelessWidget {
 
   final Date selectedDay;
   final ValueChanged<Date> onSelectedDayChanged;
+  static const double padding = 16;
+  static const int futureDayCount = 3;
 
   final _scrollController = ScrollController();
 
@@ -22,37 +24,42 @@ class DiaryCalendar extends StatelessWidget {
       child: BlocBuilder<DiaryCalendarCubit, DiaryCalendarCubitState>(
         builder: (context, state) => SizedBox(
           height: 100,
-          child: ListView.builder(
-            shrinkWrap: true,
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            reverse: true,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemBuilder: (context, dayIndex) {
-              final adjustedDayIndex = dayIndex - 2;
-              final date = today.subtract(days: adjustedDayIndex);
+          child: LayoutBuilder(
+            builder: (context, constraints) => ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              padding: const EdgeInsets.symmetric(horizontal: padding),
+              itemBuilder: (context, dayIndex) {
+                final adjustedDayIndex = dayIndex - futureDayCount;
+                final date = today.subtract(days: adjustedDayIndex);
 
-              return DiaryCalendarDay(
-                date: date,
-                isSelected: selectedDay == date,
-                isDrinkFreeDay: state.isDrinkFreeDay(date),
-                onTap: date.isAfter(today)
-                    ? null
-                    : () {
-                        _scrollTo(adjustedDayIndex);
-                        onSelectedDayChanged(date);
-                      },
-              );
-            },
+                return DiaryCalendarDay(
+                  date: date,
+                  isSelected: selectedDay == date,
+                  isDrinkFreeDay: state.isDrinkFreeDay(date),
+                  onTap: date.isAfter(today)
+                      ? null
+                      : () {
+                          _scrollTo(adjustedDayIndex, constraints);
+                          onSelectedDayChanged(date);
+                        },
+                );
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  void _scrollTo(int index) {
+  void _scrollTo(int index, BoxConstraints constraints) {
+    final offsetToCenter = padding + DiaryCalendarDay.width / 2 - constraints.maxWidth / 2;
+    final itemOffset = (index + futureDayCount) * DiaryCalendarDay.width;
+
     _scrollController.animateTo(
-      index * DiaryCalendarDay.width,
+      itemOffset + offsetToCenter,
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
     );
