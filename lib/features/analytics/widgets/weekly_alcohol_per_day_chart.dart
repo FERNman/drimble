@@ -143,7 +143,7 @@ class _BarChartPainter extends CustomPainter {
       element?.layout();
     }
 
-    _labelSpacing = _labelPainters.fold(_labelPadding, (height, el) => max(height, el.height + _labelPadding));
+    _labelSpacing = _labelPadding + (_labelPainters.map((el) => el.height).maxOrNull ?? 0);
   }
 
   @override

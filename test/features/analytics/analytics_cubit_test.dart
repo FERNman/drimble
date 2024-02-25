@@ -113,8 +113,8 @@ void main() {
         final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
         await cubit.stream.first;
 
-        final alcoholOnFirstDay = drinksOnFirstDay.fold<double>(0.0, (total, e) => total + e.gramsOfAlcohol);
-        final alcoholOnThirdDay = drinksOnThirdDay.fold<double>(0.0, (total, e) => total + e.gramsOfAlcohol);
+        final alcoholOnFirstDay = drinksOnFirstDay.map((drink) => drink.gramsOfAlcohol).sum;
+        final alcoholOnThirdDay = drinksOnThirdDay.map((drink) => drink.gramsOfAlcohol).sum;
 
         expect(cubit.state.alcoholByDay.values.toList(), [
           alcoholOnFirstDay, // 2 drinks
@@ -177,7 +177,7 @@ void main() {
         final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
         await cubit.stream.first;
 
-        final expectedGramsOfAlcohol = drinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
+        final expectedGramsOfAlcohol = drinks.map((drink) => drink.gramsOfAlcohol).sum;
         expect(cubit.state.totalAlcohol, expectedGramsOfAlcohol);
       });
     });
@@ -200,7 +200,7 @@ void main() {
         final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
         await cubit.stream.first;
 
-        final expectedCalories = drinks.fold<int>(0, (total, el) => total + el.calories);
+        final expectedCalories = drinks.map((drink) => drink.calories).sum;
         expect(cubit.state.calories, expectedCalories);
       });
     });
@@ -258,7 +258,7 @@ void main() {
         final cubit = AnalyticsCubit(mockDiaryRepository, mockUserRepository, date: date);
         await cubit.stream.first;
 
-        final totalAlcohol = drinks.fold<double>(0.0, (total, el) => total + el.gramsOfAlcohol);
+        final totalAlcohol = drinks.map((drink) => drink.gramsOfAlcohol).sum;
         final expectedAverageAlcoholPerSession = totalAlcohol / diaryEntries.length;
         expect(cubit.state.averageAlcoholPerSession, expectedAverageAlcoholPerSession);
       });

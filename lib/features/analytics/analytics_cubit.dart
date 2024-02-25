@@ -72,7 +72,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
       changeOfAverageAlcohol: changeOfAverageAlcohol,
       alcoholByDay: alcoholByDayThisWeek,
       numberOfDrinks: thisWeeksDrinks.length,
-      calories: thisWeeksDrinks.fold(0, (sum, el) => sum + el.calories),
+      calories: thisWeeksDrinks.map((drink) => drink.calories).sum,
       highestBAC: highestBAC,
       goals: user.goals,
     );
@@ -80,7 +80,7 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
 
   static double _calculateAverageAlcoholPerSession(Map<Date, double?> alcoholByDay) {
     final asList = alcoholByDay.values.whereNotNull();
-    final total = asList.fold<double>(0.0, (sum, el) => sum + el);
+    final total = asList.sum;
     final sessions = asList.length;
     return total / max(sessions, 1);
   }
@@ -186,6 +186,5 @@ class AnalyticsCubitState {
   static Map<Date, bool?> _mapAlcoholToDrinkFreeDays(Map<Date, double?> alcoholPerDay) =>
       alcoholPerDay.map((key, value) => MapEntry(key, value == null ? null : value == 0.0));
 
-  static double _sum(Map<Date, double?> alcoholPerDay) =>
-      alcoholPerDay.values.whereNotNull().fold(0.0, (total, el) => total + el);
+  static double _sum(Map<Date, double?> alcoholPerDay) => alcoholPerDay.values.whereNotNull().sum;
 }
