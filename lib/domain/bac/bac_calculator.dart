@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+
 import '../alcohol/alcohol.dart';
 import '../diary/consumed_drink.dart';
 import '../diary/stomach_fullness.dart';
@@ -69,12 +71,9 @@ class BACCalculator {
   }
 
   double _calculateIngestedAlcohol(List<ConsumedDrink> drinks, DateTime from, DateTime until) {
-    return drinks.fold<double>(0.0, (ingestedAlcohol, drink) {
+    return drinks.where((drink) => drink.startTime.isBefore(until) && drink.endTime.isAfter(from)).map((drink) {
       final startTime = drink.startTime;
-      final endTime = drink.startTime.add(drink.duration);
-      if (startTime.isAfter(until) || endTime.isBefore(from)) {
-        return ingestedAlcohol;
-      }
+      final endTime = drink.endTime;
 
       final startTimeForCalculation = from.isAfter(startTime) ? from : startTime;
       final endTimeForCalculation = until.isBefore(endTime) ? until : endTime;
@@ -82,8 +81,8 @@ class BACCalculator {
       final percentOfDrinkConsumed = min(1.0, relevantTimeForCalculation.inMinutes / drink.duration.inMinutes);
       final alcoholInGramsForDrink = drink.alcoholByVolume * drink.volume * Alcohol.density;
 
-      return ingestedAlcohol + alcoholInGramsForDrink * percentOfDrinkConsumed;
-    });
+      return alcoholInGramsForDrink * percentOfDrinkConsumed;
+    }).sum;
   }
 
   double _rateOfChangeGastricEmptying(double alcoholInStomach, double dt) {
