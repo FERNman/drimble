@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+
 import 'alcohol/alcohol.dart';
 import 'bac_calulation_results.dart';
 import 'diary/consumed_drink.dart';
@@ -19,8 +21,8 @@ class BACCalculationArgs {
 
 /// This class calculates the BAC for a given user and a given time range.
 /// It uses a modified version of the Watson formula.
-/// 
-/// It does only account for the activity of Aldehyde Dehydrogenase (ADH), 
+///
+/// It does only account for the activity of Aldehyde Dehydrogenase (ADH),
 /// Cytochrome P450 and Catalase are not yet taken into account.
 /// It also doesn't yet take into account the first pass metabolism of alcohol.
 /// However, the impact of that is often negligible, especially for higher amounts of alcohol.
@@ -89,9 +91,7 @@ class BACCalculator {
   double _calculateRhoFactorForUser() => (user.totalBodyWater / user.weight) / user.bloodWaterContent;
 
   double _calculateAbsorbedAlcohol(List<ConsumedDrink> drinks, DateTime at) {
-    return drinks.fold<double>(0.0, (absorbedAlcohol, drink) {
-      return absorbedAlcohol + _calculateAbsorbedAlcoholForDrink(drink, at);
-    });
+    return drinks.map((drink) => _calculateAbsorbedAlcoholForDrink(drink, at)).sum;
   }
 
   double _calculateAbsorbedAlcoholForDrink(ConsumedDrink drink, DateTime at) {
@@ -111,7 +111,7 @@ class BACCalculator {
     // Between 5 and 25 mg/100mL
     const vmax = 20.0; // TODO: Adapt to BAC and user
     // ADH is saturated between 15 and 20 mg/100mL,
-    // meaning km should be between 0.075g/L and 0.125/L 
+    // meaning km should be between 0.075g/L and 0.125/L
     const km = 8.0; // TODO: Look up values
 
     return (vmax * currentBAC) / (km + currentBAC);

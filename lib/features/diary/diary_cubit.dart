@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -90,8 +91,8 @@ class DiaryCubitState {
     required this.diaryEntry,
     required this.drinks,
     required this.calculationResults,
-  })  : gramsOfAlcohol = drinks.fold(0.0, (total, it) => total + it.gramsOfAlcohol),
-        calories = drinks.fold(0, (calories, it) => calories + it.calories);
+  })  : gramsOfAlcohol = drinks.map((drink) => drink.gramsOfAlcohol).sum,
+        calories = drinks.map((drink) => drink.calories).sum;
 
   DiaryCubitState.initial({
     required this.date,
