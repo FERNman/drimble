@@ -6,7 +6,6 @@ import '../../domain/alcohol/alcohol.dart';
 import '../../domain/alcohol/drink.dart';
 import '../../domain/diary/consumed_cocktail.dart';
 import '../../domain/diary/consumed_drink.dart';
-import '../../domain/diary/stomach_fullness.dart';
 
 class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   final DiaryRepository _diaryRepository;
@@ -35,10 +34,6 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
 
   void updateDuration(Duration duration) {
     emit(state.copyWith(state.consumedDrink.copyWith(duration: duration)));
-  }
-
-  void updateStomachFullness(StomachFullness value) {
-    emit(state.copyWith(state.consumedDrink.copyWith(stomachFullness: value)));
   }
 
   void save() {

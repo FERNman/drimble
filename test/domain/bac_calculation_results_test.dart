@@ -1,4 +1,4 @@
-import 'package:drimble/domain/bac_calulation_results.dart';
+import 'package:drimble/domain/bac/bac_calulation_results.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 

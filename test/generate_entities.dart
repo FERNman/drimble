@@ -107,7 +107,6 @@ ConsumedDrink generateConsumedDrinkOnDate({
         date.add(days: 1).toDateTime(),
       ),
       duration: duration,
-      stomachFullness: stomachFullness,
     );
 
 ConsumedDrink generateConsumedDrink({
@@ -119,7 +118,6 @@ ConsumedDrink generateConsumedDrink({
   double? alcoholByVolume,
   DateTime? startTime,
   Duration? duration,
-  StomachFullness? stomachFullness,
 }) =>
     ConsumedDrink(
       id: id,
@@ -130,7 +128,6 @@ ConsumedDrink generateConsumedDrink({
       alcoholByVolume: alcoholByVolume ?? faker.randomGenerator.decimal(),
       startTime: startTime ?? faker.date.dateTime(),
       duration: duration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
-      stomachFullness: stomachFullness ?? faker.randomGenerator.element(StomachFullness.values),
     );
 
 ConsumedCocktail generateConsumedCocktailOnDate({
@@ -195,7 +192,6 @@ ConsumedCocktail generateConsumedCocktail({
     volume: volume,
     startTime: startTime ?? faker.date.dateTime(),
     duration: duration ?? Duration(minutes: faker.randomGenerator.integer(60, min: 1)),
-    stomachFullness: stomachFullness ?? faker.randomGenerator.element(StomachFullness.values),
     ingredients: ingredients ?? _generateIngredients(),
   );
 }
