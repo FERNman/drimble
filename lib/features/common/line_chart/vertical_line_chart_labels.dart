@@ -38,7 +38,7 @@ class VerticalLineChartLabels extends StatelessWidget {
         return Row(
           children: [
             Text(
-              bacFormatter.format(e, withSymbol: false),
+              bacFormatter.format(e),
               style: context.textTheme.labelSmall?.copyWith(color: Colors.black38),
             ),
             const SizedBox(width: 8),

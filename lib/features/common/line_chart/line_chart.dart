@@ -3,11 +3,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../build_context_extensions.dart';
+import 'ceil_to_nearest_tenth.dart';
 import 'horizontal_line_chart_labels.dart';
-import 'nice_double.dart';
 import 'normalize_list.dart';
 import 'vertical_line_chart_labels.dart';
 
+// TODO: This either needs to be refactored as a whole or better separated from BACChart.
+// Right now, it's very specific to displaying BACs (which might be fine for our use-case, but then the naming is off).
 class LineChart extends StatelessWidget {
   final List<double> data;
   final List<ChartLabelData> labels;
@@ -27,10 +29,12 @@ class LineChart extends StatelessWidget {
     this.color,
     super.key,
   })  : assert(data.isNotEmpty),
-        _valueRange = _oneIfZero(maxValue.ceilToNiceDouble()),
+        _valueRange = _ensureNonZero(maxValue.ceilToNearestTenth()),
         _showSpotIndicator = indexForSpotIndicator >= 0 && indexForSpotIndicator < data.length;
 
-  static double _oneIfZero(double number) => number == 0.0 ? 1.0 : number;
+  /// If the value is 0, we return 0.1 to avoid division by zero.
+  /// 0.1 is g/100ml, so it's very specific to displaying BAC
+  static double _ensureNonZero(double number) => number == 0.0 ? 0.1 : number;
 
   @override
   Widget build(BuildContext context) {
