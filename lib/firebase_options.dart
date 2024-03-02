@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAaMfwVm8hl9fpqaHpq7EHno-YsVOnJLZ4',
-    appId: '1:159589082657:android:c626ff22efeb0bbc22e560',
-    messagingSenderId: '159589082657',
-    projectId: 'drimble-app',
-    storageBucket: 'drimble-app.appspot.com',
+    apiKey: 'AIzaSyB_70CIcHECgtsh1sWausBuvy1sgncuEyY',
+    appId: '1:1061709448056:android:cff7492df3506f0d047e8d',
+    messagingSenderId: '1061709448056',
+    projectId: 'drimble-5413f',
+    storageBucket: 'drimble-5413f.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDUwSV7NfMXJJVPvhX0qTo_Be3ya5rHbyk',
-    appId: '1:159589082657:ios:a3ae69b9b171834122e560',
-    messagingSenderId: '159589082657',
-    projectId: 'drimble-app',
-    storageBucket: 'drimble-app.appspot.com',
-    iosClientId: '159589082657-qmqm2fvu54ddt41nc93kfc3j1lu3ebdq.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDiYpO8XozEP4CozGXkGk6GGC3YY8j0dpA',
+    appId: '1:1061709448056:ios:71427af1401a2efe047e8d',
+    messagingSenderId: '1061709448056',
+    projectId: 'drimble-5413f',
+    storageBucket: 'drimble-5413f.appspot.com',
+    iosClientId: '1061709448056-s810ors7e9dcs30cjalluopfdvcia2bk.apps.googleusercontent.com',
     iosBundleId: 'app.drimble',
   );
 }

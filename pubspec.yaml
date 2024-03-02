@@ -23,8 +23,10 @@ dependencies:
   collection: ^1.16.0
   dotted_border: ^2.0.0+2
   realm: ^1.0.3
-  firebase_core: ^2.25.4
+  firebase_core: ^2.25.5
   firebase_crashlytics: ^3.4.14
+  firebase_auth: ^4.17.6
+  cloud_firestore: ^4.15.6
 
 dev_dependencies:
   flutter_test:
