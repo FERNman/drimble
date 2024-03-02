@@ -23,6 +23,12 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
   ScrollController? _scrollController;
 
   @override
+  dispose() {
+    super.dispose();
+    _scrollController?.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DiaryCalendarCubit(context.read()),
