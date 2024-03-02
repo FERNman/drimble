@@ -6,7 +6,7 @@ import '../alcohol/alcohol.dart';
 import '../diary/consumed_drink.dart';
 import '../diary/stomach_fullness.dart';
 import '../user/user.dart';
-import 'bac_calulation_results.dart';
+import 'bac_calculation_results.dart';
 import 'drink_bac_extensions.dart';
 import 'stomach_fullness_bac_extensions.dart';
 import 'user_bac_extensions.dart';
