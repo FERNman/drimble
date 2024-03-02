@@ -1,12 +1,12 @@
 import 'package:collection/collection.dart';
 
-import '../features/common/bac_format/bac_format.dart';
-import 'alcohol/alcohol.dart';
+import '../../features/common/bac_format/bac_format.dart';
+import '../alcohol/alcohol.dart';
 
 class BACEntry {
   final DateTime time;
 
-  /// In Permille, aka Grams per Liter (1g/L = 1‰)
+  /// In g/100mL
   final double value;
 
   BACEntry(this.time, this.value) {

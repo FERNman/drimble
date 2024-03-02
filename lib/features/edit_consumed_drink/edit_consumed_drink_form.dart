@@ -9,7 +9,6 @@ import 'widgets/drink_abv_text_field.dart';
 import 'widgets/drink_duration_text_field.dart';
 import 'widgets/drink_start_time_text_field.dart';
 import 'widgets/drink_volume_selection.dart';
-import 'widgets/stomach_fullness_selection.dart';
 
 class EditConsumedDrinkForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -28,12 +27,6 @@ class EditConsumedDrinkForm extends StatelessWidget {
           _buildAmountSelection(),
           const SizedBox(height: 16),
           _buildAlcoholSelection(),
-          const SizedBox(height: 16),
-          Text(context.l18n.edit_drink_stomachFullness, style: context.textTheme.titleMedium),
-          const SizedBox(height: 4),
-          Text(context.l18n.edit_drink_priorToConsumption, style: context.textTheme.bodySmall),
-          const SizedBox(height: 8),
-          _buildStomachFullnessSelection(),
           const SizedBox(height: 16),
           Text(context.l18n.edit_drink_timing, style: context.textTheme.titleMedium),
           const SizedBox(height: 8),
@@ -93,18 +86,6 @@ class EditConsumedDrinkForm extends StatelessWidget {
                 ),
               ],
             ),
-    );
-  }
-
-  Widget _buildStomachFullnessSelection() {
-    return BlocBuilder<EditConsumedDrinkCubit, EditDrinkCubitState>(
-      buildWhen: (previous, current) => previous.consumedDrink.stomachFullness != current.consumedDrink.stomachFullness,
-      builder: (context, state) => StomachFullnessSelection(
-        value: state.consumedDrink.stomachFullness,
-        onChanged: (it) {
-          context.read<EditConsumedDrinkCubit>().updateStomachFullness(it);
-        },
-      ),
     );
   }
 
