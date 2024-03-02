@@ -16,6 +16,10 @@ class BACEntry {
 
   BACEntry.sober(this.time) : value = 0.0;
 
+  bool get isSober {
+    return value < Alcohol.soberLimit;
+  }
+
   BACEntry copyWith({DateTime? time, double? value}) => BACEntry(time ?? this.time, value ?? this.value);
 
   @override
@@ -24,17 +28,7 @@ class BACEntry {
 
 class BACCalculationResults {
   static DateTime _findFirstSoberEntry(List<BACEntry> results) {
-    // Go through results from last to first
-    // Return first entry where the next entry is not sober
-    for (var i = results.length - 1; i > 0; i--) {
-      final nextEntry = results[i - 1];
-      if (nextEntry.value >= Alcohol.soberLimit) {
-        final currentEntry = results[i];
-        return currentEntry.time;
-      }
-    }
-
-    return results.first.time;
+    return results.reversed.takeWhile((entry) => entry.isSober).last.time;
   }
 
   static DateTime? _findTimeOfFirstDrink(List<BACEntry> results) {
