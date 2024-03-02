@@ -1,1 +1,6 @@
-enum BodyComposition { lean, athletic, average, overweight }
+enum BodyComposition {
+  lean,
+  athletic,
+  average,
+  overweight,
+}
