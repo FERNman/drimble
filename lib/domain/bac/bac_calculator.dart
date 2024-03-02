@@ -38,9 +38,8 @@ class BACCalculator {
     const timestep = Duration(minutes: 5);
     final deltaTime = (1 / 60) * timestep.inMinutes;
 
-    final startTime = drinks.reduce((drink, el) => drink.startTime.isBefore(el.startTime) ? drink : el).startTime;
-    final endTime = drinks
-        .reduce((drink, el) => drink.endTime.isAfter(el.endTime) ? drink : el)
+    final startTime = minBy(drinks, (drink) => drink.startTime)!.startTime;
+    final endTime = maxBy(drinks, (drink) => drink.endTime)!
         .endTime
         .add(const Duration(minutes: 30)); // add 30 minutes to make sure also the last drink is absorbed
 
