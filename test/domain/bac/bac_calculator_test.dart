@@ -140,7 +140,7 @@ void main() {
           test('should approximate the data from Jones et al (1994)', () {
             // Taken from Jones et al. (1994) (https://pubmed.ncbi.nlm.nih.gov/8064267/)
             // 0.8g/kg alcohol consumed by 10 healthy men after an overnight fast
-            final alcoholByVolume = faker.randomGenerator.decimal();
+            const alcoholByVolume = 0.4;
             final volume = 0.8 * user.weight / (alcoholByVolume * Alcohol.density);
             final vodka = generateConsumedDrink(
               volume: volume.round(),
@@ -156,7 +156,7 @@ void main() {
           test('should approximate the data from Jones (1984)', () {
             // Taken from Jones (1984) (https://pubmed.ncbi.nlm.nih.gov/6537224/)
             // 0.68g/kg alcohol consumed
-            final alcoholByVolume = faker.randomGenerator.decimal();
+            const alcoholByVolume = 0.4;
             final volume = 0.8 * user.weight / (alcoholByVolume * Alcohol.density);
             final vodka = generateConsumedDrink(
               volume: volume.round(),
