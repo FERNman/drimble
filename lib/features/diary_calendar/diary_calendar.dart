@@ -5,17 +5,28 @@ import '../../domain/date.dart';
 import 'diary_calendar_cubit.dart';
 import 'widgets/diary_calendar_day.dart';
 
-class DiaryCalendar extends StatelessWidget {
-  final Date today = Date.today();
-
+class DiaryCalendar extends StatefulWidget {
   final Date selectedDay;
   final ValueChanged<Date> onSelectedDayChanged;
   static const double padding = 16;
   static const int futureDayCount = 3;
 
-  final _scrollController = ScrollController();
+  const DiaryCalendar({required this.selectedDay, required this.onSelectedDayChanged, super.key});
 
-  DiaryCalendar({required this.selectedDay, required this.onSelectedDayChanged, super.key});
+  @override
+  State<DiaryCalendar> createState() => _DiaryCalendarState();
+}
+
+class _DiaryCalendarState extends State<DiaryCalendar> {
+  final Date today = Date.today();
+
+  ScrollController? _scrollController;
+
+  @override
+  dispose() {
+    super.dispose();
+    _scrollController?.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,38 +36,42 @@ class DiaryCalendar extends StatelessWidget {
         builder: (context, state) => SizedBox(
           height: 100,
           child: LayoutBuilder(
-            builder: (context, constraints) => NotificationListener(
-              child: ListView.builder(
-                shrinkWrap: true,
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                padding: const EdgeInsets.symmetric(horizontal: padding),
-                itemBuilder: (context, dayIndex) {
-                  final adjustedDayIndex = dayIndex - futureDayCount;
-                  final date = today.subtract(days: adjustedDayIndex);
+            builder: (context, constraints) {
+              _scrollController ??= ScrollController(initialScrollOffset: _calculateInitialScrollOffset(constraints));
 
-                  return DiaryCalendarDay(
-                    date: date,
-                    isSelected: selectedDay == date,
-                    isDrinkFreeDay: state.isDrinkFreeDay(date),
-                    onTap: date.isAfter(today)
-                        ? null
-                        : () {
-                            _scrollTo(adjustedDayIndex, constraints);
-                            onSelectedDayChanged(date);
-                          },
-                  );
+              return NotificationListener(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
+                  padding: const EdgeInsets.symmetric(horizontal: DiaryCalendar.padding),
+                  itemBuilder: (context, dayIndex) {
+                    final adjustedDayIndex = dayIndex - DiaryCalendar.futureDayCount;
+                    final date = today.subtract(days: adjustedDayIndex);
+
+                    return DiaryCalendarDay(
+                      date: date,
+                      isSelected: widget.selectedDay == date,
+                      isDrinkFreeDay: state.isDrinkFreeDay(date),
+                      onTap: date.isAfter(today)
+                          ? null
+                          : () {
+                              _scrollTo(adjustedDayIndex, constraints);
+                              widget.onSelectedDayChanged(date);
+                            },
+                    );
+                  },
+                ),
+                onNotification: (notification) {
+                  if (notification is ScrollNotification) {
+                    _updateVisibleRange(context, constraints, notification);
+                    return true;
+                  }
+                  return false;
                 },
-              ),
-              onNotification: (notification) {
-                if (notification is ScrollNotification) {
-                  _updateVisibleRange(context, constraints, notification);
-                  return true;
-                }
-                return false;
-              },
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -67,8 +82,10 @@ class DiaryCalendar extends StatelessWidget {
     final endPixels = notification.metrics.pixels;
     final startPixels = notification.metrics.pixels + constraints.maxWidth;
 
-    final endIndex = ((endPixels - padding) / DiaryCalendarDay.width).floor() - futureDayCount;
-    final startIndex = ((startPixels - padding) / DiaryCalendarDay.width).ceil() - futureDayCount;
+    final endIndex =
+        ((endPixels - DiaryCalendar.padding) / DiaryCalendarDay.width).floor() - DiaryCalendar.futureDayCount;
+    final startIndex =
+        ((startPixels - DiaryCalendar.padding) / DiaryCalendarDay.width).ceil() - DiaryCalendar.futureDayCount;
 
     context
         .read<DiaryCalendarCubit>()
@@ -76,13 +93,20 @@ class DiaryCalendar extends StatelessWidget {
   }
 
   void _scrollTo(int index, BoxConstraints constraints) {
-    final offsetToCenter = padding + DiaryCalendarDay.width / 2 - constraints.maxWidth / 2;
-    final itemOffset = (index + futureDayCount) * DiaryCalendarDay.width;
-
-    _scrollController.animateTo(
-      itemOffset + offsetToCenter,
+    _scrollController!.animateTo(
+      _calculateScrollOffset(index, constraints),
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
     );
+  }
+
+  double _calculateInitialScrollOffset(BoxConstraints constraints) {
+    return _calculateScrollOffset(0, constraints);
+  }
+
+  double _calculateScrollOffset(int index, BoxConstraints constraints) {
+    final itemOffset = (index + DiaryCalendar.futureDayCount) * DiaryCalendarDay.width;
+    final offsetToCenter = DiaryCalendar.padding + DiaryCalendarDay.width / 2 - constraints.maxWidth / 2;
+    return itemOffset + offsetToCenter;
   }
 }
