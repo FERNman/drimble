@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../domain/user/goals.dart';
+import '../../../domain/user/user_goals.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 import '../../common/widgets/circular_percentage_indicator.dart';
@@ -10,7 +10,7 @@ import '../../common/widgets/circular_percentage_indicator.dart';
 class WeeklyAlcoholConsumption extends StatelessWidget {
   final double totalGramsOfAlcohol;
   final double changeToLastWeek;
-  final Goals goals;
+  final UserGoals goals;
 
   final GestureTapCallback onEdit;
 

@@ -25,10 +25,11 @@ class DrimbleRouter extends $DrimbleRouter {
     AutoRoute(page: EditWeeklyDrinkFreeDaysGoalRoute.page),
     AutoRoute(page: AnalyticsSwitchWeekRoute.page),
     AutoRoute(page: FAQRoute.page),
+    AutoRoute(page: SignInRoute.page),
     AutoRoute(
       page: OnboardingRoute.page,
       children: [
-        AutoRoute(page: OnboardingWelcomeRoute.page, path: ''),
+        AutoRoute(page: OnboardingEnterNameRoute.page, path: ''),
         AutoRoute(page: OnboardingSelectGenderRoute.page),
         AutoRoute(page: OnboardingSelectBirthyearRoute.page),
         AutoRoute(page: OnboardingSelectHeightRoute.page),

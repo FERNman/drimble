@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +28,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  if (kDebugMode) {
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  }
 
   runApp(const DrimbleApp());
 }
@@ -71,16 +79,19 @@ class _DrimbleAppState extends State<DrimbleApp> {
 
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider.value(value: FirebaseAuth.instance),
+        RepositoryProvider.value(value: FirebaseFirestore.instance),
         RepositoryProvider(
           create: (context) => DatabaseProvider([
             IngredientModel.schema,
             ConsumedDrinkModel.schema,
             DiaryEntryModel.schema,
-          ]),
+          ])
+            ..openOfflineInstance(),
         ),
         RepositoryProvider(create: (context) => ConsumedDrinksDAO(context.read())),
         RepositoryProvider(create: (context) => DiaryDAO(context.read())),
-        RepositoryProvider(create: (context) => UserRepository(context.read())),
+        RepositoryProvider(create: (context) => UserRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => DrinksRepository()),
         RepositoryProvider(create: (context) => DiaryRepository(context.read(), context.read())),
       ],

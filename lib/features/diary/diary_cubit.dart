@@ -58,7 +58,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   void _calculateBAC(List<ConsumedDrink> drinks) async {
-    final user = await _userRepository.user;
+    final user = await _userRepository.loadUser();
     if (user == null) {
       return;
     }

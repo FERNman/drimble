@@ -16,7 +16,7 @@ class OnboardingSelectGenderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OnboardingAppBar(
-        stepNumber: 1,
+        stepNumber: 2,
         title: context.l18n.onboarding_genderSelectionTitle,
       ),
       body: SafeArea(

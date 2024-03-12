@@ -17,7 +17,7 @@ class OnboardingSelectBodyCompositionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OnboardingAppBar(
-        stepNumber: 5,
+        stepNumber: 6,
         title: context.l18n.onboarding_bodyCompositionSelectionTitle,
       ),
       body: SafeArea(
@@ -62,8 +62,9 @@ class OnboardingSelectBodyCompositionPage extends StatelessWidget {
   Widget _finishButton(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        context.read<OnboardingCubit>().save();
-        context.router.replaceAll([const DiaryRoute()]);
+        context.read<OnboardingCubit>().save().then((v) {
+          context.router.replaceAll([const DiaryRoute()]);
+        });
       },
       child: Text(context.l18n.onboarding_finish),
     );

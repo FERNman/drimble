@@ -48,7 +48,7 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
         TextButton(
           onPressed: () => showDialog(
             context: context,
-            builder: (context) => _buildSignOutDialog(context),
+            builder: (dialogContext) => _buildSignOutDialog(dialogContext, context),
           ),
           child: Text(context.l18n.profile_signOut),
         ),
@@ -83,7 +83,7 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildSignOutDialog(BuildContext context) {
+  Widget _buildSignOutDialog(BuildContext context, BuildContext parentContext) {
     return AlertDialog(
       title: Text(context.l18n.profile_signOutDialog_title),
       content: Text(context.l18n.profile_signOutDialog_content),
@@ -93,9 +93,10 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
           child: Text(context.l18n.profile_signOutDialog_cancel),
         ),
         TextButton(
-          onPressed: () {
-            context.read<ProfileCubit>().signOut();
-            context.router.replaceAll([const OnboardingRoute()]);
+          onPressed: () async {
+            await parentContext.read<ProfileCubit>().signOut().then((v) {
+              parentContext.router.replaceAll([const SignInRoute()]);
+            });
           },
           child: Text(context.l18n.profile_signOutDialog_confirm),
         ),

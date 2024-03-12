@@ -16,7 +16,7 @@ class OnboardingSelectHeightPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OnboardingAppBar(
-        stepNumber: 3,
+        stepNumber: 4,
         title: context.l18n.onboarding_heightSelectionTitle,
       ),
       body: SafeArea(

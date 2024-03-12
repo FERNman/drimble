@@ -71,6 +71,7 @@ class _BACChartState extends State<BACChart> {
   @override
   void dispose() {
     refreshTimer?.cancel();
+    refreshTimer = null;
 
     super.dispose();
   }

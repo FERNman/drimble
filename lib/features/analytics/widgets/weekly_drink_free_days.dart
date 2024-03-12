@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/date.dart';
-import '../../../domain/user/goals.dart';
+import '../../../domain/user/user_goals.dart';
 import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 
 class WeeklyDrinkFreeDays extends StatelessWidget {
   final Map<Date, bool?> drinkFreeDays;
-  final Goals goals;
+  final UserGoals goals;
   final GestureTapCallback onTap;
 
   final int _drinkFreeDayCount;

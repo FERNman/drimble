@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/user/goals.dart';
+import '../../domain/user/user_goals.dart';
 import '../common/build_context_extensions.dart';
 import '../common/number_text_style.dart';
 import '../edit_weekly_goal/edit_weekly_goal.dart';
@@ -16,7 +16,7 @@ class EditWeeklyDrinkFreeDaysGoalPage extends StatelessWidget implements AutoRou
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (context) => EditWeeklyGoalCubit(
           context.read(),
-          initialGoals: const Goals(weeklyDrinkFreeDays: EditWeeklyGoalState.defaultWeeklyDrinkFreeDays),
+          initialGoals: const UserGoals(weeklyDrinkFreeDays: EditWeeklyGoalState.defaultWeeklyDrinkFreeDays),
         ),
         child: EditWeeklyGoal(
           title: Text(context.l18n.editWeeklyDrinkFreeDaysGoal_title),
@@ -27,15 +27,15 @@ class EditWeeklyDrinkFreeDaysGoalPage extends StatelessWidget implements AutoRou
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EditWeeklyGoalCubit, EditWeeklyGoalState>(
+    return BlocBuilder<EditWeeklyGoalCubit, BaseEditWeeklyGoalState>(
       builder: (context, state) => Column(
         children: [
           Text(
-            '${state.newGoals.weeklyDrinkFreeDays}',
+            '${state.goals.weeklyDrinkFreeDays}',
             style: context.textTheme.displaySmall?.forNumbers(),
           ),
           Slider(
-            value: state.newGoals.weeklyDrinkFreeDays!.toDouble(),
+            value: state.goals.weeklyDrinkFreeDays!.toDouble(),
             onChanged: (value) {
               context.read<EditWeeklyGoalCubit>().updateDrinkFreeDays(value.round());
             },

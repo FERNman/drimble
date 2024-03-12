@@ -16,7 +16,7 @@ void main() {
       final userRepository = MockUserRepository();
       final diaryRepository = MockDiaryRepository();
 
-      when(userRepository.user).thenAnswer((_) => Future.value(user));
+      when(userRepository.loadUser()).thenAnswer((_) => Future.value(user));
       when(diaryRepository.observeDrinksBetweenDays(any, any)).thenAnswer((_) => Stream.value([]));
 
       // TOOD: This potentially throws an exception, 

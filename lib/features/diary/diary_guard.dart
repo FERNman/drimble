@@ -9,11 +9,13 @@ class DiaryGuard extends AutoRouteGuard {
   DiaryGuard(this._userRepository);
 
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    if (await _userRepository.isSignedIn()) {
-      resolver.next();
-    } else {
+  Future<void> onNavigation(NavigationResolver resolver, StackRouter router) async {
+    if (!_userRepository.isSignedIn()) {
+      router.replaceAll([const SignInRoute()]);
+    } else if (!(await _userRepository.didFinishOnboarding())) {
       router.replaceAll([const OnboardingRoute()]);
+    } else {
+      resolver.next();
     }
   }
 }

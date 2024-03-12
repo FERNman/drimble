@@ -9,8 +9,8 @@ import '../../data/user_repository.dart';
 import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/user/goals.dart';
 import '../../domain/user/user.dart';
+import '../../domain/user/user_goals.dart';
 import '../../infra/disposable.dart';
 
 class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
@@ -142,7 +142,7 @@ class AnalyticsCubitState {
   /// The change in percent compared to last week, from -inf to +inf
   final double changeOfAverageAlcohol;
 
-  final Goals goals;
+  final UserGoals goals;
 
   AnalyticsCubitState({
     required Date date,
@@ -151,7 +151,7 @@ class AnalyticsCubitState {
     this.alcoholByDay = const {},
     this.numberOfDrinks = 0,
     this.calories = 0,
-    this.goals = const Goals(),
+    this.goals = const UserGoals(),
   })  : firstDayOfWeek = date.floorToWeek(),
         lastDayOfWeek = date.floorToWeek().add(days: daysInOneWeek),
         totalAlcohol = _sum(alcoholByDay),
