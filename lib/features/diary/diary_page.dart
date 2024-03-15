@@ -115,7 +115,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
         return DiaryConsumedDrinks(
           state.drinks,
           onEdit: (drink) {
-            context.router.push(EditConsumedDrinkRoute(consumedDrink: drink));
+            context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry!, consumedDrink: drink));
           },
           onDelete: (drink) {
             showDialog(
@@ -124,9 +124,8 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
                 onCancel: () {
                   Navigator.pop(dialogContext);
                 },
-                onRemove: () {
-                  context.read<DiaryCubit>().deleteDrink(drink);
-                  Navigator.pop(dialogContext);
+                onRemove: () async {
+                  await context.read<DiaryCubit>().deleteDrink(drink).then((value) => Navigator.pop(dialogContext));
                 },
               ),
             );
@@ -143,7 +142,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
       buildWhen: (previous, current) => previous.date != current.date,
       builder: (context, state) => FloatingActionButton(
-        onPressed: () => context.router.push(AddConsumedDrinkRoute(date: state.date)),
+        onPressed: () => context.router.push(AddConsumedDrinkRoute(diaryEntry: state.getOrCreateDiaryEntry())),
         child: const Icon(Icons.add),
       ),
     );

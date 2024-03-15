@@ -7,10 +7,6 @@ Regain control of your drinking.
 Before you can start developing, you need to run the build runner at least once. 
 To do that, either run one of the VSCode build task, or run `dart run build_runner build` in the command line. 
 
-## Running tests
-
-To be able to run the integration tests, you need to run `flutter pub realm install` before. This will download the necessary Realm binaries for your platform.
-
 ## Running a release version
 
 ### Android

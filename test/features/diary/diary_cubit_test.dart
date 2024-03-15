@@ -11,13 +11,13 @@ import 'diary_cubit_test.mocks.dart';
 @GenerateNiceMocks([MockSpec<UserRepository>(), MockSpec<DiaryRepository>()])
 void main() {
   group(DiaryCubit, () {
-    test('should not throw an exception for a state with no drinks but a user', () async {
+    test('should not throw an exception for a state with no diary entry', () async {
       final user = generateUser();
       final userRepository = MockUserRepository();
       final diaryRepository = MockDiaryRepository();
 
       when(userRepository.loadUser()).thenAnswer((_) => Future.value(user));
-      when(diaryRepository.observeDrinksBetweenDays(any, any)).thenAnswer((_) => Stream.value([]));
+      when(diaryRepository.observeEntryOnDate(any)).thenAnswer((_) => Stream.value(null));
 
       // TOOD: This potentially throws an exception, 
       // but since the exception is thrown on a different isolate, the test doesn't catch it

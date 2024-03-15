@@ -40,7 +40,8 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
               return DrinkListItem(
                 drink,
                 onEdit: () {
-                  context.router.push(EditConsumedDrinkRoute(consumedDrink: drink));
+                  assert(state.diaryEntry != null);
+                  context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry!, consumedDrink: drink));
                 },
                 onDelete: () {
                   showDialog(

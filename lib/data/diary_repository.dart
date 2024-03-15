@@ -1,71 +1,109 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
+
 import '../domain/date.dart';
 import '../domain/diary/consumed_drink.dart';
 import '../domain/diary/diary_entry.dart';
-import 'daos/consumed_drinks_dao.dart';
-import 'daos/diary_dao.dart';
 
 class DiaryRepository {
-  final DiaryDAO _diaryDao;
-  final ConsumedDrinksDAO _drinksDao;
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
 
-  DiaryRepository(this._diaryDao, this._drinksDao);
+  CollectionReference<DiaryEntry> get _collection => _firestore.collection('diaries').withConverter(
+        fromFirestore: DiaryEntry.fromFirestore,
+        toFirestore: (value, _) => value.toFirestore(_auth.currentUser!.uid),
+      );
 
-  Stream<List<DiaryEntry>> observeEntriesAfter(Date date) => _diaryDao.observeEntriesAfter(date);
+  DiaryRepository(this._auth, this._firestore);
 
-  Stream<DiaryEntry?> observeEntryOnDate(Date date) => _diaryDao.observeOnDate(date);
-
-  Stream<List<DiaryEntry>> observeEntriesBetween(Date startDate, Date endDate) =>
-      _diaryDao.observeBetweenDates(startDate, endDate);
-
-  DiaryEntry? findEntryOnDate(Date date) => _diaryDao.findOnDate(date);
-
-  Stream<List<ConsumedDrink>> observeDrinksBetweenDays(Date startDate, Date endDate) =>
-      _drinksDao.observeBetweenDates(startDate, endDate);
-
-  Stream<List<ConsumedDrink>> observeDrinksOnDate(Date date) => _drinksDao.observeOnDate(date);
-
-  Stream<List<ConsumedDrink>> observeLatestDrinks() => _drinksDao.observeLatest();
-
-  List<ConsumedDrink> findDrinksOnDate(Date date) => _drinksDao.findOnDate(date);
-
-  void markAsDrinkFree(Date date) async {
-    await _diaryDao.transaction(() {
-      _drinksDao.deleteOnDate(date);
-
-      final entity = _diaryDao.findOnDate(date);
-      final entry = entity?.copyWith(isDrinkFreeDay: true) ?? DiaryEntry(date: date, isDrinkFreeDay: true);
-      _diaryDao.save(entry);
-    });
+  Stream<List<DiaryEntry>> observeEntriesAfter(Date date) {
+    return _collection
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('date', isGreaterThanOrEqualTo: date.toDateTime())
+        .snapshots()
+        .toDiaryEntries(_firestore);
   }
 
-  void saveDrink(ConsumedDrink drink) async {
-    await _drinksDao.transaction(() {
-      _drinksDao.save(drink);
-      _markAsNonDrinkFree(drink.date);
-    });
+  Stream<DiaryEntry?> observeEntryOnDate(Date date) {
+    return _collection
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('date', isEqualTo: date.toDateTime())
+        .limit(1)
+        .snapshots()
+        .toDiaryEntries(_firestore)
+        .map((event) => event.singleOrNull);
   }
 
-  void removeDrink(ConsumedDrink drink) async {
-    await _drinksDao.transaction(() {
-      _drinksDao.delete(drink);
-
-      final remainingDrinksOnThisDay = _drinksDao.findOnDate(drink.date);
-      if (remainingDrinksOnThisDay.isEmpty) {
-        _deleteEntryOnDate(drink.date);
-      }
-    });
+  Stream<List<DiaryEntry>> observeEntriesBetween(Date startDate, Date endDate) {
+    return _collection
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('date', isGreaterThanOrEqualTo: startDate.toDateTime())
+        .where('date', isLessThanOrEqualTo: endDate.toDateTime())
+        .snapshots()
+        .toDiaryEntries(_firestore);
   }
 
-  void _markAsNonDrinkFree(Date date) {
-    final existingEntry = _diaryDao.findOnDate(date);
-    final diaryEntry = existingEntry?.copyWith(isDrinkFreeDay: false) ?? DiaryEntry(date: date, isDrinkFreeDay: false);
-    _diaryDao.save(diaryEntry);
+  Future<DiaryEntry?> findEntryOnDate(Date date) async {
+    return _collection
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('date', isEqualTo: date.toDateTime())
+        .limit(1)
+        .get()
+        .toDiaryEntries(_firestore)
+        .then((value) => value.singleOrNull);
   }
 
-  void _deleteEntryOnDate(Date date) {
-    final diaryEntry = _diaryDao.findOnDate(date);
-    if (diaryEntry != null) {
-      _diaryDao.delete(diaryEntry);
+  Future<void> saveDiaryEntry(DiaryEntry diaryEntry) async {
+    await _collection.doc(diaryEntry.id).set(diaryEntry);
+  }
+
+  Future<void> deleteDiaryEntry(DiaryEntry diaryEntry) async {
+    await _collection.doc(diaryEntry.id).delete();
+  }
+
+  Future<void> saveDrinkToDiaryEntry(DiaryEntry diaryEntry, ConsumedDrink drink) async {
+    final diaryRef = _collection.doc(diaryEntry.id);
+    await diaryRef.set(diaryEntry);
+    await diaryRef.drinks.doc(drink.id).set(drink);
+  }
+
+  Future<void> removeDrinkFromDiaryEntry(DiaryEntry diaryEntry, ConsumedDrink drink) async {
+    final diaryRef = _collection.doc(diaryEntry.id);
+    await diaryRef.drinks.doc(drink.id).delete();
+  }
+
+  Future<void> deleteDrinksForDiaryEntry(DiaryEntry diaryEntry) async {
+    final drinksSnapshot = await _collection.doc(diaryEntry.id).drinks.get();
+    for (final doc in drinksSnapshot.docs) {
+      await doc.reference.delete();
     }
+  }
+}
+
+extension _DrinksSubcollection on DocumentReference<DiaryEntry> {
+  CollectionReference<ConsumedDrink> get drinks => collection('drinks').withConverter(
+        fromFirestore: ConsumedDrink.fromFirestore,
+        toFirestore: (value, _) => value.toFirestore(),
+      );
+}
+
+extension _DiaryEntryStreamExtension on Stream<QuerySnapshot<DiaryEntry>> {
+  Stream<List<DiaryEntry>> toDiaryEntries(FirebaseFirestore firestore) {
+    return map((event) => event.docs).flatMap((diaryEntriesDocs) => Rx.combineLatestList(diaryEntriesDocs
+        .map((diaryEntryDoc) => diaryEntryDoc.reference.drinks
+            .snapshots()
+            .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+            .map((drinks) => DiaryEntry.withDrinks(diaryEntryDoc.data(), drinks: drinks)))
+        .toList()));
+  }
+}
+
+extension _DiaryEntryFutureExtension on Future<QuerySnapshot<DiaryEntry>> {
+  Future<List<DiaryEntry>> toDiaryEntries(FirebaseFirestore firestore) {
+    return then((value) => Future.wait(value.docs.map((diaryEntriesDoc) => diaryEntriesDoc.reference.drinks
+        .get()
+        .then((drinksSnapshot) => drinksSnapshot.docs.map((doc) => doc.data()).toList())
+        .then((drinks) => DiaryEntry.withDrinks(diaryEntriesDoc.data(), drinks: drinks)))));
   }
 }

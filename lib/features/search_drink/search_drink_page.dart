@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/diary_entry.dart';
 import '../../infra/extensions/set_date.dart';
 import '../../router.gr.dart';
 import '../common/build_context_extensions.dart';
@@ -12,10 +12,10 @@ import 'widgets/search_drink_app_bar.dart';
 
 @RoutePage()
 class SearchDrinkPage extends StatelessWidget implements AutoRouteWrapper {
-  final Date date;
+  final DiaryEntry forDiaryEntry;
 
   const SearchDrinkPage({
-    required this.date,
+    required this.forDiaryEntry,
     super.key,
   });
 
@@ -75,7 +75,8 @@ class SearchDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           trailing: const Icon(Icons.add),
           onTap: () => context.router.push(
             EditConsumedDrinkRoute(
-              consumedDrink: ConsumedDrink.fromDrink(drink, startTime: DateTime.now().setDate(date)),
+              diaryEntry: forDiaryEntry,
+              consumedDrink: ConsumedDrink.fromDrink(drink, startTime: DateTime.now().setDate(forDiaryEntry.date)),
             ),
           ),
         );

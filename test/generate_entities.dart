@@ -223,12 +223,12 @@ Ingredient generateIngredient({
 DiaryEntry generateDiaryEntry({
   String? id,
   Date? date,
-  bool? isDrinkFreeDay,
+  List<ConsumedDrink>? drinks,
 }) =>
-    DiaryEntry(
-      id: id,
-      date: date ?? faker.date.date(),
-      isDrinkFreeDay: isDrinkFreeDay ?? faker.randomGenerator.boolean(),
+    // This is to be able to generate a diary entry with drinks, which we don't allow anywhere except here
+    DiaryEntry.withDrinks(
+      DiaryEntry(id: id, date: date ?? faker.date.date()),
+      drinks: List.unmodifiable(drinks ?? []),
     );
 
 UserGoals generateGoals({

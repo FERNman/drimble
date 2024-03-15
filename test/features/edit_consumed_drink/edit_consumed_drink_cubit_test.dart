@@ -1,5 +1,6 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/drinks_repository.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/features/edit_consumed_drink/edit_consumed_drink_cubit.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
@@ -13,15 +14,17 @@ import 'edit_consumed_drink_cubit_test.mocks.dart';
 @GenerateNiceMocks([MockSpec<DiaryRepository>(), MockSpec<DrinksRepository>()])
 void main() {
   group(EditConsumedDrinkCubit, () {
-    group('updateStartTime', () {
-      final date = faker.date.dateTime();
+    final date = faker.date.dateTime();
+    final diaryEntry = generateDiaryEntry(date: date.toDate());
 
+    group('updateStartTime', () {
       test('should correctly update the date if the time is before 6am', () {
         final at10Am = date.copyWith(hour: 10);
         final drink = generateConsumedDrink(startTime: at10Am);
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
+          diaryEntry: diaryEntry,
           consumedDrink: drink,
         );
 
@@ -37,6 +40,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
+          diaryEntry: diaryEntry,
           consumedDrink: drink,
         );
 
@@ -52,6 +56,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
+          diaryEntry: diaryEntry,
           consumedDrink: drink,
         );
 
@@ -76,6 +81,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           mockDrinksRepository,
+          diaryEntry: diaryEntry,
           consumedDrink: consumedCocktail,
         );
 
@@ -88,6 +94,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           mockDrinksRepository,
+          diaryEntry: diaryEntry,
           consumedDrink: consumedCocktail,
         );
 

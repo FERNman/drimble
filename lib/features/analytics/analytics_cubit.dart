@@ -7,7 +7,6 @@ import 'package:rxdart/rxdart.dart';
 import '../../data/diary_repository.dart';
 import '../../data/user_repository.dart';
 import '../../domain/date.dart';
-import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
 import '../../domain/user/user.dart';
 import '../../domain/user/user_goals.dart';
@@ -29,30 +28,27 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
   void _initState() {
     final dateChanged = stream.map((event) => event.firstDayOfWeek).distinct().startWith(state.firstDayOfWeek);
 
-    final drinksLastWeek =
-        dateChanged.flatMap((date) => _diaryRepository.observeDrinksBetweenDays(date.subtract(days: 7), date));
-    final drinksThisWeek = dateChanged
-        .flatMap((date) => _diaryRepository.observeDrinksBetweenDays(state.firstDayOfWeek, state.lastDayOfWeek));
+    final diaryEntriesLastWeek =
+        dateChanged.flatMap((date) => _diaryRepository.observeEntriesBetween(date.subtract(days: 7), date));
     final diaryEntries = dateChanged
         .flatMap((date) => _diaryRepository.observeEntriesBetween(state.firstDayOfWeek, state.lastDayOfWeek));
 
     final user = _userRepository.observeUser().whereNotNull();
 
     addSubscription(
-      Rx.combineLatest4(drinksLastWeek, drinksThisWeek, diaryEntries, user, _calculateState)
+      Rx.combineLatest3(diaryEntriesLastWeek, diaryEntries, user, _calculateState)
           .asyncMap((event) => event)
           .listen(emit),
     );
   }
 
   Future<AnalyticsCubitState> _calculateState(
-    List<ConsumedDrink> lastWeeksDrinks,
-    List<ConsumedDrink> thisWeeksDrinks,
+    List<DiaryEntry> lastWeeksDiaryEntries,
     List<DiaryEntry> diaryEntries,
     User user,
   ) async {
-    final alcoholByDayLastWeek = _foldDrinksByDay(lastWeeksDrinks);
-    final alcoholByDayThisWeek = _foldDrinksAndDiaryEntries(thisWeeksDrinks, diaryEntries);
+    final alcoholByDayLastWeek = lastWeeksDiaryEntries.groupFoldBy((e) => e.date, (t, e) => e.gramsOfAlcohol);
+    final alcoholByDayThisWeek = diaryEntries.groupFoldBy((e) => e.date, (t, e) => e.gramsOfAlcohol);
 
     final averageAlcoholPerSessionThisWeek = _calculateAverageAlcoholPerSession(alcoholByDayThisWeek);
     final averageAlcoholPerSessionLastWeek = _calculateAverageAlcoholPerSession(alcoholByDayLastWeek);
@@ -66,11 +62,21 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
       date: state.firstDayOfWeek,
       averageAlcoholPerSession: averageAlcoholPerSessionThisWeek,
       changeOfAverageAlcohol: changeOfAverageAlcohol,
-      alcoholByDay: alcoholByDayThisWeek,
-      numberOfDrinks: thisWeeksDrinks.length,
-      calories: thisWeeksDrinks.map((drink) => drink.calories).sum,
+      alcoholByDay: _fillInMissingDays(alcoholByDayThisWeek),
+      numberOfDrinks: diaryEntries.map((element) => element.drinks.length).sum,
+      calories: diaryEntries.map((element) => element.calories).sum,
       goals: user.goals,
     );
+  }
+
+  Map<Date, double?> _fillInMissingDays(Map<Date, double> alcoholByDay) {
+    final firstDay = state.firstDayOfWeek;
+    final lastDay = state.lastDayOfWeek;
+
+    final days = lastDay.difference(firstDay).inDays;
+    final allDays = [for (var i = 0; i < days; i++) firstDay.add(days: i)];
+
+    return Map.fromEntries(allDays.map((day) => MapEntry(day, alcoholByDay[day])));
   }
 
   static double _calculateAverageAlcoholPerSession(Map<Date, double?> alcoholByDay) {
@@ -94,34 +100,6 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     }
 
     return (alcoholThisWeek / alcoholLastWeek) - 1;
-  }
-
-  Map<Date, double?> _foldDrinksAndDiaryEntries(List<ConsumedDrink> drinks, List<DiaryEntry> diaryEntries) {
-    // There is at most one diary entry per day
-    final diaryEntriesByDay = diaryEntries.groupFoldBy((el) => el.date, (_, el) => el);
-    final gramsOfAlcoholByDay = _foldDrinksByDay(drinks);
-
-    return List.generate(AnalyticsCubitState.daysInOneWeek, (index) => state.firstDayOfWeek.add(days: index))
-        .groupFoldBy((date) => date, (_, date) {
-      final diaryEntry = diaryEntriesByDay[date];
-      if (diaryEntry == null) {
-        return null;
-      } else if (diaryEntry.isDrinkFreeDay) {
-        return 0;
-      } else {
-        // Technically, gramsOfAlcoholByDate[date] must not be null here. However, if the diary entries stream emits
-        // before the alcohol stream, we might be in an invalid state (and gramsOfAlcoholByDate[date] == null).
-        // Since this doesn't really matter because it will be "fixed" immediately, we'll accept it for now.
-        return gramsOfAlcoholByDay[date] ?? 0.0;
-      }
-    });
-  }
-
-  Map<Date, double> _foldDrinksByDay(List<ConsumedDrink> drinks) {
-    return drinks.groupFoldBy(
-      (el) => el.date,
-      (sum, el) => (sum ?? 0.0) + el.gramsOfAlcohol,
-    );
   }
 }
 

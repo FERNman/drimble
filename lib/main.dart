@@ -10,14 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'data/daos/consumed_drinks_dao.dart';
-import 'data/daos/diary_dao.dart';
-import 'data/database_provider.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
-import 'data/models/consumed_drink_model.dart';
-import 'data/models/diary_entry_model.dart';
-import 'data/models/ingredient_model.dart';
 import 'data/user_repository.dart';
 import 'features/diary/diary_guard.dart';
 import 'firebase_options.dart';
@@ -81,16 +75,6 @@ class _DrimbleAppState extends State<DrimbleApp> {
       providers: [
         RepositoryProvider.value(value: FirebaseAuth.instance),
         RepositoryProvider.value(value: FirebaseFirestore.instance),
-        RepositoryProvider(
-          create: (context) => DatabaseProvider([
-            IngredientModel.schema,
-            ConsumedDrinkModel.schema,
-            DiaryEntryModel.schema,
-          ])
-            ..openOfflineInstance(),
-        ),
-        RepositoryProvider(create: (context) => ConsumedDrinksDAO(context.read())),
-        RepositoryProvider(create: (context) => DiaryDAO(context.read())),
         RepositoryProvider(create: (context) => UserRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => DrinksRepository()),
         RepositoryProvider(create: (context) => DiaryRepository(context.read(), context.read())),

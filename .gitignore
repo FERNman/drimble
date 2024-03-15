@@ -56,9 +56,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Realm
-default.realm
-default.realm.management
-default.realm.note
-default.realm.lock
-binary
+# Firebase
+.emulator_cache/
