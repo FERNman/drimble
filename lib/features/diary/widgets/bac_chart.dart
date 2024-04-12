@@ -146,12 +146,8 @@ class _BACChartState extends State<BACChart> {
 
   void _startRedrawTimer() {
     const refreshRate = Duration(minutes: 1);
-    refreshTimer = Timer.periodic(
-      refreshRate,
-      (t) {
-        _displayStart = _displayStart.add(const Duration(minutes: 1));
-      },
-    );
+    refreshTimer?.cancel();
+    refreshTimer = Timer.periodic(refreshRate, (t) => _displayStart = _displayStart.add(refreshRate));
   }
 
   void _updateAfterScrolling(double delta) {
