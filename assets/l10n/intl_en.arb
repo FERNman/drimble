@@ -201,5 +201,6 @@
   "faq_canTheAppReplaceABreathalyzer": "Can the app replace a breathalyzer?",
   "faq_canTheAppReplaceABreathalyzerText": "No! The app is only intended to give an approximate indication of the blood alcohol level. The actual blood alcohol level can only be determined by a breathalyzer or a blood test.",
   "faq_doesTheEstimatedBACCorrespondToTheActualBAC": "Does the estimated blood alcohol level correspond to the actual blood alcohol level?",
-  "faq_doesTheEstimatedBACCorrespondToTheActualBACText": "No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb."
+  "faq_doesTheEstimatedBACCorrespondToTheActualBACText": "No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb.",
+  "common_invalidTimeFormat": "Invalid time format"
 }
