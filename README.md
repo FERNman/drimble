@@ -5,7 +5,10 @@ Regain control of your drinking.
 ## Setting up the dev environment
 
 Before you can start developing, you need to run the build runner at least once. 
-To do that, either run one of the VSCode build task, or run `dart run build_runner build` in the command line. 
+To do that, either run one of the VSCode build task, or run `dart run build_runner build` in the command line.
+
+To start developing, run `firebase emulators:start --export-on-exit=./.emulator_cache --import=./.emulator_cache`.
+(You need to have the Firebase CLI installed and properly set up).
 
 ## Running a release version
 
