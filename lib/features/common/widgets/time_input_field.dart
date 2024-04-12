@@ -5,7 +5,7 @@ import '../build_context_extensions.dart';
 
 class TimeInputField extends StatelessWidget {
   static final _digitsAndColonRegex = RegExp(r'^[0-9:]*$');
-  static final _timespanRegex = RegExp(r'^(([0|1]\d)|(2[0-3])):[0-5]\d$');
+  static final _timespanRegex = RegExp(r'^(([01]\d)|(2[0-3])):[0-5]\d$');
 
   final TimeOfDay initialValue;
   final ValueChanged<TimeOfDay> onChanged;
