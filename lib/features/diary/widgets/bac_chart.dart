@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/bac/bac_calulation_results.dart';
+import '../../../domain/bac/bac_calculation_results.dart';
 import '../../../domain/date.dart';
 import '../../../infra/extensions/copy_date_time.dart';
 import '../../../infra/extensions/set_date.dart';
