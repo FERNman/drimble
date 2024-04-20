@@ -27,8 +27,8 @@ class BACEntry {
 }
 
 class BACCalculationResults {
-  static DateTime _findFirstSoberEntry(List<BACEntry> results) {
-    return results.reversed.takeWhile((entry) => entry.isSober).last.time;
+  static DateTime? _findFirstSoberEntry(List<BACEntry> results) {
+    return results.reversed.takeWhile((entry) => entry.isSober).lastOrNull?.time;
   }
 
   static DateTime? _findTimeOfFirstDrink(List<BACEntry> results) {
@@ -42,7 +42,7 @@ class BACCalculationResults {
 
   final List<BACEntry> _results;
   final DateTime? timeOfFirstDrink;
-  final DateTime soberAt;
+  final DateTime? soberAt;
   final BACEntry maxBAC;
 
   BACCalculationResults(this._results)

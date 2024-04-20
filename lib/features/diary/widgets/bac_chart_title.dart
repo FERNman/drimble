@@ -89,6 +89,10 @@ class BACChartTitle extends StatelessWidget {
     final now = DateTime.now();
     final soberAt = results.soberAt;
 
+    if (soberAt == null) {
+      return const SizedBox();
+    }
+
     if (soberAt.isAfter(now)) {
       if (soberAt.day > now.day) {
         return Text(context.l18n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);

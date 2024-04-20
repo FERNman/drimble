@@ -86,7 +86,7 @@ void main() {
     });
 
     group('soberAt', () {
-      test('should simply return the last entry if there is no sober entry', () {
+      test('should return null if there is no sober entry', () {
         final timestamp = DateTime(2022, 1, 1);
         final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
         final secondEntry = BACEntry(timestamp.copyWith(hour: 12), 0.5);
@@ -94,7 +94,7 @@ void main() {
         final results = BACCalculationResults([firstEntry, secondEntry]);
 
         final soberAt = results.soberAt;
-        expect(soberAt, secondEntry.time);
+        expect(soberAt, null);
       });
 
       test('should return the first sober result', () {
