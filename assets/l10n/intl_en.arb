@@ -74,7 +74,7 @@
       }
     }
   },
-  "diary_youreSober": "you''re sober! 🎉",
+  "diary_youreSober": "you're sober! 🎉",
   "diary_statisticsGramsOfAlcohol": "grams of alcohol",
   "diary_statisticsGramsOfAlcoholGuidelines": "Aim for less than 40 grams of alcohol in one session to stay healthy",
   "diary_statisticsDrinks": "{count, plural, zero{drinks} one{drink} other{drinks}}",
