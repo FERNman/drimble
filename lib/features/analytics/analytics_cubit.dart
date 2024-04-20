@@ -101,24 +101,20 @@ class AnalyticsCubit extends Cubit<AnalyticsCubitState> with Disposable {
     final diaryEntriesByDay = diaryEntries.groupFoldBy((el) => el.date, (_, el) => el);
     final gramsOfAlcoholByDay = _foldDrinksByDay(drinks);
 
-    final Map<Date, double?> results = {};
-
-    for (int i = 0; i < AnalyticsCubitState.daysInOneWeek; i++) {
-      final date = state.firstDayOfWeek.add(days: i);
+    return List.generate(AnalyticsCubitState.daysInOneWeek, (index) => state.firstDayOfWeek.add(days: index))
+        .groupFoldBy((date) => date, (_, date) {
       final diaryEntry = diaryEntriesByDay[date];
       if (diaryEntry == null) {
-        results[date] = null;
+        return null;
       } else if (diaryEntry.isDrinkFreeDay) {
-        results[date] = 0;
+        return 0;
       } else {
         // Technically, gramsOfAlcoholByDate[date] must not be null here. However, if the diary entries stream emits
         // before the alcohol stream, we might be in an invalid state (and gramsOfAlcoholByDate[date] == null).
         // Since this doesn't really matter because it will be "fixed" immediately, we'll accept it for now.
-        results[date] = gramsOfAlcoholByDay[date] ?? 0.0;
+        return gramsOfAlcoholByDay[date] ?? 0.0;
       }
-    }
-
-    return results;
+    });
   }
 
   Map<Date, double> _foldDrinksByDay(List<ConsumedDrink> drinks) {

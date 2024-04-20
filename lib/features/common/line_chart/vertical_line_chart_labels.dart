@@ -33,20 +33,18 @@ class VerticalLineChartLabels extends StatelessWidget {
   List<Widget> _rows(BuildContext context) {
     final bacFormatter = BacFormat();
 
-    return _values.map(
-      (e) {
-        return Row(
-          children: [
-            Text(
-              bacFormatter.format(e),
-              style: context.textTheme.labelSmall?.copyWith(color: Colors.black38),
-            ),
-            const SizedBox(width: 8),
-            Expanded(child: CustomPaint(size: const Size(double.infinity, 2), painter: _DashedLinePainter())),
-          ],
-        );
-      },
-    ).toList();
+    return _values
+        .map((e) => Row(
+              children: [
+                Text(
+                  bacFormatter.format(e),
+                  style: context.textTheme.labelSmall?.copyWith(color: Colors.black38),
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: CustomPaint(size: const Size(double.infinity, 2), painter: _DashedLinePainter())),
+              ],
+            ))
+        .toList();
   }
 }
 

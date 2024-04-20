@@ -5,8 +5,8 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../data/user_repository.dart';
+import '../../domain/bac/bac_calculation_results.dart';
 import '../../domain/bac/bac_calculator.dart';
-import '../../domain/bac/bac_calulation_results.dart';
 import '../../domain/date.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
