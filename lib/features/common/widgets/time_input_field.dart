@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import '../build_context_extensions.dart';
 
 class TimeInputField extends StatelessWidget {
-  static final _digitsAndColonRegex = RegExp(r'^[0-9:]*$');
-  static final _timespanRegex = RegExp(r'^(([01]\d)|(2[0-3])):[0-5]\d$');
+  static final _inputRegex = RegExp(r'^[0-9:\sAPM]*$', caseSensitive: false);
+  static final _timespanRegex = RegExp(
+      r'^\s*(?<hour>(?:[01]?\d)|(?:2[0-3])):(?<minute>[0-5]\d)(?:\s?(?<modifier>[AP]M))?\s*$',
+      caseSensitive: false);
 
   final TimeOfDay initialValue;
   final ValueChanged<TimeOfDay> onChanged;
@@ -22,9 +24,9 @@ class TimeInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue.format(context),
-      keyboardType: const TextInputType.numberWithOptions(decimal: false),
+      keyboardType: TextInputType.datetime,
       inputFormatters: [
-        FilteringTextInputFormatter.allow(_digitsAndColonRegex),
+        FilteringTextInputFormatter.allow(_inputRegex),
       ],
       validator: (value) => _timespanRegex.hasMatch(value!) ? null : context.l18n.common_invalidTimeFormat,
       decoration: decoration,
@@ -33,12 +35,22 @@ class TimeInputField extends StatelessWidget {
   }
 
   void _onChanged(String rawValue) {
-    if (_timespanRegex.hasMatch(rawValue)) {
-      final timeParts = rawValue.split(':');
-      final hours = int.parse(timeParts[0]);
-      final minutes = int.parse(timeParts[1]);
+    final match = _timespanRegex.firstMatch(rawValue);
+    if (match != null) {
+      final hour = match.namedGroup('hour');
+      final minute = match.namedGroup('minute');
+      final modifier = match.namedGroup('modifier');
 
-      onChanged(TimeOfDay(hour: hours, minute: minutes));
+      if (hour != null && minute != null) {
+        var hours = int.parse(hour);
+        final minutes = int.parse(minute);
+
+        if (modifier?.toLowerCase() == 'pm') {
+          hours += 12;
+        }
+
+        onChanged(TimeOfDay(hour: hours, minute: minutes));
+      }
     }
   }
 }
