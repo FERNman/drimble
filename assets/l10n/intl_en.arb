@@ -65,6 +65,19 @@
       }
     }
   },
+  "diary_soberInFuture": "sober on {date} at {time}",
+  "@diary_soberInFuture": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "Md"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
   "diary_soberTomorrowAt": "sober tomorrow at {time}",
   "@diary_soberTomorrowAt": {
     "placeholders": {

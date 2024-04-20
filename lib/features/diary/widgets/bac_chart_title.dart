@@ -86,15 +86,24 @@ class BACChartTitle extends StatelessWidget {
   }
 
   Widget _buildSobrietyText(BuildContext context) {
-    final now = DateTime.now();
     final soberAt = results.soberAt;
 
     if (soberAt == null) {
       return const SizedBox();
     }
 
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+
     if (soberAt.isAfter(now)) {
-      if (soberAt.day > now.day) {
+      final soberAtDay = DateTime(soberAt.year, soberAt.month, soberAt.day);
+      final isTomorrow = soberAtDay.isAtSameMomentAs(tomorrow);
+      final isInFuture = soberAtDay.isAfter(tomorrow);
+
+      if (isInFuture) {
+        return Text(context.l18n.diary_soberInFuture(soberAt, soberAt), style: context.textTheme.bodyMedium);
+      } else if (isTomorrow) {
         return Text(context.l18n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);
       } else {
         return Text(context.l18n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
