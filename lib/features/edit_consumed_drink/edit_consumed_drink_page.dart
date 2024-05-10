@@ -73,7 +73,7 @@ class EditConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper 
 
   Widget _buildFAB(BuildContext context) {
     return FloatingActionButton.extended(
-      label: Text(context.l18n.edit_drink_done),
+      label: Text(context.l10n.edit_drink_done),
       icon: const Icon(Icons.done),
       onPressed: () {
         if (_formKey.currentState!.validate()) {

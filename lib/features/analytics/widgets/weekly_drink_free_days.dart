@@ -72,7 +72,7 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
       padding: const EdgeInsets.only(top: 12),
       child: TextButton(
         onPressed: onTap,
-        child: Text(context.l18n.analytics_setAGoal),
+        child: Text(context.l10n.analytics_setAGoal),
       ),
     );
   }
@@ -86,7 +86,7 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
             text: '$_drinkFreeDayCount ',
             style: TextStyle(fontSize: 18, color: context.colorScheme.primary).forNumbers(),
           ),
-          TextSpan(text: context.l18n.analytics_drinkFreeDays(_drinkFreeDayCount)),
+          TextSpan(text: context.l10n.analytics_drinkFreeDays(_drinkFreeDayCount)),
         ],
       ),
     );
@@ -94,19 +94,19 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
 
   Widget _buildGoalText(BuildContext context) {
     if (goals.weeklyDrinkFreeDays == null) {
-      return Text(context.l18n.analytics_maybeTrySettingAGoal, style: context.textTheme.bodySmall);
+      return Text(context.l10n.analytics_maybeTrySettingAGoal, style: context.textTheme.bodySmall);
     }
 
     final remainingDrinkFreeDaysToGoal = goals.weeklyDrinkFreeDays! - _drinkFreeDayCount;
     if (remainingDrinkFreeDaysToGoal <= 0) {
-      return Text(context.l18n.analytics_drinkFreeDaysGoalHit, style: context.textTheme.bodySmall);
+      return Text(context.l10n.analytics_drinkFreeDaysGoalHit, style: context.textTheme.bodySmall);
     } else {
       return RichText(
         text: TextSpan(
           style: context.textTheme.bodySmall,
           children: [
             TextSpan(text: '$remainingDrinkFreeDaysToGoal ', style: NumberTextStyle.style),
-            TextSpan(text: context.l18n.analytics_remainingDrinkFreeDaysToGoal)
+            TextSpan(text: context.l10n.analytics_remainingDrinkFreeDaysToGoal)
           ],
         ),
       );

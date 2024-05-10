@@ -29,14 +29,14 @@ class EditConsumedDrinkTitle extends StatelessWidget {
                 text: TextSpan(
                   style: context.textTheme.bodyMedium,
                   children: [
-                    TextSpan(text: context.l18n.edit_drink_youreAboutToConsume),
+                    TextSpan(text: context.l10n.edit_drink_youreAboutToConsume),
                     const TextSpan(text: ' '),
                     TextSpan(
-                      text: context.l18n.edit_drink_youreAboutToConsumeGrams(gramsOfAlcohol.round()),
+                      text: context.l10n.edit_drink_youreAboutToConsumeGrams(gramsOfAlcohol.round()),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(text: ' '),
-                    TextSpan(text: context.l18n.edit_drink_youreAboutToConsumeOfAlcohol),
+                    TextSpan(text: context.l10n.edit_drink_youreAboutToConsumeOfAlcohol),
                   ],
                 ),
               ),

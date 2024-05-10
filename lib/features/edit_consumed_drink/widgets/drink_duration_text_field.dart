@@ -19,12 +19,12 @@ class DrinkDurationTextField extends StatelessWidget {
       initialValue: '${value.inMinutes}',
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      validator: (value) => value != null && _isValid(value) ? null : context.l18n.edit_drink_invalidDuration,
+      validator: (value) => value != null && _isValid(value) ? null : context.l10n.edit_drink_invalidDuration,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.hourglass_empty_outlined),
-        labelText: context.l18n.edit_drink_duration,
-        suffixText: context.l18n.edit_drink_minutes,
+        labelText: context.l10n.edit_drink_duration,
+        suffixText: context.l10n.edit_drink_minutes,
       ),
       onChanged: _onChanged,
     );

@@ -28,7 +28,7 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: Text(context.l18n.todays_drinks_history),
+        title: Text(context.l10n.todays_drinks_history),
       ),
       body: BlocBuilder<TodaysDrinksCubit, TodaysDrinksCubitState>(
         builder: (context, state) {

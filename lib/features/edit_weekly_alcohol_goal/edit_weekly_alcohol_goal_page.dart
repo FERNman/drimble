@@ -19,8 +19,8 @@ class EditWeeklyAlcoholGoalPage extends StatelessWidget implements AutoRouteWrap
           initialGoals: const UserGoals(weeklyGramsOfAlcohol: EditWeeklyGoalState.defaultWeeklyGramsOfAlcohol),
         ),
         child: EditWeeklyGoal(
-          title: Text(context.l18n.editWeeklyAlcoholGoal_title),
-          description: Text(context.l18n.editWeeklyAlcoholGoal_description),
+          title: Text(context.l10n.editWeeklyAlcoholGoal_title),
+          description: Text(context.l10n.editWeeklyAlcoholGoal_description),
           body: this,
         ),
       );

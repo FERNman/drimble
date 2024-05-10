@@ -15,7 +15,7 @@ import 'data/drinks_repository.dart';
 import 'data/user_repository.dart';
 import 'features/diary/diary_guard.dart';
 import 'firebase_options.dart';
-import 'infra/l18n/l10n.dart';
+import 'infra/l10n/l10n.dart';
 import 'router.dart';
 
 void main() async {

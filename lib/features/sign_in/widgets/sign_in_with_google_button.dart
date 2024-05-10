@@ -12,7 +12,7 @@ class SignInWithGoogleButton extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: const Icon(Icons.login),
-      label: Text(context.l18n.sign_in_signInWithGoogle),
+      label: Text(context.l10n.sign_in_signInWithGoogle),
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 48),
       ),

@@ -54,7 +54,7 @@ class SearchDrinkPage extends StatelessWidget implements AutoRouteWrapper {
           Text('🙁', style: context.textTheme.displayMedium),
           const SizedBox(height: 24),
           Text(
-            context.l18n.search_drink_noResults,
+            context.l10n.search_drink_noResults,
             textAlign: TextAlign.center,
             style: context.textTheme.bodyLarge,
           ),

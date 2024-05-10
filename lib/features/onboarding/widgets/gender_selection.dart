@@ -33,7 +33,7 @@ class _GenderSelectionState extends State<GenderSelection> {
               children: [
                 const Image(image: AssetImage('assets/images/male.png')),
                 const SizedBox(height: 12),
-                Text(context.l18n.common_genderMale, style: context.textTheme.titleMedium),
+                Text(context.l10n.common_genderMale, style: context.textTheme.titleMedium),
               ],
             ),
           ),
@@ -47,7 +47,7 @@ class _GenderSelectionState extends State<GenderSelection> {
               children: [
                 const Image(image: AssetImage('assets/images/female.png')),
                 const SizedBox(height: 12),
-                Text(context.l18n.common_genderFemale, style: context.textTheme.titleMedium),
+                Text(context.l10n.common_genderFemale, style: context.textTheme.titleMedium),
               ],
             ),
           ),

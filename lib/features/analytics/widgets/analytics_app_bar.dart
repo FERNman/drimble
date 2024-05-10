@@ -28,7 +28,7 @@ class AnalyticsAppBar extends StatelessWidget {
         onPressed: onClose,
       ),
       title: Text(
-        context.l18n.analytics_title,
+        context.l10n.analytics_title,
         style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.75),
       ),
       centerTitle: false,
@@ -50,7 +50,7 @@ class AnalyticsAppBar extends StatelessWidget {
     final firstDayOflastWeek = firstDayOfThisWeek.subtract(days: 7);
 
     if (firstDayOfWeek == firstDayOfThisWeek) {
-      return context.l18n.analytics_date_thisWeek;
+      return context.l10n.analytics_date_thisWeek;
     } else if (firstDayOfWeek == firstDayOflastWeek) {
       return 'Last week';
     } else {

@@ -43,14 +43,14 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       leading: const BackButton(),
-      title: Text(context.l18n.profile_title),
+      title: Text(context.l10n.profile_title),
       actions: [
         TextButton(
           onPressed: () => showDialog(
             context: context,
             builder: (dialogContext) => _buildSignOutDialog(dialogContext, context),
           ),
-          child: Text(context.l18n.profile_signOut),
+          child: Text(context.l10n.profile_signOut),
         ),
         const SizedBox(width: 8),
       ],
@@ -74,7 +74,7 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
         const SizedBox(height: 16),
         Text.rich(
           TextSpan(
-            text: context.l18n.profile_howIsTheBacEstimated,
+            text: context.l10n.profile_howIsTheBacEstimated,
             recognizer: TapGestureRecognizer()..onTap = () => context.router.push(const FAQRoute()),
           ),
           style: context.textTheme.labelSmall?.copyWith(color: Colors.blue),
@@ -85,12 +85,12 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildSignOutDialog(BuildContext context, BuildContext parentContext) {
     return AlertDialog(
-      title: Text(context.l18n.profile_signOutDialog_title),
-      content: Text(context.l18n.profile_signOutDialog_content),
+      title: Text(context.l10n.profile_signOutDialog_title),
+      content: Text(context.l10n.profile_signOutDialog_content),
       actions: [
         TextButton(
           onPressed: () => context.router.pop(),
-          child: Text(context.l18n.profile_signOutDialog_cancel),
+          child: Text(context.l10n.profile_signOutDialog_cancel),
         ),
         TextButton(
           onPressed: () async {
@@ -98,7 +98,7 @@ class ProfilePage extends StatelessWidget implements AutoRouteWrapper {
               parentContext.router.replaceAll([const SignInRoute()]);
             });
           },
-          child: Text(context.l18n.profile_signOutDialog_confirm),
+          child: Text(context.l10n.profile_signOutDialog_confirm),
         ),
       ],
     );

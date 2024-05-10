@@ -17,14 +17,14 @@ class OnboardingSelectWeightPage extends StatelessWidget {
     return Scaffold(
       appBar: OnboardingAppBar(
         stepNumber: 5,
-        title: context.l18n.onboarding_weightSelectionTitle,
+        title: context.l10n.onboarding_weightSelectionTitle,
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Text(context.l18n.onboarding_weightSelectionDescription),
+              Text(context.l10n.onboarding_weightSelectionDescription),
               const SizedBox(height: 24),
               BlocBuilder<OnboardingCubit, OnboardingCubitState>(
                 builder: (context, state) => NumberPicker(
@@ -44,7 +44,7 @@ class OnboardingSelectWeightPage extends StatelessWidget {
               Center(
                 child: OutlinedButton(
                   onPressed: () => context.router.push(const OnboardingSelectBodyCompositionRoute()),
-                  child: Text(context.l18n.common_continue),
+                  child: Text(context.l10n.common_continue),
                 ),
               )
             ],

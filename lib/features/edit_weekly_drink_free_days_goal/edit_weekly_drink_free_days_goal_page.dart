@@ -19,8 +19,8 @@ class EditWeeklyDrinkFreeDaysGoalPage extends StatelessWidget implements AutoRou
           initialGoals: const UserGoals(weeklyDrinkFreeDays: EditWeeklyGoalState.defaultWeeklyDrinkFreeDays),
         ),
         child: EditWeeklyGoal(
-          title: Text(context.l18n.editWeeklyDrinkFreeDaysGoal_title),
-          description: Text(context.l18n.editWeeklyDrinkFreeDaysGoal_description),
+          title: Text(context.l10n.editWeeklyDrinkFreeDaysGoal_title),
+          description: Text(context.l10n.editWeeklyDrinkFreeDaysGoal_description),
           body: this,
         ),
       );

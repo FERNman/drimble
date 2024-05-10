@@ -32,8 +32,8 @@ class WeeklyStatistics extends StatelessWidget {
         child: _buildSmallStatistic(
           context,
           number: numberOfDrinks,
-          unit: context.l18n.diary_statisticsDrinks(numberOfDrinks),
-          description: context.l18n.analytics_drinksThisWeek,
+          unit: context.l10n.diary_statisticsDrinks(numberOfDrinks),
+          description: context.l10n.analytics_drinksThisWeek,
         ),
       ),
     );
@@ -46,8 +46,8 @@ class WeeklyStatistics extends StatelessWidget {
         child: _buildSmallStatistic(
           context,
           number: calories,
-          unit: context.l18n.diary_statisticsCalories,
-          description: context.l18n.diary_statisticsFromAlcohol,
+          unit: context.l10n.diary_statisticsCalories,
+          description: context.l10n.diary_statisticsFromAlcohol,
         ),
       ),
     );
