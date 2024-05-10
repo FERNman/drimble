@@ -20,7 +20,7 @@ class CommonDrinks extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.l18n.add_drink_common, style: context.textTheme.titleMedium),
+          Text(context.l10n.add_drink_common, style: context.textTheme.titleMedium),
           const SizedBox(height: 8),
           GridView.count(
             crossAxisCount: 3,

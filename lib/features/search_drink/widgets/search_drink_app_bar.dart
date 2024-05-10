@@ -20,7 +20,7 @@ class SearchDrinkAppBar extends StatelessWidget implements PreferredSizeWidget {
           onChanged: onSearchChanged,
           decoration: InputDecoration(
             prefixIcon: const BackButton(),
-            hintText: context.l18n.search_drink_whatAreYouLookingFor,
+            hintText: context.l10n.search_drink_whatAreYouLookingFor,
           ),
         ),
       ),

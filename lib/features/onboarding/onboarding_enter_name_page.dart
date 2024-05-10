@@ -16,7 +16,7 @@ class OnboardingEnterNamePage extends StatelessWidget {
     return Scaffold(
       appBar: OnboardingAppBar(
         stepNumber: 1,
-        title: context.l18n.onboarding_firstNameTitle,
+        title: context.l10n.onboarding_firstNameTitle,
       ),
       body: SafeArea(
         child: Padding(
@@ -29,7 +29,7 @@ class OnboardingEnterNamePage extends StatelessWidget {
               Center(
                 child: OutlinedButton(
                   onPressed: () => context.router.push(const OnboardingSelectGenderRoute()),
-                  child: Text(context.l18n.common_continue),
+                  child: Text(context.l10n.common_continue),
                 ),
               )
             ],
@@ -46,7 +46,7 @@ class OnboardingEnterNamePage extends StatelessWidget {
         fillColor: context.colorScheme.surfaceVariant,
         enabledBorder: const UnderlineInputBorder(),
         focusedBorder: const UnderlineInputBorder(),
-        hintText: context.l18n.onboarding_firstNameHint,
+        hintText: context.l10n.onboarding_firstNameHint,
       ),
       textCapitalization: TextCapitalization.words,
       onChanged: (value) {

@@ -11,16 +11,16 @@ class RemoveDrinkDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(context.l18n.remove_drink_title),
-      content: Text(context.l18n.remove_drink_description),
+      title: Text(context.l10n.remove_drink_title),
+      content: Text(context.l10n.remove_drink_description),
       actions: [
         TextButton(
           onPressed: onCancel,
-          child: Text(context.l18n.remove_drink_cancel),
+          child: Text(context.l10n.remove_drink_cancel),
         ),
         TextButton(
           onPressed: onRemove,
-          child: Text(context.l18n.remove_drink_yes),
+          child: Text(context.l10n.remove_drink_yes),
         ),
       ],
     );

@@ -46,7 +46,7 @@ class AnalyticsSwitchWeekPage extends StatelessWidget implements AutoRouteWrappe
         icon: const Icon(Icons.close_outlined),
         onPressed: () => context.router.pop(null),
       ),
-      title: Text(context.l18n.analytics_switch_week_selectWeek),
+      title: Text(context.l10n.analytics_switch_week_selectWeek),
     );
   }
 
@@ -81,7 +81,7 @@ class AnalyticsSwitchWeekPage extends StatelessWidget implements AutoRouteWrappe
       buildWhen: (previous, current) => previous.selectedDate != current.selectedDate,
       builder: (context, state) => TextButton(
         onPressed: () => context.router.pop(state.selectedDate),
-        child: Text(context.l18n.analytics_switch_week_apply),
+        child: Text(context.l10n.analytics_switch_week_apply),
       ),
     );
   }

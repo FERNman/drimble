@@ -49,11 +49,11 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
               _buildAlcohol(context),
               const SizedBox(height: 4),
               Text(
-                context.l18n.analytics_gramsOfAlcohol,
+                context.l10n.analytics_gramsOfAlcohol,
                 style: context.textTheme.labelSmall?.copyWith(color: Colors.black54),
               ),
               const SizedBox(height: 12),
-              FilledButton(onPressed: onEdit, child: Text(context.l18n.analytics_setAGoal)),
+              FilledButton(onPressed: onEdit, child: Text(context.l10n.analytics_setAGoal)),
             ],
           ),
         ),
@@ -85,7 +85,7 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
               _buildAlcohol(context),
               const SizedBox(height: 4),
               Text(
-                context.l18n.analytics_gramsOfAlcohol,
+                context.l10n.analytics_gramsOfAlcohol,
                 style: context.textTheme.labelSmall?.copyWith(color: Colors.black54),
               ),
               const SizedBox(height: 12),
@@ -99,7 +99,7 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
         Positioned(
           bottom: 8,
           child: Text(
-            context.l18n.analytics_goalsWeeklyAlcoholRemaining(_remainingGramsOfAlcohol.round()),
+            context.l10n.analytics_goalsWeeklyAlcoholRemaining(_remainingGramsOfAlcohol.round()),
             style: context.textTheme.bodyMedium?.copyWith(color: const Color.fromARGB(180, 0, 0, 0)),
           ),
         ),
@@ -121,15 +121,15 @@ class WeeklyAlcoholConsumption extends StatelessWidget {
 
   String _getLimitText(BuildContext context, double remainingGramsOfAlcohol) {
     if (totalGramsOfAlcohol == 0) {
-      return context.l18n.analytics_noAlcoholConsumedYet;
+      return context.l10n.analytics_noAlcoholConsumedYet;
     }
 
     if (remainingGramsOfAlcohol <= 0) {
-      return context.l18n.analytics_alcoholConsumptionOverLimit;
+      return context.l10n.analytics_alcoholConsumptionOverLimit;
     } else if (remainingGramsOfAlcohol < 10) {
-      return context.l18n.analytics_alcoholConsumptionCloseToLimit;
+      return context.l10n.analytics_alcoholConsumptionCloseToLimit;
     } else {
-      return context.l18n.analytics_alcoholConsumptionWithinLimits;
+      return context.l10n.analytics_alcoholConsumptionWithinLimits;
     }
   }
 }

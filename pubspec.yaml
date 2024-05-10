@@ -41,7 +41,6 @@ dev_dependencies:
   json_serializable: ^6.7.1
 
 flutter:
-  generate: true
   uses-material-design: true
   assets:
     - assets/images/
@@ -52,4 +51,4 @@ flutter_intl:
   main_locale: en
   arb_dir: assets/l10n
   class_name: AppLocalizations
-  output_dir: lib/infra/l18n
+  output_dir: lib/infra/l10n

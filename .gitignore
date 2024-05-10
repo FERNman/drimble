@@ -39,8 +39,8 @@ migrate_working_dir/
 coverage/
 
 # Localization related
-**/l18n/l10n.dart
-**/l18n/intl/*
+**/l10n/l10n.dart
+**/l10n/intl/*
 
 # Web related
 lib/generated_plugin_registrant.dart

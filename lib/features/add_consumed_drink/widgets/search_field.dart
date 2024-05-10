@@ -18,7 +18,7 @@ class SearchField extends StatelessWidget {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         focusedBorder: const OutlineInputBorder(),
-        hintText: context.l18n.add_drink_search,
+        hintText: context.l10n.add_drink_search,
         suffixIcon: const Icon(Icons.search),
       ),
     );

@@ -11,4 +11,4 @@ analyzer:
   exclude:
     - lib/**/*.g.dart
     - lib/**/*.gr.dart
-    - lib/infra/l18n/intl/*.dart
+    - lib/infra/l10n/intl/*.dart

@@ -50,7 +50,7 @@ class AddConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
   ExtendedAppBar _buildAppBar(BuildContext context) {
     return ExtendedAppBar.medium(
       leading: const CloseButton(),
-      title: Text(context.l18n.add_drink_addADrink),
+      title: Text(context.l10n.add_drink_addADrink),
     );
   }
 

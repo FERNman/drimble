@@ -34,7 +34,7 @@ class SignInPage extends StatelessWidget implements AutoRouteWrapper {
                   children: [
                     const Spacer(),
                     Text(
-                      context.l18n.sign_in_welcomeToDrimble,
+                      context.l10n.sign_in_welcomeToDrimble,
                       style: context.textTheme.headlineLarge,
                     ),
                     const SizedBox(height: 24),
@@ -57,7 +57,7 @@ class SignInPage extends StatelessWidget implements AutoRouteWrapper {
   Widget _buildSkipSignInButton(BuildContext context) {
     return Center(
       child: TextButton(
-        child: Text(context.l18n.sign_in_continueWithoutSigningIn),
+        child: Text(context.l10n.sign_in_continueWithoutSigningIn),
         onPressed: () async {
           await context.read<SignInCubit>().signInAnonymously().then((value) {
             context.router.push(const OnboardingRoute());

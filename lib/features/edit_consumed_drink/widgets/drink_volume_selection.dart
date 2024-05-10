@@ -35,7 +35,7 @@ class _DrinkVolumeSelectionState extends State<DrinkVolumeSelection> {
     if (customAmount > 0) {
       return null;
     } else {
-      return context.l18n.edit_drink_invalidAmount;
+      return context.l10n.edit_drink_invalidAmount;
     }
   }
 
@@ -59,7 +59,7 @@ class _DrinkVolumeSelectionState extends State<DrinkVolumeSelection> {
       servingSelectionChoices.add(
         Expanded(
           child: InputChip(
-            label: SizedBox(width: double.infinity, child: Text(context.l18n.common_amountInMilliliters(serving))),
+            label: SizedBox(width: double.infinity, child: Text(context.l10n.common_amountInMilliliters(serving))),
             selected: !_isCustomAmount && _internalValue == serving,
             onSelected: (selected) => {_toggleChoiceChip(serving)},
           ),
@@ -122,9 +122,9 @@ class _DrinkVolumeSelectionState extends State<DrinkVolumeSelection> {
   }
 
   InputDecoration _getInputDecoration(BuildContext context) {
-    final inputDecoration = InputDecoration.collapsed(hintText: context.l18n.edit_drink_enterAmount);
+    final inputDecoration = InputDecoration.collapsed(hintText: context.l10n.edit_drink_enterAmount);
     if (_customAmountTextController.text.isNotEmpty) {
-      return inputDecoration.copyWith(suffixText: context.l18n.common_milliliters);
+      return inputDecoration.copyWith(suffixText: context.l10n.common_milliliters);
     }
 
     return inputDecoration;
