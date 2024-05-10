@@ -39,7 +39,7 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   }
 
   Future<void> save() async {
-    await _diaryRepository.saveDrinkToDiaryEntry(state.diaryEntry, state.consumedDrink);
+    await _diaryRepository.saveDrinkForDiaryEntry(state.diaryEntry, state.consumedDrink);
   }
 
   DateTime _shiftDate(DateTime newTime, DateTime previousTime) {

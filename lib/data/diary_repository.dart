@@ -62,7 +62,7 @@ class DiaryRepository {
     await _collection.doc(diaryEntry.id).delete();
   }
 
-  Future<void> saveDrinkToDiaryEntry(DiaryEntry diaryEntry, ConsumedDrink drink) async {
+  Future<void> saveDrinkForDiaryEntry(DiaryEntry diaryEntry, ConsumedDrink drink) async {
     final diaryRef = _collection.doc(diaryEntry.id);
     await diaryRef.set(diaryEntry);
     await diaryRef.drinks.doc(drink.id).set(drink);
