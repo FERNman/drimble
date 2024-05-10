@@ -50,7 +50,7 @@ class WeeklyAlcoholPerDayChart extends StatelessWidget {
               TextSpan(
                 children: [
                   _buildChangeIndicator(context),
-                  TextSpan(text: context.l18n.analytics_changeFromLastWeek),
+                  TextSpan(text: context.l10n.analytics_changeFromLastWeek),
                 ],
               ),
               style: context.textTheme.bodySmall,
@@ -77,7 +77,7 @@ class WeeklyAlcoholPerDayChart extends StatelessWidget {
         style: context.textTheme.bodyLarge,
         children: [
           TextSpan(text: '${averageThisWeek.round()}g ', style: NumberTextStyle.style),
-          TextSpan(text: context.l18n.analytics_averageAlcoholPerSession),
+          TextSpan(text: context.l10n.analytics_averageAlcoholPerSession),
         ],
       ),
     );

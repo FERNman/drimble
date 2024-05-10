@@ -12,7 +12,7 @@ class OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return ExtendedAppBar.large(
       leading: const BackButton(),
-      actions: [Text('$stepNumber/5')],
+      actions: [Text('$stepNumber/6')],
       title: Text(title),
     );
   }

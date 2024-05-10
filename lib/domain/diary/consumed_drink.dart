@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../alcohol/alcohol.dart';
 import '../alcohol/cocktail.dart';
 import '../alcohol/drink.dart';
+import '../alcohol/drink_category.dart';
 import '../date.dart';
 import 'consumed_cocktail.dart';
 
@@ -67,4 +70,32 @@ class ConsumedDrink extends Alcohol {
         startTime: startTime ?? this.startTime,
         duration: duration ?? this.duration,
       );
+
+  factory ConsumedDrink.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) =>
+      snapshot['type'] == 'cocktail'
+          ? ConsumedCocktail.fromFirestore(snapshot, options)
+          : ConsumedDrink(
+              id: snapshot.id,
+              name: snapshot['name'] as String,
+              iconPath: snapshot['iconPath'] as String,
+              category: DrinkCategory.values.firstWhere((el) => el.name == snapshot['category']),
+              volume: snapshot['volume'] as int,
+              alcoholByVolume: (snapshot['alcoholByVolume'] as num).toDouble(),
+              startTime: (snapshot['startTime'] as Timestamp).toDate(),
+              duration: Duration(microseconds: snapshot['duration'] as int),
+            );
+
+  Map<String, dynamic> toFirestore() => {
+        'name': name,
+        'iconPath': iconPath,
+        'category': category.name,
+        'volume': volume,
+        'alcoholByVolume': alcoholByVolume,
+        'startTime': startTime,
+        'duration': duration.inMicroseconds,
+        'type': 'drink', // Inheritance
+      };
 }

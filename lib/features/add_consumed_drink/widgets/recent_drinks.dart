@@ -20,7 +20,7 @@ class RecentDrinks extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-            child: Text(context.l18n.add_drink_recentlyAdded, style: context.textTheme.titleMedium),
+            child: Text(context.l10n.add_drink_recentlyAdded, style: context.textTheme.titleMedium),
           ),
           ListView.builder(
             shrinkWrap: true,

@@ -28,7 +28,7 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: Text(context.l18n.todays_drinks_history),
+        title: Text(context.l10n.todays_drinks_history),
       ),
       body: BlocBuilder<TodaysDrinksCubit, TodaysDrinksCubitState>(
         builder: (context, state) {
@@ -40,7 +40,8 @@ class TodaysDrinksPage extends StatelessWidget implements AutoRouteWrapper {
               return DrinkListItem(
                 drink,
                 onEdit: () {
-                  context.router.push(EditConsumedDrinkRoute(consumedDrink: drink));
+                  assert(state.diaryEntry != null);
+                  context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry!, consumedDrink: drink));
                 },
                 onDelete: () {
                   showDialog(

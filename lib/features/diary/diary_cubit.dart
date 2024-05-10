@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,21 +20,26 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
     _subscribeToRepository();
   }
 
-  void switchDate(Date date) async {
+  Future<void> switchDate(Date date) async {
     if (date != state.date) {
-      final drinks = _diaryRepository.findDrinksOnDate(date);
-      final diaryEntry = _diaryRepository.findEntryOnDate(date);
+      final diaryEntry = await _diaryRepository.findEntryOnDate(date);
 
-      emit(DiaryCubitState.initial(date: date, drinks: drinks, diaryEntry: diaryEntry));
+      emit(DiaryCubitState.initial(date: date, diaryEntry: diaryEntry));
     }
   }
 
-  void markAsDrinkFreeDay() {
-    _diaryRepository.markAsDrinkFree(state.date);
+  Future<void> markAsDrinkFreeDay() async {
+    if (state.diaryEntry != null) {
+      await _diaryRepository.deleteDrinksForDiaryEntry(state.diaryEntry!);
+    } else {
+      final diaryEntry = DiaryEntry(date: state.date);
+      await _diaryRepository.saveDiaryEntry(diaryEntry);
+    }
   }
 
-  void deleteDrink(ConsumedDrink drink) {
-    _diaryRepository.removeDrink(drink);
+  Future<void> deleteDrink(ConsumedDrink drink) async {
+    assert(state.diaryEntry != null);
+    await _diaryRepository.removeDrinkFromDiaryEntry(state.diaryEntry!, drink);
   }
 
   void _subscribeToRepository() {
@@ -45,36 +49,26 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
         .flatMap((date) => _diaryRepository.observeEntryOnDate(date))
         .listen((item) => emit(state.updateDiaryEntry(item))));
 
-    addSubscription(dateChangedStream
-        .flatMap((date) => _diaryRepository.observeDrinksOnDate(date))
-        .listen((drinks) => emit(state.updateDrinks(drinks))));
-
-    addSubscription(dateChangedStream
-        .flatMap((date) => _diaryRepository.observeDrinksBetweenDays(
-              date.subtract(days: 1),
-              date.add(days: 1),
-            ))
-        .listen(_calculateBAC));
+    addSubscription(stream.map((event) => event.diaryEntry).distinct().listen((diaryEntry) async {
+      if (diaryEntry == null || diaryEntry.isDrinkFreeDay == true) {
+        emit(state.updateBAC(BACCalculationResults.empty(
+          startTime: state.date.toDateTime(),
+          endTime: state.date.add(days: 1).toDateTime(),
+          timestep: const Duration(minutes: 10),
+        )));
+      } else {
+        final results = await _calculateBAC(state.diaryEntry!);
+        emit(state.updateBAC(results));
+      }
+    }));
   }
 
-  void _calculateBAC(List<ConsumedDrink> drinks) async {
-    final user = await _userRepository.user;
-    if (user == null) {
-      return;
-    }
+  Future<BACCalculationResults> _calculateBAC(DiaryEntry diaryEntry) async {
+    final user = await _userRepository.loadUser();
 
-    // TODO: Move stomach fullness to diary entry
-    final calculator = BACCalculator(user, StomachFullness.normal);
-    if (drinks.isEmpty) {
-      emit(state.updateBAC(BACCalculationResults.empty(
-        startTime: state.date.toDateTime(),
-        endTime: state.date.add(days: 1).toDateTime(),
-        timestep: const Duration(minutes: 10),
-      )));
-    } else {
-      final results = await compute(calculator.calculate, drinks);
-      emit(state.updateBAC(results));
-    }
+    // TODO: Integrate stomach fullness in diary entry
+    final calculator = BACCalculator(user!, StomachFullness.normal);
+    return compute(calculator.calculate, diaryEntry.drinks);
   }
 }
 
@@ -90,41 +84,34 @@ class DiaryCubitState {
   DiaryCubitState({
     required this.date,
     required this.diaryEntry,
-    required this.drinks,
     required this.calculationResults,
-  })  : gramsOfAlcohol = drinks.map((drink) => drink.gramsOfAlcohol).sum,
-        calories = drinks.map((drink) => drink.calories).sum;
+  })  : gramsOfAlcohol = diaryEntry?.gramsOfAlcohol ?? 0,
+        calories = diaryEntry?.calories ?? 0,
+        drinks = diaryEntry?.drinks ?? [];
 
   DiaryCubitState.initial({
     required this.date,
     this.diaryEntry,
-    this.drinks = const [],
   })  : calculationResults = BACCalculationResults.empty(
           startTime: date.toDateTime(),
           endTime: date.add(days: 1).toDateTime(),
           timestep: const Duration(minutes: 10),
         ),
         gramsOfAlcohol = 0,
-        calories = 0;
+        calories = 0,
+        drinks = diaryEntry?.drinks ?? [];
 
   DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(
         date: date,
         diaryEntry: diaryEntry,
-        drinks: drinks,
-        calculationResults: calculationResults,
-      );
-
-  DiaryCubitState updateDrinks(List<ConsumedDrink> drinks) => DiaryCubitState(
-        date: date,
-        diaryEntry: diaryEntry,
-        drinks: drinks,
         calculationResults: calculationResults,
       );
 
   DiaryCubitState updateBAC(BACCalculationResults calculationResults) => DiaryCubitState(
         date: date,
         diaryEntry: diaryEntry,
-        drinks: drinks,
         calculationResults: calculationResults,
       );
+
+  DiaryEntry getOrCreateDiaryEntry() => diaryEntry ?? DiaryEntry(date: date);
 }

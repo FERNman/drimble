@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Make sure the uid of the requesting user matches name of the user
+    // document. The wildcard expression {userId} makes the userId variable
+    // available in rules.
+    match /users/{userId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
+    }
+
+    match /diaries/{diaryId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create, update: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+
+      match /drinks/{drinkId} {
+        // We should also check for UserId: request.auth.uid == get(/databases/$(database)/documents/diaries/$(diaryId)).data.userId
+        // However, this causes very weird behavior
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}

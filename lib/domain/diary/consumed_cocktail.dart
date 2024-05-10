@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 
 import '../alcohol/alcohol.dart';
@@ -43,4 +44,31 @@ class ConsumedCocktail extends ConsumedDrink {
         startTime: startTime ?? this.startTime,
         duration: duration ?? this.duration,
       );
+
+  factory ConsumedCocktail.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) =>
+      ConsumedCocktail(
+        id: snapshot.id,
+        name: snapshot['name'] as String,
+        iconPath: snapshot['iconPath'] as String,
+        volume: snapshot['volume'] as int,
+        ingredients: (snapshot['ingredients'] as List).map((e) => Ingredient.fromFirestore(e)).toList(),
+        startTime: (snapshot['startTime'] as Timestamp).toDate(),
+        duration: Duration(milliseconds: snapshot['duration'] as int),
+      );
+
+  @override
+  Map<String, dynamic> toFirestore() => {
+        'name': name,
+        'iconPath': iconPath,
+        'category': category.toString(),
+        'volume': volume,
+        'alcoholByVolume': alcoholByVolume,
+        'startTime': startTime,
+        'duration': duration.inMilliseconds,
+        'ingredients': ingredients.map((e) => e.toFirestore()).toList(),
+        'type': 'cocktail', // Inheritance
+      };
 }

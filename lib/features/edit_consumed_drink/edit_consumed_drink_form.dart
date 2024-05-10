@@ -22,13 +22,13 @@ class EditConsumedDrinkForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.l18n.edit_drink_amount, style: context.textTheme.titleMedium),
+          Text(context.l10n.edit_drink_amount, style: context.textTheme.titleMedium),
           const SizedBox(height: 8),
           _buildAmountSelection(),
           const SizedBox(height: 16),
           _buildAlcoholSelection(),
           const SizedBox(height: 16),
-          Text(context.l18n.edit_drink_timing, style: context.textTheme.titleMedium),
+          Text(context.l10n.edit_drink_timing, style: context.textTheme.titleMedium),
           const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,9 +63,9 @@ class EditConsumedDrinkForm extends StatelessWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(context.l18n.edit_drink_alcoholicIngredients, style: context.textTheme.titleMedium),
+                Text(context.l10n.edit_drink_alcoholicIngredients, style: context.textTheme.titleMedium),
                 const SizedBox(height: 2),
-                Text(context.l18n.edit_drink_spiritsLiquors, style: context.textTheme.bodySmall),
+                Text(context.l10n.edit_drink_spiritsLiquors, style: context.textTheme.bodySmall),
                 const SizedBox(height: 12),
                 CocktailIngredients(
                   (state.consumedDrink as ConsumedCocktail),
@@ -76,7 +76,7 @@ class EditConsumedDrinkForm extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(context.l18n.edit_drink_strength, style: context.textTheme.titleMedium),
+                Text(context.l10n.edit_drink_strength, style: context.textTheme.titleMedium),
                 const SizedBox(height: 8),
                 DrinkABVTextField(
                   value: state.consumedDrink.alcoholByVolume,

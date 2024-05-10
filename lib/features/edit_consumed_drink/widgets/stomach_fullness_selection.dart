@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/diary/stomach_fullness.dart';
-import '../../../infra/l18n/stomach_fullness_translations.dart';
+import '../../../infra/l10n/stomach_fullness_translations.dart';
 
 class StomachFullnessSelection extends StatelessWidget {
   final StomachFullness value;

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/date.dart';
-import '../../../domain/user/goals.dart';
+import '../../../domain/user/user_goals.dart';
 import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/number_text_style.dart';
 
 class WeeklyDrinkFreeDays extends StatelessWidget {
   final Map<Date, bool?> drinkFreeDays;
-  final Goals goals;
+  final UserGoals goals;
   final GestureTapCallback onTap;
 
   final int _drinkFreeDayCount;
@@ -72,7 +72,7 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
       padding: const EdgeInsets.only(top: 12),
       child: TextButton(
         onPressed: onTap,
-        child: Text(context.l18n.analytics_setAGoal),
+        child: Text(context.l10n.analytics_setAGoal),
       ),
     );
   }
@@ -86,7 +86,7 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
             text: '$_drinkFreeDayCount ',
             style: TextStyle(fontSize: 18, color: context.colorScheme.primary).forNumbers(),
           ),
-          TextSpan(text: context.l18n.analytics_drinkFreeDays(_drinkFreeDayCount)),
+          TextSpan(text: context.l10n.analytics_drinkFreeDays(_drinkFreeDayCount)),
         ],
       ),
     );
@@ -94,19 +94,19 @@ class WeeklyDrinkFreeDays extends StatelessWidget {
 
   Widget _buildGoalText(BuildContext context) {
     if (goals.weeklyDrinkFreeDays == null) {
-      return Text(context.l18n.analytics_maybeTrySettingAGoal, style: context.textTheme.bodySmall);
+      return Text(context.l10n.analytics_maybeTrySettingAGoal, style: context.textTheme.bodySmall);
     }
 
     final remainingDrinkFreeDaysToGoal = goals.weeklyDrinkFreeDays! - _drinkFreeDayCount;
     if (remainingDrinkFreeDaysToGoal <= 0) {
-      return Text(context.l18n.analytics_drinkFreeDaysGoalHit, style: context.textTheme.bodySmall);
+      return Text(context.l10n.analytics_drinkFreeDaysGoalHit, style: context.textTheme.bodySmall);
     } else {
       return RichText(
         text: TextSpan(
           style: context.textTheme.bodySmall,
           children: [
             TextSpan(text: '$remainingDrinkFreeDaysToGoal ', style: NumberTextStyle.style),
-            TextSpan(text: context.l18n.analytics_remainingDrinkFreeDaysToGoal)
+            TextSpan(text: context.l10n.analytics_remainingDrinkFreeDaysToGoal)
           ],
         ),
       );

@@ -16,14 +16,14 @@ class OnboardingSelectGenderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OnboardingAppBar(
-        stepNumber: 1,
-        title: context.l18n.onboarding_genderSelectionTitle,
+        stepNumber: 2,
+        title: context.l10n.onboarding_genderSelectionTitle,
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(children: [
-            Text(context.l18n.onboarding_genderSelectionDescription, style: context.textTheme.bodyMedium),
+            Text(context.l10n.onboarding_genderSelectionDescription, style: context.textTheme.bodyMedium),
             const SizedBox(height: 24),
             BlocBuilder<OnboardingCubit, OnboardingCubitState>(
               builder: (context, state) => GenderSelection(
@@ -38,7 +38,7 @@ class OnboardingSelectGenderPage extends StatelessWidget {
             Center(
               child: OutlinedButton(
                 onPressed: () => context.router.push(const OnboardingSelectBirthyearRoute()),
-                child: Text(context.l18n.common_continue),
+                child: Text(context.l10n.common_continue),
               ),
             )
           ]),

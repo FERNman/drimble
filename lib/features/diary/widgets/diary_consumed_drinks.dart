@@ -31,7 +31,7 @@ class DiaryConsumedDrinks extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
-          child: Text(context.l18n.diary_consumedDrinksTitle, style: context.textTheme.titleSmall),
+          child: Text(context.l10n.diary_consumedDrinksTitle, style: context.textTheme.titleSmall),
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -73,8 +73,8 @@ class _ViewAllRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('+$remainingItemCount ${context.l18n.diary_consumedDrinksMore}', style: context.textTheme.bodyMedium),
-          TextButton(onPressed: onTap, child: Text(context.l18n.diary_consumedDrinksSeeAll)),
+          Text('+$remainingItemCount ${context.l10n.diary_consumedDrinksMore}', style: context.textTheme.bodyMedium),
+          TextButton(onPressed: onTap, child: Text(context.l10n.diary_consumedDrinksSeeAll)),
         ],
       ),
     );

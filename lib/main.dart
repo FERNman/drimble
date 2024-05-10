@@ -1,30 +1,32 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'data/daos/consumed_drinks_dao.dart';
-import 'data/daos/diary_dao.dart';
-import 'data/database_provider.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
-import 'data/models/consumed_drink_model.dart';
-import 'data/models/diary_entry_model.dart';
-import 'data/models/ingredient_model.dart';
 import 'data/user_repository.dart';
 import 'features/diary/diary_guard.dart';
 import 'firebase_options.dart';
-import 'infra/l18n/l10n.dart';
+import 'infra/l10n/l10n.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  if (kDebugMode) {
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+  }
 
   runApp(const DrimbleApp());
 }
@@ -71,16 +73,9 @@ class _DrimbleAppState extends State<DrimbleApp> {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => DatabaseProvider([
-            IngredientModel.schema,
-            ConsumedDrinkModel.schema,
-            DiaryEntryModel.schema,
-          ]),
-        ),
-        RepositoryProvider(create: (context) => ConsumedDrinksDAO(context.read())),
-        RepositoryProvider(create: (context) => DiaryDAO(context.read())),
-        RepositoryProvider(create: (context) => UserRepository(context.read())),
+        RepositoryProvider.value(value: FirebaseAuth.instance),
+        RepositoryProvider.value(value: FirebaseFirestore.instance),
+        RepositoryProvider(create: (context) => UserRepository(context.read(), context.read())),
         RepositoryProvider(create: (context) => DrinksRepository()),
         RepositoryProvider(create: (context) => DiaryRepository(context.read(), context.read())),
       ],

@@ -29,11 +29,11 @@ class ProfileCubit extends Cubit<BaseProfileCubitState> with Disposable {
           bodyComposition: value.bodyComposition,
         );
 
-    await _userRepository.signInOffline(user);
+    await _userRepository.update(user);
   }
 
-  void signOut() {
-    _userRepository.signOut();
+  Future<void> signOut() async {
+    await _userRepository.signOut();
   }
 }
 

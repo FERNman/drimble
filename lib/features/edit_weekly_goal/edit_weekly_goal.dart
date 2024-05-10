@@ -31,10 +31,9 @@ class EditWeeklyGoal extends StatelessWidget {
             body,
             const Spacer(),
             FilledButton(
-              child: Text(context.l18n.editWeeklyGoal_setGoal),
+              child: Text(context.l10n.editWeeklyGoal_setGoal),
               onPressed: () {
-                context.read<EditWeeklyGoalCubit>().saveGoals();
-                context.router.pop();
+                context.read<EditWeeklyGoalCubit>().saveGoals().then((v) => context.router.pop());
               },
             ),
             const SizedBox(height: 24),

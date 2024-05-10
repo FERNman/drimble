@@ -44,7 +44,7 @@ class CocktailIngredients extends StatelessWidget {
           ),
         ),
         Text(
-          context.l18n.common_amountInMilliliters(ingredient.actualVolume(_cocktail.volume)),
+          context.l10n.common_amountInMilliliters(ingredient.actualVolume(_cocktail.volume)),
           style: context.textTheme.labelLarge,
         ),
       ],

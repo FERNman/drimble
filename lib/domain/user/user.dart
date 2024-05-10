@@ -1,9 +1,15 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'body_composition.dart';
 import 'gender.dart';
-import 'goals.dart';
+import 'user_goals.dart';
 
+part 'user.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class User {
   final String name;
+
   final Gender gender;
   final int age;
 
@@ -14,7 +20,7 @@ class User {
   final int weight;
   final BodyComposition bodyComposition;
 
-  final Goals goals;
+  final UserGoals goals;
 
   User({
     required this.name,
@@ -23,7 +29,7 @@ class User {
     required this.height,
     required this.weight,
     required this.bodyComposition,
-    this.goals = const Goals(),
+    this.goals = const UserGoals(),
   });
 
   User copyWith({
@@ -31,7 +37,7 @@ class User {
     int? height,
     int? weight,
     BodyComposition? bodyComposition,
-    Goals? goals,
+    UserGoals? goals,
   }) =>
       User(
         name: name,
@@ -42,4 +48,8 @@ class User {
         bodyComposition: bodyComposition ?? this.bodyComposition,
         goals: goals ?? this.goals,
       );
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

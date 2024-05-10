@@ -71,6 +71,7 @@ class _BACChartState extends State<BACChart> {
   @override
   void dispose() {
     refreshTimer?.cancel();
+    refreshTimer = null;
 
     super.dispose();
   }
@@ -92,7 +93,7 @@ class _BACChartState extends State<BACChart> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            context.l18n.diary_bacChartDisclaimer,
+            context.l10n.diary_bacChartDisclaimer,
             style: context.textTheme.bodySmall?.copyWith(fontSize: 10, color: Colors.black54),
             textAlign: TextAlign.center,
           ),

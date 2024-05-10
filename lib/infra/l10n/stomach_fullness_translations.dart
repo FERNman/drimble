@@ -7,11 +7,11 @@ extension StomachFullnessTranslations on StomachFullness {
   String translate(BuildContext context) {
     switch (this) {
       case StomachFullness.empty:
-        return context.l18n.common_stomachFullnessEmpty;
+        return context.l10n.common_stomachFullnessEmpty;
       case StomachFullness.normal:
-        return context.l18n.common_stomachFullnessNormal;
+        return context.l10n.common_stomachFullnessNormal;
       case StomachFullness.full:
-        return context.l18n.common_stomachFullnessFull;
+        return context.l10n.common_stomachFullnessFull;
     }
   }
 }

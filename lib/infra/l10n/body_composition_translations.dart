@@ -7,13 +7,13 @@ extension BodyCompositionTranslations on BodyComposition {
   String translate(BuildContext context) {
     switch (this) {
       case BodyComposition.lean:
-        return context.l18n.common_bodyCompositionLean;
+        return context.l10n.common_bodyCompositionLean;
       case BodyComposition.athletic:
-        return context.l18n.common_bodyCompositionAthletic;
+        return context.l10n.common_bodyCompositionAthletic;
       case BodyComposition.average:
-        return context.l18n.common_bodyCompositionAverage;
+        return context.l10n.common_bodyCompositionAverage;
       case BodyComposition.overweight:
-        return context.l18n.common_bodyCompositionOverweight;
+        return context.l10n.common_bodyCompositionOverweight;
     }
   }
 }

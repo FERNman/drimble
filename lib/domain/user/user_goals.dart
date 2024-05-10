@@ -1,18 +1,27 @@
-class Goals {
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user_goals.g.dart';
+
+@JsonSerializable()
+class UserGoals {
   final int? weeklyGramsOfAlcohol;
   final int? weeklyDrinkFreeDays;
 
-  const Goals({this.weeklyGramsOfAlcohol, this.weeklyDrinkFreeDays});
+  const UserGoals({this.weeklyGramsOfAlcohol, this.weeklyDrinkFreeDays});
 
-  Goals copyWith({int? weeklyGramsOfAlcohol, int? weeklyDrinkFreeDays}) => Goals(
+  UserGoals copyWith({int? weeklyGramsOfAlcohol, int? weeklyDrinkFreeDays}) => UserGoals(
         weeklyGramsOfAlcohol: weeklyGramsOfAlcohol ?? this.weeklyGramsOfAlcohol,
         weeklyDrinkFreeDays: weeklyDrinkFreeDays ?? this.weeklyDrinkFreeDays,
       );
 
+  factory UserGoals.fromJson(Map<String, dynamic> json) => _$UserGoalsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserGoalsToJson(this);
+
   @override
   operator ==(Object other) =>
       identical(this, other) ||
-      other is Goals &&
+      other is UserGoals &&
           runtimeType == other.runtimeType &&
           weeklyGramsOfAlcohol == other.weeklyGramsOfAlcohol &&
           weeklyDrinkFreeDays == other.weeklyDrinkFreeDays;
