@@ -28,7 +28,7 @@ class TimeInputField extends StatelessWidget {
       inputFormatters: [
         FilteringTextInputFormatter.allow(_inputRegex),
       ],
-      validator: (value) => _timespanRegex.hasMatch(value!) ? null : context.l18n.common_invalidTimeFormat,
+      validator: (value) => _timespanRegex.hasMatch(value!) ? null : context.l10n.common_invalidTimeFormat,
       decoration: decoration,
       onChanged: _onChanged,
     );

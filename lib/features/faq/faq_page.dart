@@ -12,7 +12,7 @@ class FAQPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: Text(context.l18n.faq_title),
+        title: Text(context.l10n.faq_title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -20,17 +20,17 @@ class FAQPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.l18n.faq_howIsTheBloodAlcoholLevelEstimated, style: context.textTheme.titleMedium),
+              Text(context.l10n.faq_howIsTheBloodAlcoholLevelEstimated, style: context.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(context.l18n.faq_howIsTheBloodAlcoholLevelEstimatedText),
+              Text(context.l10n.faq_howIsTheBloodAlcoholLevelEstimatedText),
               const SizedBox(height: 24),
-              Text(context.l18n.faq_doesTheEstimatedBACCorrespondToTheActualBAC, style: context.textTheme.titleMedium),
+              Text(context.l10n.faq_doesTheEstimatedBACCorrespondToTheActualBAC, style: context.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(context.l18n.faq_doesTheEstimatedBACCorrespondToTheActualBACText),
+              Text(context.l10n.faq_doesTheEstimatedBACCorrespondToTheActualBACText),
               const SizedBox(height: 24),
-              Text(context.l18n.faq_canTheAppReplaceABreathalyzer, style: context.textTheme.titleMedium),
+              Text(context.l10n.faq_canTheAppReplaceABreathalyzer, style: context.textTheme.titleMedium),
               const SizedBox(height: 4),
-              Text(context.l18n.faq_canTheAppReplaceABreathalyzerText),
+              Text(context.l10n.faq_canTheAppReplaceABreathalyzerText),
             ],
           ),
         ),

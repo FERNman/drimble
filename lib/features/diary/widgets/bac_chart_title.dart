@@ -37,12 +37,12 @@ class BACChartTitle extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     if (diaryEntry == null) {
       return Text(
-        context.l18n.diary_notDrinkingToday,
+        context.l10n.diary_notDrinkingToday,
         style: context.textTheme.titleLarge,
       );
     } else if (diaryEntry!.isDrinkFreeDay) {
       return Text(
-        context.l18n.diary_drinkFreeDay,
+        context.l10n.diary_drinkFreeDay,
         style: context.textTheme.titleLarge,
       );
     } else {
@@ -63,7 +63,7 @@ class BACChartTitle extends StatelessWidget {
                 style: context.textTheme.displaySmall,
               ),
               TextSpan(
-                text: context.l18n.diary_maxBAC,
+                text: context.l10n.diary_maxBAC,
                 style: context.textTheme.bodySmall?.copyWith(color: Colors.black54),
               ),
             ],
@@ -76,10 +76,10 @@ class BACChartTitle extends StatelessWidget {
     if (diaryEntry == null) {
       return FilledButton(
         onPressed: onMarkAsDrinkFreeDay,
-        child: Text(context.l18n.diary_markAsDrinkFreeDay),
+        child: Text(context.l10n.diary_markAsDrinkFreeDay),
       );
     } else if (diaryEntry!.isDrinkFreeDay) {
-      return Text(context.l18n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium);
+      return Text(context.l10n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium);
     } else {
       return _buildSobrietyText(context);
     }
@@ -102,14 +102,14 @@ class BACChartTitle extends StatelessWidget {
       final isInFuture = soberAtDay.isAfter(tomorrow);
 
       if (isInFuture) {
-        return Text(context.l18n.diary_soberInFuture(soberAt, soberAt), style: context.textTheme.bodyMedium);
+        return Text(context.l10n.diary_soberInFuture(soberAt, soberAt), style: context.textTheme.bodyMedium);
       } else if (isTomorrow) {
-        return Text(context.l18n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);
+        return Text(context.l10n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);
       } else {
-        return Text(context.l18n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
+        return Text(context.l10n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
       }
     } else {
-      return Text(context.l18n.diary_youreSober, style: context.textTheme.bodyMedium);
+      return Text(context.l10n.diary_youreSober, style: context.textTheme.bodyMedium);
     }
   }
 }

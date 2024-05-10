@@ -6,6 +6,7 @@ import '../../domain/alcohol/alcohol.dart';
 import '../../domain/alcohol/drink.dart';
 import '../../domain/diary/consumed_cocktail.dart';
 import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/diary_entry.dart';
 
 class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   final DiaryRepository _diaryRepository;
@@ -13,8 +14,9 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   EditConsumedDrinkCubit(
     this._diaryRepository,
     DrinksRepository drinksRepository, {
+    required DiaryEntry diaryEntry,
     required ConsumedDrink consumedDrink,
-  }) : super(EditDrinkCubitState(drinksRepository.findDrinkByName(consumedDrink.name), consumedDrink));
+  }) : super(EditDrinkCubitState(diaryEntry, drinksRepository.findDrinkByName(consumedDrink.name), consumedDrink));
 
   void updateVolume(Milliliter volume) {
     emit(state.copyWith(state.consumedDrink.copyWith(volume: volume)));
@@ -36,8 +38,8 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
     emit(state.copyWith(state.consumedDrink.copyWith(duration: duration)));
   }
 
-  void save() {
-    _diaryRepository.saveDrink(state.consumedDrink);
+  Future<void> save() async {
+    await _diaryRepository.saveDrinkForDiaryEntry(state.diaryEntry, state.consumedDrink);
   }
 
   DateTime _shiftDate(DateTime newTime, DateTime previousTime) {
@@ -56,12 +58,13 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
 }
 
 class EditDrinkCubitState {
+  final DiaryEntry diaryEntry;
   final ConsumedDrink consumedDrink;
   final Drink _drink;
 
   List<Milliliter> get defaultServings => _drink.defaultServings;
 
-  const EditDrinkCubitState(this._drink, this.consumedDrink);
+  const EditDrinkCubitState(this.diaryEntry, this._drink, this.consumedDrink);
 
-  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(_drink, consumedDrink);
+  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(diaryEntry, _drink, consumedDrink);
 }

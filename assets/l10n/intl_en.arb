@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "common_milliliters": "ml",
   "common_amountInMilliliters": "{amount}ml",
   "@common_amountInMilliliters": {
@@ -22,12 +23,15 @@
   "remove_drink_description": "Are you sure you want to remove this drink?",
   "remove_drink_cancel": "Cancel",
   "remove_drink_yes": "Yes",
-  "onboarding_welcomeToDrimble": "Welcome to Drimble",
-  "onboarding_howCanICallYou": "How can I call you?",
+  "sign_in_welcomeToDrimble": "Welcome to Drimble",
+  "sign_in_signInWithGoogle": "Sign in with Google",
+  "sign_in_continueWithoutSigningIn": "Continue without signing in",
+  "onboarding_firstNameTitle": "How can I call you?",
   "onboarding_enterFirstName": "Enter your first name...",
   "onboarding_getStarted": "Get started",
   "onboarding_genderSelectionTitle": "What is your biological gender?",
   "onboarding_genderSelectionDescription": "Your biological gender has a great impact on the metabolism of alcohol due to differences in enzymatic activity.",
+  "onboarding_firstNameHint": "Max",
   "onboarding_birthyearSelectionTitle": "When were you born?",
   "onboarding_birthyearSelectionDescription": "Depending on your age, a different formula is used for calcualting your blood alcohol levels.",
   "onboarding_heightSelectionTitle": "How tall are you?",

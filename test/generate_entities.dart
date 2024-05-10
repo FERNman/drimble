@@ -10,8 +10,8 @@ import 'package:drimble/domain/diary/diary_entry.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:drimble/domain/user/body_composition.dart';
 import 'package:drimble/domain/user/gender.dart';
-import 'package:drimble/domain/user/goals.dart';
 import 'package:drimble/domain/user/user.dart';
+import 'package:drimble/domain/user/user_goals.dart';
 import 'package:faker/faker.dart';
 import 'package:faker/src/date.dart' as faker_date;
 
@@ -28,7 +28,7 @@ User generateUser({
   int? height,
   int? weight,
   BodyComposition? bodyComposition,
-  Goals? goals,
+  UserGoals? goals,
 }) =>
     User(
       name: name ?? faker.person.name(),
@@ -223,19 +223,19 @@ Ingredient generateIngredient({
 DiaryEntry generateDiaryEntry({
   String? id,
   Date? date,
-  bool? isDrinkFreeDay,
+  List<ConsumedDrink>? drinks,
 }) =>
-    DiaryEntry(
-      id: id,
-      date: date ?? faker.date.date(),
-      isDrinkFreeDay: isDrinkFreeDay ?? faker.randomGenerator.boolean(),
+    // This is to be able to generate a diary entry with drinks, which we don't allow anywhere except here
+    DiaryEntry.withDrinks(
+      DiaryEntry(id: id, date: date ?? faker.date.date()),
+      drinks: List.unmodifiable(drinks ?? []),
     );
 
-Goals generateGoals({
+UserGoals generateGoals({
   int? weeklyGramsOfAlcohol,
   int? weeklyDrinkFreeDays,
 }) =>
-    Goals(
+    UserGoals(
       weeklyGramsOfAlcohol: weeklyGramsOfAlcohol ?? faker.randomGenerator.integer(200),
       weeklyDrinkFreeDays: weeklyDrinkFreeDays ?? faker.randomGenerator.integer(7),
     );

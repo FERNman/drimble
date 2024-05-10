@@ -24,7 +24,7 @@ abstract class Alcohol {
   /// The alcohol by volume (ABV) in percentage (v/v%)
   final Percentage alcoholByVolume;
 
-  double get gramsOfAlcohol => (volume * alcoholByVolume * Alcohol.density);
+  double get gramsOfAlcohol => (volume * alcoholByVolume * density);
   int get calories => (gramsOfAlcohol * caloriesPerGramOfAlcohol).round();
 
   const Alcohol({

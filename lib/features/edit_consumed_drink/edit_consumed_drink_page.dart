@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/diary/consumed_drink.dart';
+import '../../domain/diary/diary_entry.dart';
 import '../common/build_context_extensions.dart';
 import 'edit_consumed_drink_cubit.dart';
 import 'edit_consumed_drink_form.dart';
@@ -10,17 +11,19 @@ import 'widgets/edit_consumed_drink_title.dart';
 
 @RoutePage()
 class EditConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
+  final DiaryEntry diaryEntry;
   final ConsumedDrink consumedDrink;
 
   final _formKey = GlobalKey<FormState>();
 
-  EditConsumedDrinkPage({required this.consumedDrink, super.key});
+  EditConsumedDrinkPage({required this.diaryEntry, required this.consumedDrink, super.key});
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (context) => EditConsumedDrinkCubit(
           context.read(),
           context.read(),
+          diaryEntry: diaryEntry,
           consumedDrink: consumedDrink,
         ),
         child: this,
@@ -70,7 +73,7 @@ class EditConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper 
 
   Widget _buildFAB(BuildContext context) {
     return FloatingActionButton.extended(
-      label: Text(context.l18n.edit_drink_done),
+      label: Text(context.l10n.edit_drink_done),
       icon: const Icon(Icons.done),
       onPressed: () {
         if (_formKey.currentState!.validate()) {

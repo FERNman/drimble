@@ -10,8 +10,8 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
 
   OnboardingCubit(this._userRepository) : super(OnboardingCubitState());
 
-  void setFirstName(String name) {
-    emit(state.copyWith(firstName: name));
+  void setName(String name) {
+    emit(state.copyWith(name: name));
   }
 
   void setGender(Gender gender) {
@@ -34,13 +34,13 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
     emit(state.copyWith(bodyComposition: bodyComposition));
   }
 
-  void save() {
-    _userRepository.signInOffline(state.user);
+  Future<void> save() async {
+    await _userRepository.save(state.user);
   }
 }
 
 class OnboardingCubitState {
-  final String firstName;
+  final String name;
   final Gender gender;
   final int birthyear;
   final int height;
@@ -50,7 +50,7 @@ class OnboardingCubitState {
   int get age => DateTime.now().year - birthyear;
 
   User get user => User(
-        name: firstName,
+        name: name,
         gender: gender,
         age: age,
         height: height,
@@ -59,7 +59,7 @@ class OnboardingCubitState {
       );
 
   OnboardingCubitState({
-    this.firstName = '',
+    this.name = '',
     this.gender = Gender.female,
     this.birthyear = 2000,
     this.height = 180,
@@ -68,7 +68,7 @@ class OnboardingCubitState {
   });
 
   OnboardingCubitState copyWith({
-    String? firstName,
+    String? name,
     Gender? gender,
     int? birthyear,
     int? height,
@@ -76,7 +76,7 @@ class OnboardingCubitState {
     BodyComposition? bodyComposition,
   }) =>
       OnboardingCubitState(
-        firstName: firstName ?? this.firstName,
+        name: name ?? this.name,
         gender: gender ?? this.gender,
         birthyear: birthyear ?? this.birthyear,
         height: height ?? this.height,

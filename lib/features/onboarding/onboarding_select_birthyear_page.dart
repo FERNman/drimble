@@ -16,15 +16,15 @@ class OnboardingSelectBirthyearPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OnboardingAppBar(
-        stepNumber: 2,
-        title: context.l18n.onboarding_birthyearSelectionTitle,
+        stepNumber: 3,
+        title: context.l10n.onboarding_birthyearSelectionTitle,
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Text(context.l18n.onboarding_birthyearSelectionDescription),
+              Text(context.l10n.onboarding_birthyearSelectionDescription),
               const SizedBox(height: 24),
               BlocBuilder<OnboardingCubit, OnboardingCubitState>(
                 builder: (context, state) => Center(
@@ -45,7 +45,7 @@ class OnboardingSelectBirthyearPage extends StatelessWidget {
               Center(
                 child: OutlinedButton(
                   onPressed: () => context.router.push(const OnboardingSelectHeightRoute()),
-                  child: Text(context.l18n.common_continue),
+                  child: Text(context.l10n.common_continue),
                 ),
               )
             ],

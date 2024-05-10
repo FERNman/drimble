@@ -23,6 +23,12 @@
       "args": ["test"],
       "group": "test",
       "label": "flutter: run tests"
+    },
+    {
+      "type": "shell",
+      "command": "firebase",
+      "args": ["emulators:start", "--export-on-exit=./.emulator_cache", "--import=./.emulator_cache"],
+      "label": "firebase: start emulators",
     }
   ]
 }

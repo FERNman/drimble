@@ -20,7 +20,7 @@ class DrinkStartTimeTextField extends StatelessWidget {
       onChanged: (rawValue) => _onChanged(context, rawValue, value),
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.access_time_outlined),
-        label: Text(context.l18n.edit_drink_startTime),
+        label: Text(context.l10n.edit_drink_startTime),
       ),
     );
   }

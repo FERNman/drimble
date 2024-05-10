@@ -15,6 +15,6 @@ jobs:
           channel: 'stable'
           cache: true
       - run: flutter pub get
-      - run: flutter pub run realm install
-      - run: flutter pub run build_runner build
+      - run: dart run intl_utils:generate
+      - run: dart run build_runner build
       - run: flutter test

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>159589082657-qmqm2fvu54ddt41nc93kfc3j1lu3ebdq.apps.googleusercontent.com</string>
+	<string>1061709448056-s810ors7e9dcs30cjalluopfdvcia2bk.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.159589082657-qmqm2fvu54ddt41nc93kfc3j1lu3ebdq</string>
+	<string>com.googleusercontent.apps.1061709448056-s810ors7e9dcs30cjalluopfdvcia2bk</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDUwSV7NfMXJJVPvhX0qTo_Be3ya5rHbyk</string>
+	<string>AIzaSyDiYpO8XozEP4CozGXkGk6GGC3YY8j0dpA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>159589082657</string>
+	<string>1061709448056</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>app.drimble</string>
 	<key>PROJECT_ID</key>
-	<string>drimble-app</string>
+	<string>drimble-5413f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>drimble-app.appspot.com</string>
+	<string>drimble-5413f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:159589082657:ios:a3ae69b9b171834122e560</string>
+	<string>1:1061709448056:ios:71427af1401a2efe047e8d</string>
 </dict>
 </plist>

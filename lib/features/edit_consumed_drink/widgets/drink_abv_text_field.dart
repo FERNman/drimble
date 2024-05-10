@@ -24,7 +24,7 @@ class DrinkABVTextField extends StatelessWidget {
         initialValue: '${value * 100}',
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [FilteringTextInputFormatter.allow(_decimalRegex)],
-        validator: (value) => value != null && _isValid(value) ? null : context.l18n.edit_drink_invalidABV,
+        validator: (value) => value != null && _isValid(value) ? null : context.l10n.edit_drink_invalidABV,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: const InputDecoration(prefixIcon: Icon(Icons.percent_outlined)),
         onChanged: _onChanged,

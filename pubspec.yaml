@@ -14,7 +14,7 @@ dependencies:
   http: ^1.2.0
   flutter_bloc: ^8.1.1
   google_fonts: ^6.1.0
-  intl: ^0.18.0
+  intl: any
   intl_utils: ^2.8.7
   shared_preferences: ^2.0.15
   rxdart: ^0.27.5
@@ -22,18 +22,23 @@ dependencies:
   numberpicker: ^2.1.1
   collection: ^1.16.0
   dotted_border: ^2.0.0+2
-  realm: ^1.0.3
-  firebase_core: ^2.25.4
+  firebase_core: ^2.25.5
   firebase_crashlytics: ^3.4.14
+  firebase_auth: ^4.17.6
+  cloud_firestore: ^4.15.6
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.0.0
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
-  build_runner: ^2.2.0
+  build_runner: ^2.4.9
   auto_route_generator: ^7.3.2
   mockito: ^5.3.2
   faker: ^2.1.0
+  json_serializable: ^6.7.1
 
 flutter:
   uses-material-design: true
@@ -46,4 +51,4 @@ flutter_intl:
   main_locale: en
   arb_dir: assets/l10n
   class_name: AppLocalizations
-  output_dir: lib/infra/l18n
+  output_dir: lib/infra/l10n

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../domain/user/body_composition.dart';
-import '../../../infra/l18n/body_composition_translations.dart';
+import '../../../infra/l10n/body_composition_translations.dart';
 import '../../common/build_context_extensions.dart';
 import '../profile_form_value.dart';
 
@@ -48,7 +48,7 @@ class ProfileForm extends StatelessWidget {
                 child: DropdownButtonFormField(
                   value: value.bodyComposition,
                   decoration: InputDecoration(
-                    label: Text(context.l18n.profile_bodyComposition),
+                    label: Text(context.l10n.profile_bodyComposition),
                   ),
                   items: BodyComposition.values
                       .map((e) => DropdownMenuItem(value: e, child: Text(e.translate(context))))
@@ -83,7 +83,7 @@ class _BirthYearFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: '$value',
-      decoration: InputDecoration(label: Text(context.l18n.profile_birthyear), helperText: ' '),
+      decoration: InputDecoration(label: Text(context.l10n.profile_birthyear), helperText: ' '),
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       onChanged: _onChanged,
@@ -111,7 +111,7 @@ class _HeightFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: '$value',
-      decoration: InputDecoration(label: Text(context.l18n.profile_height), suffixText: 'cm', helperText: ' '),
+      decoration: InputDecoration(label: Text(context.l10n.profile_height), suffixText: 'cm', helperText: ' '),
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       onChanged: _onChanged,
@@ -139,7 +139,7 @@ class _WeightFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: '$value',
-      decoration: InputDecoration(label: Text(context.l18n.profile_weight), suffixText: 'kg'),
+      decoration: InputDecoration(label: Text(context.l10n.profile_weight), suffixText: 'kg'),
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       onChanged: _onChanged,

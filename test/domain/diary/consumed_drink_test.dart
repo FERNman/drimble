@@ -3,7 +3,6 @@ import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:realm/realm.dart';
 
 import '../../generate_entities.dart';
 
@@ -18,10 +17,7 @@ void main() {
     });
 
     group('copyWith', () {
-      final drink = ConsumedDrink(
-        id: ObjectId().hexString,
-        name: 'Beer',
-        iconPath: 'test',
+      final drink = generateConsumedDrink(
         category: DrinkCategory.beer,
         volume: 500,
         alcoholByVolume: 0.05,
@@ -36,10 +32,7 @@ void main() {
 
     group('date', () {
       test('should be shifted by 1 day if the startTime is before 6am', () {
-        final drink = ConsumedDrink(
-          id: ObjectId().hexString,
-          name: 'Beer',
-          iconPath: 'test',
+        final drink = generateConsumedDrink(
           category: DrinkCategory.beer,
           volume: 500,
           alcoholByVolume: 0.05,
@@ -50,10 +43,7 @@ void main() {
       });
 
       test('should not be shifted if the startTime is after 6am', () {
-        final drink = ConsumedDrink(
-          id: ObjectId().hexString,
-          name: 'Beer',
-          iconPath: 'test',
+        final drink = generateConsumedDrink(
           category: DrinkCategory.beer,
           volume: 500,
           alcoholByVolume: 0.05,

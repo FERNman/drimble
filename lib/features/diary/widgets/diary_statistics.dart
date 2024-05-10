@@ -47,13 +47,13 @@ class DiaryStatistics extends StatelessWidget {
                     text: '${gramsOfAlcohol.toStringAsFloat(1)} ',
                     style: context.textTheme.headlineSmall?.copyWith(color: context.colorScheme.primary),
                   ),
-                  TextSpan(text: context.l18n.diary_statisticsGramsOfAlcohol, style: context.textTheme.bodyLarge),
+                  TextSpan(text: context.l10n.diary_statisticsGramsOfAlcohol, style: context.textTheme.bodyLarge),
                 ],
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              context.l18n.diary_statisticsGramsOfAlcoholGuidelines,
+              context.l10n.diary_statisticsGramsOfAlcoholGuidelines,
               style: context.textTheme.bodyMedium?.copyWith(color: Colors.black54),
             ),
           ],
@@ -69,8 +69,8 @@ class DiaryStatistics extends StatelessWidget {
         child: _buildSmallStatistic(
           context,
           number: numberOfConsumedDrinks,
-          unit: context.l18n.diary_statisticsDrinks(numberOfConsumedDrinks),
-          description: context.l18n.diary_statisticsConsumedToday,
+          unit: context.l10n.diary_statisticsDrinks(numberOfConsumedDrinks),
+          description: context.l10n.diary_statisticsConsumedToday,
         ),
       ),
     );
@@ -83,8 +83,8 @@ class DiaryStatistics extends StatelessWidget {
         child: _buildSmallStatistic(
           context,
           number: calories,
-          unit: context.l18n.diary_statisticsCalories,
-          description: context.l18n.diary_statisticsFromAlcohol,
+          unit: context.l10n.diary_statisticsCalories,
+          description: context.l10n.diary_statisticsFromAlcohol,
         ),
       ),
     );
