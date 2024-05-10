@@ -224,10 +224,15 @@ DiaryEntry generateDiaryEntry({
   String? id,
   Date? date,
   List<ConsumedDrink>? drinks,
+  int? glassesOfWater,
 }) =>
     // This is to be able to generate a diary entry with drinks, which we don't allow anywhere except here
     DiaryEntry.withDrinks(
-      DiaryEntry(id: id, date: date ?? faker.date.date()),
+      DiaryEntry(
+        id: id,
+        date: date ?? faker.date.date(),
+        glassesOfWater: glassesOfWater ?? faker.randomGenerator.integer(10),
+      ),
       drinks: List.unmodifiable(drinks ?? []),
     );
 

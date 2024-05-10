@@ -72,13 +72,6 @@ class DiaryRepository {
     final diaryRef = _collection.doc(diaryEntry.id);
     await diaryRef.drinks.doc(drink.id).delete();
   }
-
-  Future<void> deleteDrinksForDiaryEntry(DiaryEntry diaryEntry) async {
-    final drinksSnapshot = await _collection.doc(diaryEntry.id).drinks.get();
-    for (final doc in drinksSnapshot.docs) {
-      await doc.reference.delete();
-    }
-  }
 }
 
 extension _DrinksSubcollection on DocumentReference<DiaryEntry> {

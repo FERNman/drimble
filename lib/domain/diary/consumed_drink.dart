@@ -8,7 +8,7 @@ import '../date.dart';
 import 'consumed_cocktail.dart';
 
 class ConsumedDrink extends Alcohol {
-  String? id;
+  final String? id;
 
   /// The time when drinking this drink started. Only to be used for calculating the BAC.
   ///
@@ -20,7 +20,7 @@ class ConsumedDrink extends Alcohol {
   /// If the drink started before 6am, it is considered to be on the previous day.
   Date get date => startTime.toDate();
 
-  ConsumedDrink({
+  const ConsumedDrink({
     this.id,
     required super.name,
     required super.iconPath,

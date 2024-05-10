@@ -5,18 +5,15 @@ import '../../../domain/date.dart';
 import '../../../domain/diary/diary_entry.dart';
 import '../../common/build_context_extensions.dart';
 
-class BACChartTitle extends StatelessWidget {
+class DiaryCurrentBAC extends StatelessWidget {
   final Date date;
   final BACCalculationResults results;
-  final DiaryEntry? diaryEntry;
+  final DiaryEntry diaryEntry;
 
-  final GestureTapCallback onMarkAsDrinkFreeDay;
-
-  const BACChartTitle({
+  const DiaryCurrentBAC({
     required this.date,
     required this.results,
     required this.diaryEntry,
-    required this.onMarkAsDrinkFreeDay,
     super.key,
   });
 
@@ -26,28 +23,12 @@ class BACChartTitle extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildTitle(context),
+          _buildBAC(context),
           const SizedBox(height: 8),
-          _buildSubtitle(context),
+          _buildSobrietyText(context),
         ],
       ),
     );
-  }
-
-  Widget _buildTitle(BuildContext context) {
-    if (diaryEntry == null) {
-      return Text(
-        context.l10n.diary_notDrinkingToday,
-        style: context.textTheme.titleLarge,
-      );
-    } else if (diaryEntry!.isDrinkFreeDay) {
-      return Text(
-        context.l10n.diary_drinkFreeDay,
-        style: context.textTheme.titleLarge,
-      );
-    } else {
-      return _buildBAC(context);
-    }
   }
 
   Widget _buildBAC(BuildContext context) {
@@ -70,19 +51,6 @@ class BACChartTitle extends StatelessWidget {
           );
 
     return RichText(text: text);
-  }
-
-  Widget _buildSubtitle(BuildContext context) {
-    if (diaryEntry == null) {
-      return FilledButton(
-        onPressed: onMarkAsDrinkFreeDay,
-        child: Text(context.l10n.diary_markAsDrinkFreeDay),
-      );
-    } else if (diaryEntry!.isDrinkFreeDay) {
-      return Text(context.l10n.diary_drinkFreeDayGreatJob, style: context.textTheme.bodyMedium);
-    } else {
-      return _buildSobrietyText(context);
-    }
   }
 
   Widget _buildSobrietyText(BuildContext context) {

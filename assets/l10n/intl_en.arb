@@ -1,8 +1,26 @@
 {
   "@@locale": "en",
-  "common_milliliters": "ml",
-  "common_amountInMilliliters": "{amount}ml",
-  "@common_amountInMilliliters": {
+  "common_massUnit": "g",
+  "common_mass": "{amount}g",
+  "@common_mass": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "common_volumeUnit": "ml",
+  "common_volume": "{amount}ml",
+  "@common_volume": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "common_caloriesUnit": "kcal",
+  "common_calories": "{amount}kcal",
+  "@common_calories": {
     "placeholders": {
       "amount": {
         "type": "int"
@@ -219,5 +237,10 @@
   "faq_canTheAppReplaceABreathalyzerText": "No! The app is only intended to give an approximate indication of the blood alcohol level. The actual blood alcohol level can only be determined by a breathalyzer or a blood test.",
   "faq_doesTheEstimatedBACCorrespondToTheActualBAC": "Does the estimated blood alcohol level correspond to the actual blood alcohol level?",
   "faq_doesTheEstimatedBACCorrespondToTheActualBACText": "No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb.",
-  "common_invalidTimeFormat": "Invalid time format"
+  "common_invalidTimeFormat": "Invalid time format",
+  "diary_glassesOfWaterDescription": "To avoid hangovers, consume one glass of water between every alcoholic drink.",
+  "diary_yourDrinking": "Your drinking",
+  "diary_statisticsAlcohol": "alcohol",
+  "diary_kcalInTotal": "in total",
+  "diary_water": "Water"
 }
