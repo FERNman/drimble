@@ -11,6 +11,7 @@ class DiaryDrinkFreeDay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 24),
           Text(
             context.l10n.diary_drinkFreeDay,
             style: context.textTheme.titleLarge,

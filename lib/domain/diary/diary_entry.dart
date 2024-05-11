@@ -31,7 +31,7 @@ class DiaryEntry {
     this.id,
     required this.date,
     required this.drinks,
-    this.glassesOfWater = 0,
+    required this.glassesOfWater,
   });
 
   DiaryEntry copyWith({

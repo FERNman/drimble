@@ -15,14 +15,13 @@ class DrimbleRouter extends $DrimbleRouter {
   @override
   late final routes = <AutoRoute>[
     AutoRoute(page: DiaryRoute.page, path: '/', guards: [_diaryGuard]),
-    AutoRoute(page: AnalyticsRoute.page),
     AutoRoute(page: SearchDrinkRoute.page),
     AutoRoute(page: AddConsumedDrinkRoute.page),
     AutoRoute(page: EditConsumedDrinkRoute.page),
     AutoRoute(page: ProfileRoute.page),
     AutoRoute(page: EditWeeklyAlcoholGoalRoute.page),
     AutoRoute(page: EditWeeklyDrinkFreeDaysGoalRoute.page),
-    AutoRoute(page: AnalyticsSwitchWeekRoute.page),
+    AutoRoute(page: CalendarRoute.page),
     AutoRoute(page: FAQRoute.page),
     AutoRoute(page: SignInRoute.page),
     AutoRoute(

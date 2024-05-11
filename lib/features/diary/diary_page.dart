@@ -2,18 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/date.dart';
 import '../../router.gr.dart';
-import '../common/widgets/remove_drink_dialog.dart';
-import '../diary_calendar/diary_calendar.dart';
+import '../diary_entry/diary_entry_page.dart';
 import 'diary_cubit.dart';
 import 'widgets/diary_app_bar.dart';
-import 'widgets/diary_bac_chart.dart';
-import 'widgets/diary_consumed_drinks.dart';
-import 'widgets/diary_current_bac.dart';
+import 'widgets/diary_calendar_week.dart';
 import 'widgets/diary_drink_free_day.dart';
 import 'widgets/diary_mark_as_drink_free.dart';
-import 'widgets/diary_statistics.dart';
-import 'widgets/diary_water_tracking.dart';
+import 'widgets/diary_week_summary.dart';
 
 @RoutePage()
 class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
@@ -21,7 +18,7 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => DiaryCubit(context.read(), context.read()),
+        create: (context) => DiaryCubit(context.read(), Date.today()),
         child: this,
       );
 
@@ -31,33 +28,10 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HomeAppBar(
-              onTapAnalytics: () {
-                context.router.push(const AnalyticsRoute());
-              },
-              onTapProfile: () {
-                context.router.push(const ProfileRoute());
-              },
-            ),
-            _buildCalendar(),
+            _buildAppBar(context),
+            _buildHeader(),
             const SizedBox(height: 24),
-            BlocBuilder<DiaryCubit, DiaryCubitState>(
-              buildWhen: (previous, current) =>
-                  previous.diaryEntry?.isDrinkFreeDay != current.diaryEntry?.isDrinkFreeDay,
-              builder: (context, state) {
-                if (state.diaryEntry == null) {
-                  return DiaryMarkAsDrinkFree(
-                    onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
-                  );
-                }
-
-                if (state.diaryEntry!.isDrinkFreeDay == true) {
-                  return const DiaryDrinkFreeDay();
-                }
-
-                return _buildBody();
-              },
-            ),
+            _buildBody(),
           ],
         ),
       ),
@@ -66,117 +40,77 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildBody() {
-    return Column(
-      children: [
-        _buildCurrentBAC(),
-        const SizedBox(height: 24),
-        _buildBACChart(),
-        const SizedBox(height: 24),
-        _buildWaterTracking(),
-        const SizedBox(height: 24),
-        _buildStatistics(),
-        const SizedBox(height: 24),
-        _buildConsumedDrinks(),
-        const SizedBox(height: 100),
-      ],
+  Widget _buildAppBar(BuildContext context) {
+    return DiaryAppBar(
+      onTapCalendar: () async {
+        final cubitState = context.read<DiaryCubit>().state;
+        context.router.push(CalendarRoute(initialDate: cubitState.selectedDate)).then((result) {
+          if (result != null) {
+            context.read<DiaryCubit>().switchDate(result as Date);
+          }
+        });
+      },
+      onTapProfile: () {
+        context.router.push(const ProfileRoute());
+      },
     );
   }
 
-  Widget _buildCalendar() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.date != current.date,
-      builder: (context, state) => DiaryCalendar(
-        selectedDay: state.date,
-        onSelectedDayChanged: (value) {
-          context.read<DiaryCubit>().switchDate(value);
-        },
-      ),
-    );
-  }
-
-  Widget _buildCurrentBAC() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
-      builder: (context, state) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: DiaryCurrentBAC(
-          date: state.date,
-          results: state.calculationResults,
-          diaryEntry: state.diaryEntry!,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBACChart() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
-      builder: (context, state) => DiaryBACChart(
-        results: state.calculationResults,
-        currentDate: state.date,
-      ),
-    );
-  }
-
-  Widget _buildWaterTracking() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.glassesOfWater != current.glassesOfWater,
-      builder: (context, state) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: DiaryWaterTracking(
-          value: state.glassesOfWater,
-          onValueChange: (glassesOfWater) {
-            context.read<DiaryCubit>().setGlassesOfWater(glassesOfWater);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatistics() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.drinks != current.drinks,
-      builder: (context, state) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: DiaryStatistics(
-          gramsOfAlcohol: state.gramsOfAlcohol,
-          calories: state.calories,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildConsumedDrinks() {
-    return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.drinks != current.drinks,
-      builder: (context, state) {
-        return DiaryConsumedDrinks(
-          state.drinks,
-          onEdit: (drink) {
-            context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry!, consumedDrink: drink));
-          },
-          onDelete: (drink) {
-            showDialog(
-              context: context,
-              builder: (dialogContext) => RemoveDrinkDialog(
-                onCancel: () {
-                  Navigator.pop(dialogContext);
-                },
-                onRemove: () async {
-                  await context.read<DiaryCubit>().deleteDrink(drink).then((value) => Navigator.pop(dialogContext));
-                },
+  Widget _buildHeader() {
+    return Material(
+      elevation: 1,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+        child: Column(
+          children: [
+            BlocBuilder<DiaryCubit, DiaryCubitState>(
+              buildWhen: (previous, current) =>
+                  previous.weekStartDate != current.weekStartDate || previous.gramsOfAlcohol != current.gramsOfAlcohol,
+              builder: (context, state) => DiaryWeekSummary(
+                startDate: state.weekStartDate,
+                endDate: state.weekEndDate,
+                gramsOfAlcohol: state.gramsOfAlcohol,
               ),
-            );
-          },
-        );
+            ),
+            BlocBuilder<DiaryCubit, DiaryCubitState>(
+              buildWhen: (previous, current) =>
+                  previous.selectedDate != current.selectedDate || previous.diaryEntries != current.diaryEntries,
+              builder: (context, state) => DiaryCalendarWeek(
+                selectedDate: state.selectedDate,
+                weekStartDate: state.weekStartDate,
+                diaryEntries: state.diaryEntries,
+                onChangeDate: (date) => context.read<DiaryCubit>().switchDate(date),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) =>
+          previous.selectedDate != current.selectedDate ||
+          previous.selectedDiaryEntry?.isDrinkFreeDay != current.selectedDiaryEntry?.isDrinkFreeDay,
+      builder: (context, state) {
+        if (state.selectedDiaryEntry == null) {
+          return DiaryMarkAsDrinkFree(
+            onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+          );
+        } else if (state.selectedDiaryEntry!.isDrinkFreeDay == true) {
+          return const DiaryDrinkFreeDay();
+        } else {
+          return DiaryEntryPage(diaryEntry: state.selectedDiaryEntry!);
+        }
       },
     );
   }
 
   Widget _buildFAB() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.date != current.date,
+      buildWhen: (previous, current) => previous.selectedDate != current.selectedDate,
       builder: (context, state) => FloatingActionButton(
         onPressed: () => context.router.push(AddConsumedDrinkRoute(diaryEntry: state.getOrCreateDiaryEntry())),
         child: const Icon(Icons.add),

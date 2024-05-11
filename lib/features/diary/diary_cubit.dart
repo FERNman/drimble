@@ -1,117 +1,70 @@
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
-import '../../data/user_repository.dart';
-import '../../domain/bac/bac_calculation_results.dart';
-import '../../domain/bac/bac_calculator.dart';
 import '../../domain/date.dart';
-import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/disposable.dart';
 
 class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
-  final UserRepository _userRepository;
   final DiaryRepository _diaryRepository;
 
-  DiaryCubit(this._userRepository, this._diaryRepository) : super(DiaryCubitState.initial(date: Date.today())) {
+  DiaryCubit(this._diaryRepository, Date initialDate) : super(DiaryCubitState.initial(initialDate)) {
     _subscribeToRepository();
   }
 
   Future<void> switchDate(Date date) async {
-    if (date != state.date) {
-      final diaryEntry = await _diaryRepository.findEntryOnDate(date);
-
-      emit(DiaryCubitState.initial(date: date, diaryEntry: diaryEntry));
+    if (date != state.selectedDate) {
+      emit(state.copyWith(selectedDate: date));
     }
   }
 
   Future<void> markAsDrinkFreeDay() async {
-    assert(state.diaryEntry == null);
-    
-    final diaryEntry = DiaryEntry(date: state.date);
-    await _diaryRepository.saveDiaryEntry(diaryEntry);
-  }
+    assert(state.selectedDiaryEntry == null);
 
-  Future<void> deleteDrink(ConsumedDrink drink) async {
-    assert(state.diaryEntry != null);
-    await _diaryRepository.removeDrinkFromDiaryEntry(state.diaryEntry!, drink);
-  }
-
-  Future<void> setGlassesOfWater(int glassesOfWater) async {
-    final diaryEntry = state.diaryEntry?.copyWith(glassesOfWater: glassesOfWater) ??
-        DiaryEntry(date: state.date, glassesOfWater: glassesOfWater);
+    final diaryEntry = DiaryEntry(date: state.selectedDate);
     await _diaryRepository.saveDiaryEntry(diaryEntry);
   }
 
   void _subscribeToRepository() {
-    final dateChangedStream = stream.map((value) => value.date).distinct().startWith(state.date);
+    final weekChangedStream = stream
+        .map((state) => (state.weekStartDate, state.weekEndDate))
+        .startWith((state.weekStartDate, state.weekEndDate))
+        .distinct();
 
-    addSubscription(dateChangedStream
-        .flatMap((date) => _diaryRepository.observeEntryOnDate(date))
-        .listen((item) => emit(state.copyWith(diaryEntry: item))));
-
-    addSubscription(stream.map((event) => event.diaryEntry).distinct().listen((diaryEntry) async {
-      if (diaryEntry == null || diaryEntry.isDrinkFreeDay == true) {
-        emit(state.copyWith(
-          calculationResults: BACCalculationResults.empty(
-            startTime: state.date.toDateTime(),
-            endTime: state.date.add(days: 1).toDateTime(),
-            timestep: const Duration(minutes: 10),
-          ),
-        ));
-      } else {
-        final results = await _calculateBAC(state.diaryEntry!);
-        emit(state.copyWith(calculationResults: results));
-      }
-    }));
-  }
-
-  Future<BACCalculationResults> _calculateBAC(DiaryEntry diaryEntry) async {
-    final user = await _userRepository.loadUser();
-
-    // TODO: Integrate stomach fullness in diary entry
-    final calculator = BACCalculator(user!, StomachFullness.normal);
-    return compute(calculator.calculate, diaryEntry.drinks);
+    addSubscription(weekChangedStream
+        .switchMap((val) => _diaryRepository
+            .observeEntriesBetween(val.$1, val.$2)
+            .map((items) => Map.fromEntries(items.map((entry) => MapEntry(entry.date, entry)))))
+        .listen((items) => emit(state.copyWith(diaryEntries: items))));
   }
 }
 
 class DiaryCubitState {
-  final Date date;
-  final DiaryEntry? diaryEntry;
-  final List<ConsumedDrink> drinks;
-  final BACCalculationResults calculationResults;
+  final Date selectedDate;
+  final Date weekStartDate;
+  final Date weekEndDate;
+
+  final Map<Date, DiaryEntry> diaryEntries;
+  final DiaryEntry? selectedDiaryEntry;
 
   final double gramsOfAlcohol;
-  final int calories;
-  final int glassesOfWater;
 
-  DiaryCubitState({
-    required this.date,
-    required this.diaryEntry,
-    required this.calculationResults,
-  })  : gramsOfAlcohol = diaryEntry?.gramsOfAlcohol ?? 0,
-        calories = diaryEntry?.calories ?? 0,
-        glassesOfWater = diaryEntry?.glassesOfWater ?? 0,
-        drinks = diaryEntry?.drinks ?? [];
+  DiaryCubitState._({
+    required this.selectedDate,
+    required this.diaryEntries,
+  })  : weekStartDate = selectedDate.floorToWeek(),
+        weekEndDate = selectedDate.floorToWeek().add(days: 6),
+        selectedDiaryEntry = diaryEntries[selectedDate],
+        gramsOfAlcohol = diaryEntries.values.map((e) => e.gramsOfAlcohol).sum;
 
-  factory DiaryCubitState.initial({required Date date, DiaryEntry? diaryEntry}) => DiaryCubitState(
-        date: date,
-        diaryEntry: diaryEntry,
-        calculationResults: BACCalculationResults.empty(
-          startTime: date.toDateTime(),
-          endTime: date.add(days: 1).toDateTime(),
-          timestep: const Duration(minutes: 10),
-        ),
+  factory DiaryCubitState.initial(Date date) => DiaryCubitState._(selectedDate: date, diaryEntries: {});
+
+  DiaryCubitState copyWith({Date? selectedDate, Map<Date, DiaryEntry>? diaryEntries}) => DiaryCubitState._(
+        selectedDate: selectedDate ?? this.selectedDate,
+        diaryEntries: diaryEntries ?? this.diaryEntries,
       );
 
-  DiaryCubitState copyWith({DiaryEntry? diaryEntry, BACCalculationResults? calculationResults}) => DiaryCubitState(
-        date: date,
-        diaryEntry: diaryEntry ?? this.diaryEntry,
-        calculationResults: calculationResults ?? this.calculationResults,
-      );
-
-  DiaryEntry getOrCreateDiaryEntry() => diaryEntry ?? DiaryEntry(date: date);
+  DiaryEntry getOrCreateDiaryEntry() => selectedDiaryEntry ?? DiaryEntry(date: selectedDate);
 }

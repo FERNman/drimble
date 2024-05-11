@@ -242,5 +242,7 @@
   "diary_yourDrinking": "Your drinking",
   "diary_statisticsAlcohol": "alcohol",
   "diary_kcalInTotal": "in total",
-  "diary_water": "Water"
+  "diary_water": "Water",
+  "diary_selectedWeek": "selected week",
+  "diary_ofAlcohol": "of alcohol"
 }

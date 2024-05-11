@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryWaterTracking extends StatelessWidget {
-  final int value;
-  final ValueChanged<int> onValueChange;
+  final int amount;
+  final GestureTapCallback onRemove;
+  final GestureTapCallback onAdd;
 
   const DiaryWaterTracking({
     super.key,
-    required this.value,
-    required this.onValueChange,
+    required this.amount,
+    required this.onAdd,
+    required this.onRemove,
   });
 
   @override
@@ -32,15 +34,15 @@ class DiaryWaterTracking extends StatelessWidget {
                   runSpacing: 4.0,
                   children: [
                     ...List.generate(
-                      value,
+                      amount,
                       (index) => IconButton(
                         icon: Image.asset('assets/icons/water_glass.png', width: 32),
-                        onPressed: () => onValueChange(value - 1),
+                        onPressed: onAdd,
                       ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.plus_one),
-                      onPressed: () => onValueChange(value + 1),
+                      onPressed: onRemove,
                     ),
                   ],
                 ),

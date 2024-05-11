@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../common/build_context_extensions.dart';
 
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final GestureTapCallback onTapAnalytics;
+class DiaryAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final GestureTapCallback onTapCalendar;
   final GestureTapCallback onTapProfile;
 
-  const HomeAppBar({
-    required this.onTapAnalytics,
+  const DiaryAppBar({
+    required this.onTapCalendar,
     required this.onTapProfile,
     super.key,
   });
@@ -24,7 +24,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Text('drimble', style: titleStyle),
             const Spacer(),
-            IconButton(onPressed: onTapAnalytics, icon: const Icon(Icons.analytics_outlined)),
+            IconButton(onPressed: onTapCalendar, icon: const Icon(Icons.today_outlined)),
             IconButton(onPressed: onTapProfile, icon: const Icon(Icons.account_circle_outlined)),
           ],
         ),
