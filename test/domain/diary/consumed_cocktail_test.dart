@@ -32,5 +32,15 @@ void main() {
       final expectedAlcoholByVolume = ingredients.map((e) => e.alcoholByVolume * e.percentOfCocktailVolume).sum;
       expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);
     });
+
+    group('copyWith', () {
+      final drink = generateConsumedCocktail(
+        id: faker.guid.guid(),
+      );
+
+      test('should also copy the id', () {
+        expect(drink.copyWith().id, drink.id);
+      });
+    });
   });
 }

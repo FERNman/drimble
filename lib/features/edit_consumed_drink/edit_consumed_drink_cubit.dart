@@ -39,7 +39,7 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   }
 
   Future<void> save() async {
-    await _diaryRepository.saveDrinkForDiaryEntry(state.diaryEntry, state.consumedDrink);
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry);
   }
 
   DateTime _shiftDate(DateTime newTime, DateTime previousTime) {
@@ -58,13 +58,15 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
 }
 
 class EditDrinkCubitState {
-  final DiaryEntry diaryEntry;
-  final ConsumedDrink consumedDrink;
-  final Drink _drink;
+  final DiaryEntry _diaryEntry;
+  DiaryEntry get diaryEntry => _diaryEntry.upsertDrink(consumedDrink.id, consumedDrink);
 
+  final ConsumedDrink consumedDrink;
+
+  final Drink _drink;
   List<Milliliter> get defaultServings => _drink.defaultServings;
 
-  const EditDrinkCubitState(this.diaryEntry, this._drink, this.consumedDrink);
+  EditDrinkCubitState(this._diaryEntry, this._drink, this.consumedDrink);
 
-  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(diaryEntry, _drink, consumedDrink);
+  EditDrinkCubitState copyWith(ConsumedDrink consumedDrink) => EditDrinkCubitState(_diaryEntry, _drink, consumedDrink);
 }

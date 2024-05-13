@@ -62,6 +62,7 @@ class AddConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper {
         onTap: (drink) => context.router.push(
           EditConsumedDrinkRoute(
             diaryEntry: diaryEntry,
+            // TODO: Move to cubit
             consumedDrink: ConsumedDrink.fromDrink(drink, startTime: DateTime.now().setDate(diaryEntry.date)),
           ),
         ),

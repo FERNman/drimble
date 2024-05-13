@@ -110,17 +110,20 @@ void main() {
 
         expect(cubit.state.diaryEntry.glassesOfWater, diaryEntry.glassesOfWater - 1);
       });
+    });
 
-      test('should not remove a glass of water if there are none left', () async {
-        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), glassesOfWater: 0);
+    group('removeDrink', () {
+      test('should remove the drink from the diary entry', () async {
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [consumedDrink]);
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
         final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
         await cubit.stream.first;
 
-        await cubit.removeGlassOfWater();
+        await cubit.removeDrink(consumedDrink);
 
-        expect(cubit.state.diaryEntry.glassesOfWater, 0);
+        expect(cubit.state.diaryEntry.drinks, isEmpty);
       });
     });
   });
