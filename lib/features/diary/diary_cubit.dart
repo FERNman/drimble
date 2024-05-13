@@ -29,12 +29,10 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   }
 
   Future<void> markAsDrinkFreeDay() async {
-    if (state.diaryEntry != null) {
-      await _diaryRepository.deleteDrinksForDiaryEntry(state.diaryEntry!);
-    } else {
-      final diaryEntry = DiaryEntry(date: state.date);
-      await _diaryRepository.saveDiaryEntry(diaryEntry);
-    }
+    assert(state.diaryEntry == null);
+    
+    final diaryEntry = DiaryEntry(date: state.date);
+    await _diaryRepository.saveDiaryEntry(diaryEntry);
   }
 
   Future<void> deleteDrink(ConsumedDrink drink) async {
@@ -42,23 +40,31 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
     await _diaryRepository.removeDrinkFromDiaryEntry(state.diaryEntry!, drink);
   }
 
+  Future<void> setGlassesOfWater(int glassesOfWater) async {
+    final diaryEntry = state.diaryEntry?.copyWith(glassesOfWater: glassesOfWater) ??
+        DiaryEntry(date: state.date, glassesOfWater: glassesOfWater);
+    await _diaryRepository.saveDiaryEntry(diaryEntry);
+  }
+
   void _subscribeToRepository() {
     final dateChangedStream = stream.map((value) => value.date).distinct().startWith(state.date);
 
     addSubscription(dateChangedStream
         .flatMap((date) => _diaryRepository.observeEntryOnDate(date))
-        .listen((item) => emit(state.updateDiaryEntry(item))));
+        .listen((item) => emit(state.copyWith(diaryEntry: item))));
 
     addSubscription(stream.map((event) => event.diaryEntry).distinct().listen((diaryEntry) async {
       if (diaryEntry == null || diaryEntry.isDrinkFreeDay == true) {
-        emit(state.updateBAC(BACCalculationResults.empty(
-          startTime: state.date.toDateTime(),
-          endTime: state.date.add(days: 1).toDateTime(),
-          timestep: const Duration(minutes: 10),
-        )));
+        emit(state.copyWith(
+          calculationResults: BACCalculationResults.empty(
+            startTime: state.date.toDateTime(),
+            endTime: state.date.add(days: 1).toDateTime(),
+            timestep: const Duration(minutes: 10),
+          ),
+        ));
       } else {
         final results = await _calculateBAC(state.diaryEntry!);
-        emit(state.updateBAC(results));
+        emit(state.copyWith(calculationResults: results));
       }
     }));
   }
@@ -80,6 +86,7 @@ class DiaryCubitState {
 
   final double gramsOfAlcohol;
   final int calories;
+  final int glassesOfWater;
 
   DiaryCubitState({
     required this.date,
@@ -87,30 +94,23 @@ class DiaryCubitState {
     required this.calculationResults,
   })  : gramsOfAlcohol = diaryEntry?.gramsOfAlcohol ?? 0,
         calories = diaryEntry?.calories ?? 0,
+        glassesOfWater = diaryEntry?.glassesOfWater ?? 0,
         drinks = diaryEntry?.drinks ?? [];
 
-  DiaryCubitState.initial({
-    required this.date,
-    this.diaryEntry,
-  })  : calculationResults = BACCalculationResults.empty(
+  factory DiaryCubitState.initial({required Date date, DiaryEntry? diaryEntry}) => DiaryCubitState(
+        date: date,
+        diaryEntry: diaryEntry,
+        calculationResults: BACCalculationResults.empty(
           startTime: date.toDateTime(),
           endTime: date.add(days: 1).toDateTime(),
           timestep: const Duration(minutes: 10),
         ),
-        gramsOfAlcohol = 0,
-        calories = 0,
-        drinks = diaryEntry?.drinks ?? [];
-
-  DiaryCubitState updateDiaryEntry(DiaryEntry? diaryEntry) => DiaryCubitState(
-        date: date,
-        diaryEntry: diaryEntry,
-        calculationResults: calculationResults,
       );
 
-  DiaryCubitState updateBAC(BACCalculationResults calculationResults) => DiaryCubitState(
+  DiaryCubitState copyWith({DiaryEntry? diaryEntry, BACCalculationResults? calculationResults}) => DiaryCubitState(
         date: date,
-        diaryEntry: diaryEntry,
-        calculationResults: calculationResults,
+        diaryEntry: diaryEntry ?? this.diaryEntry,
+        calculationResults: calculationResults ?? this.calculationResults,
       );
 
   DiaryEntry getOrCreateDiaryEntry() => diaryEntry ?? DiaryEntry(date: date);

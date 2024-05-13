@@ -1,26 +1,20 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../domain/diary/consumed_drink.dart';
 import '../../common/build_context_extensions.dart';
-import '../../common/widgets/drink_list_item.dart';
 
 typedef ConsumedDrinkTapCallback = void Function(ConsumedDrink drink);
 
 class DiaryConsumedDrinks extends StatelessWidget {
-  static const recentItemCount = 3;
-
   final List<ConsumedDrink> drinks;
   final ConsumedDrinkTapCallback onEdit;
   final ConsumedDrinkTapCallback onDelete;
-  final GestureTapCallback onViewAll;
 
   const DiaryConsumedDrinks(
     this.drinks, {
     required this.onEdit,
     required this.onDelete,
-    required this.onViewAll,
     super.key,
   });
 
@@ -37,22 +31,15 @@ class DiaryConsumedDrinks extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.all(0),
-          itemCount: min(drinks.length, recentItemCount + 1),
+          itemCount: drinks.length,
           itemBuilder: (context, index) {
-            if (index < recentItemCount) {
-              final drink = drinks[index];
+            final drink = drinks[index];
 
-              return DrinkListItem(
-                drink,
-                onEdit: () => onEdit(drink),
-                onDelete: () => onDelete(drink),
-              );
-            } else {
-              return _ViewAllRow(
-                remainingItemCount: drinks.length - recentItemCount,
-                onTap: onViewAll,
-              );
-            }
+            return _DrinkListItem(
+              drink,
+              onEdit: () => onEdit(drink),
+              onDelete: () => onDelete(drink),
+            );
           },
         ),
       ],
@@ -60,22 +47,42 @@ class DiaryConsumedDrinks extends StatelessWidget {
   }
 }
 
-class _ViewAllRow extends StatelessWidget {
-  final int remainingItemCount;
-  final GestureTapCallback onTap;
+class _DrinkListItem extends StatelessWidget {
+  final ConsumedDrink drink;
+  final GestureTapCallback onEdit;
+  final GestureTapCallback onDelete;
 
-  const _ViewAllRow({required this.remainingItemCount, required this.onTap});
+  const _DrinkListItem(this.drink, {required this.onEdit, required this.onDelete, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('+$remainingItemCount ${context.l10n.diary_consumedDrinksMore}', style: context.textTheme.bodyMedium),
-          TextButton(onPressed: onTap, child: Text(context.l10n.diary_consumedDrinksSeeAll)),
-        ],
+    return InkWell(
+      onTap: onEdit,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Image(
+              image: AssetImage(drink.iconPath),
+              width: 42,
+              height: 42,
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(DateFormat(DateFormat.HOUR_MINUTE).format(drink.startTime), style: context.textTheme.labelSmall),
+                Text(drink.name, style: context.textTheme.titleMedium),
+                Text(
+                  '${drink.volume}ml - ${NumberFormat.percentPattern().format(drink.alcoholByVolume)}',
+                  style: context.textTheme.labelSmall,
+                ),
+              ],
+            ),
+            const Spacer(),
+            IconButton(onPressed: onDelete, icon: const Icon(Icons.delete_outline))
+          ],
+        ),
       ),
     );
   }
