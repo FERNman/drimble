@@ -27,6 +27,11 @@ class DiaryEntry {
   })  : assert(stomachFullness != null || drinks.isEmpty),
         drinks = UnmodifiableListView(drinks);
 
+  DiaryEntry addDrink(ConsumedDrink drink) {
+    assert(drinks.every((d) => d.id != drink.id));
+    return _copyWith(drinks: [...drinks, drink]);
+  }
+
   DiaryEntry upsertDrink(String id, ConsumedDrink drink) {
     if (drinks.any((d) => d.id == id)) {
       return _copyWith(drinks: drinks.map((d) => d.id == id ? drink : d).toList());

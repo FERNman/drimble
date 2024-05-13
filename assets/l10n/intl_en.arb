@@ -248,5 +248,6 @@
   "diary_selectedWeek": "selected week",
   "diary_ofAlcohol": "of alcohol",
   "select_stomach_fullness_description": "Eating before drinking influences how fast alcohol is absorbed and metabolizes.",
-  "select_stomach_fullness_title": "How much did you eat today before drinking?"
+  "select_stomach_fullness_title": "How much did you eat today before drinking?",
+  "diary_quickAdd": "Quick add"
 }

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -25,6 +26,11 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
 
   Future<void> removeGlassOfWater() async {
     await _diaryRepository.saveDiaryEntry(state.diaryEntry.removeGlassOfWater());
+  }
+
+  Future<void> addDrinkFromRecent(ConsumedDrink drink) async {
+    final copiedDrink = ConsumedDrink.deepCopy(drink, startTime: DateTime.now());
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry.addDrink(copiedDrink));
   }
 
   Future<void> removeDrink(ConsumedDrink drink) async {
@@ -61,11 +67,20 @@ class DiaryEntryCubitState {
   final int calories;
   final int glassesOfWater;
 
+  final List<ConsumedDrink> recentDrinks;
+
   DiaryEntryCubitState._({required this.diaryEntry, required this.calculationResults})
-      : drinks = diaryEntry.drinks,
+      : drinks = diaryEntry.drinks.sortedByCompare((el) => el.startTime, (lhs, rhs) => rhs.compareTo(lhs)),
+        recentDrinks = _distinctDrinksByName(diaryEntry),
         gramsOfAlcohol = diaryEntry.gramsOfAlcohol,
         calories = diaryEntry.calories,
         glassesOfWater = diaryEntry.glassesOfWater;
+
+  static List<ConsumedDrink> _distinctDrinksByName(DiaryEntry diaryEntry) => diaryEntry.drinks
+      .sortedByCompare((el) => el.startTime, (lhs, rhs) => rhs.compareTo(lhs))
+      .groupFoldBy<String, ConsumedDrink>((el) => el.name, (p, el) => p ?? el) // Use p to retain order
+      .values
+      .toList();
 
   factory DiaryEntryCubitState.initial(DiaryEntry diaryEntry) => DiaryEntryCubitState._(
         diaryEntry: diaryEntry,
