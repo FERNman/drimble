@@ -52,13 +52,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_bodyCompositionOverweight => 'Overweight';
 
   @override
-  String get common_stomachFullnessEmpty => 'Empty';
+  String get common_stomachFullnessEmpty => 'Nothing';
 
   @override
-  String get common_stomachFullnessNormal => 'Normal';
+  String get common_stomachFullnessLittle => 'A little bit';
 
   @override
-  String get common_stomachFullnessFull => 'Full';
+  String get common_stomachFullnessNormal => 'A normal amount';
+
+  @override
+  String get common_stomachFullnessFull => 'A lot';
+
+  @override
+  String get common_save => 'Save';
 
   @override
   String get remove_drink_title => 'Remove drink';
@@ -497,4 +503,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diary_ofAlcohol => 'of alcohol';
+
+  @override
+  String get select_stomach_fullness_description => 'Eating before drinking influences how fast alcohol is absorbed and metabolizes.';
+
+  @override
+  String get select_stomach_fullness_title => 'How much did you eat today before drinking?';
 }

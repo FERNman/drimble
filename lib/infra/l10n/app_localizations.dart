@@ -172,20 +172,32 @@ abstract class AppLocalizations {
   /// No description provided for @common_stomachFullnessEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Empty'**
+  /// **'Nothing'**
   String get common_stomachFullnessEmpty;
+
+  /// No description provided for @common_stomachFullnessLittle.
+  ///
+  /// In en, this message translates to:
+  /// **'A little bit'**
+  String get common_stomachFullnessLittle;
 
   /// No description provided for @common_stomachFullnessNormal.
   ///
   /// In en, this message translates to:
-  /// **'Normal'**
+  /// **'A normal amount'**
   String get common_stomachFullnessNormal;
 
   /// No description provided for @common_stomachFullnessFull.
   ///
   /// In en, this message translates to:
-  /// **'Full'**
+  /// **'A lot'**
   String get common_stomachFullnessFull;
+
+  /// No description provided for @common_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get common_save;
 
   /// No description provided for @remove_drink_title.
   ///
@@ -960,6 +972,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'of alcohol'**
   String get diary_ofAlcohol;
+
+  /// No description provided for @select_stomach_fullness_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Eating before drinking influences how fast alcohol is absorbed and metabolizes.'**
+  String get select_stomach_fullness_description;
+
+  /// No description provided for @select_stomach_fullness_title.
+  ///
+  /// In en, this message translates to:
+  /// **'How much did you eat today before drinking?'**
+  String get select_stomach_fullness_title;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

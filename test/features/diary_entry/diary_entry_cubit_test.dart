@@ -28,12 +28,11 @@ class FakeDiaryRepository extends Fake implements DiaryRepository {
     return _entries.stream.map((entries) => entries[id]!);
   }
 
-  DiaryEntry _addId(DiaryEntry diaryEntry) => DiaryEntry.withDrinks(
-        DiaryEntry(
-          id: diaryEntry.id ?? faker.guid.guid(),
-          date: diaryEntry.date,
-          glassesOfWater: diaryEntry.glassesOfWater,
-        ),
+  DiaryEntry _addId(DiaryEntry diaryEntry) => DiaryEntry(
+        id: diaryEntry.id ?? faker.guid.guid(),
+        date: diaryEntry.date,
+        stomachFullness: diaryEntry.stomachFullness,
+        glassesOfWater: diaryEntry.glassesOfWater,
         drinks: List.unmodifiable(diaryEntry.drinks),
       );
 }

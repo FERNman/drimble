@@ -34,9 +34,11 @@
   "common_bodyCompositionAthletic": "Athletic",
   "common_bodyCompositionAverage": "Average",
   "common_bodyCompositionOverweight": "Overweight",
-  "common_stomachFullnessEmpty": "Empty",
-  "common_stomachFullnessNormal": "Normal",
-  "common_stomachFullnessFull": "Full",
+  "common_stomachFullnessEmpty": "Nothing",
+  "common_stomachFullnessLittle": "A little bit",
+  "common_stomachFullnessNormal": "A normal amount",
+  "common_stomachFullnessFull": "A lot",
+  "common_save": "Save",
   "remove_drink_title": "Remove drink",
   "remove_drink_description": "Are you sure you want to remove this drink?",
   "remove_drink_cancel": "Cancel",
@@ -244,5 +246,7 @@
   "diary_kcalInTotal": "in total",
   "diary_water": "Water",
   "diary_selectedWeek": "selected week",
-  "diary_ofAlcohol": "of alcohol"
+  "diary_ofAlcohol": "of alcohol",
+  "select_stomach_fullness_description": "Eating before drinking influences how fast alcohol is absorbed and metabolizes.",
+  "select_stomach_fullness_title": "How much did you eat today before drinking?"
 }
