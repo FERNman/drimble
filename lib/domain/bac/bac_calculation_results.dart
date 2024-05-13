@@ -35,11 +35,6 @@ class BACCalculationResults {
     return results.firstWhereOrNull((element) => element.value > Alcohol.soberLimit)?.time;
   }
 
-  static List<BACEntry> _generateEmptyResults(DateTime startTime, DateTime endTime, Duration timestep) {
-    final itemCount = (endTime.difference(startTime).inMinutes / timestep.inMinutes).round();
-    return List.generate(itemCount, (i) => BACEntry.sober(startTime.add(timestep * i)));
-  }
-
   final List<BACEntry> _results;
   final DateTime? timeOfFirstDrink;
   final DateTime? soberAt;
@@ -51,11 +46,11 @@ class BACCalculationResults {
         soberAt = _findFirstSoberEntry(_results),
         maxBAC = _results.reduce((max, el) => max.value > el.value ? max : el);
 
+  // TODO: Refactor the usage of this class to avoid the need for this constructor
   BACCalculationResults.empty({
     required DateTime startTime,
     required DateTime endTime,
-    required Duration timestep,
-  })  : _results = _generateEmptyResults(startTime, endTime, timestep),
+  })  : _results = [BACEntry.sober(startTime), BACEntry.sober(endTime)],
         timeOfFirstDrink = null,
         soberAt = startTime,
         maxBAC = BACEntry.sober(startTime);
@@ -83,4 +78,11 @@ class BACCalculationResults {
       return max.value > el.value ? max : el;
     });
   }
+
+  @override
+  operator ==(Object other) =>
+      identical(this, other) || other is BACCalculationResults && const ListEquality().equals(_results, other._results);
+
+  @override
+  int get hashCode => _results.hashCode;
 }

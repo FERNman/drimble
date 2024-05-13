@@ -1,6 +1,5 @@
 import 'package:drimble/data/diary_repository.dart';
-import 'package:drimble/data/user_repository.dart';
-import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/features/diary/diary_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -9,58 +8,131 @@ import 'package:mockito/mockito.dart';
 import '../../generate_entities.dart';
 import 'diary_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<UserRepository>(), MockSpec<DiaryRepository>()])
+@GenerateNiceMocks([MockSpec<DiaryRepository>()])
 void main() {
   group(DiaryCubit, () {
-    final user = generateUser();
-
-    final userRepository = MockUserRepository();
     final diaryRepository = MockDiaryRepository();
 
+    final initialDate = faker.date.date().floorToWeek().add(days: 4); // friday
+    final weekStartDate = initialDate.floorToWeek();
+    final weekEndDate = weekStartDate.add(days: 6);
+
     setUp(() {
-      when(userRepository.loadUser()).thenAnswer((_) => Future.value(user));
+      reset(diaryRepository);
     });
 
-    test('should not throw an exception for a state with no diary entry', () async {
-      when(diaryRepository.observeEntryOnDate(any)).thenAnswer((_) => Stream.value(null));
+    test('should load the diary entries', () async {
+      final diaryEntries = [
+        generateDiaryEntry(date: initialDate.subtract(days: 1)),
+        generateDiaryEntry(date: initialDate),
+        generateDiaryEntry(date: initialDate.add(days: 2)),
+      ];
+      when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
 
-      // TOOD: This potentially throws an exception,
-      // but since the exception is thrown on a different isolate, the test doesn't catch it
-      final cubit = DiaryCubit(userRepository, diaryRepository);
+      final cubit = DiaryCubit(diaryRepository, initialDate);
       await cubit.stream.first;
 
-      expect(cubit.state.drinks, isEmpty);
-    }, timeout: const Timeout(Duration(milliseconds: 500)));
+      expect(cubit.state.selectedDate, initialDate);
+      expect(cubit.state.diaryEntries, Map.fromEntries(diaryEntries.map((entry) => MapEntry(entry.date, entry))));
+      expect(cubit.state.selectedDiaryEntry, diaryEntries[1]);
+    });
 
-    group('setGlassesOfWater', () {
-      test('should update the glasses of water to the specified amount if a diary entry exists already', () async {
-        final diaryEntry = generateDiaryEntry();
-        when(diaryRepository.observeEntryOnDate(any)).thenAnswer((_) => Stream.value(diaryEntry));
+    test('should not throw an exception for a state with no diary entries', () async {
+      when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value([]));
 
-        final cubit = DiaryCubit(userRepository, diaryRepository);
+      final cubit = DiaryCubit(diaryRepository, initialDate);
+      await cubit.stream.first;
+
+      expect(cubit.state.selectedDate, initialDate);
+      expect(cubit.state.diaryEntries, isEmpty);
+      expect(cubit.state.selectedDiaryEntry, isNull);
+    });
+
+    test('should only load the diary entries once', () async {
+      final diaryEntries = [
+        generateDiaryEntry(date: initialDate.subtract(days: 1)),
+        generateDiaryEntry(date: initialDate),
+        generateDiaryEntry(date: initialDate.add(days: 2)),
+      ];
+      when(diaryRepository.observeEntriesBetween(weekStartDate, weekEndDate))
+          .thenAnswer((_) => Stream.value(diaryEntries));
+
+      final cubit = DiaryCubit(diaryRepository, initialDate);
+      await cubit.stream.first;
+
+      verify(diaryRepository.observeEntriesBetween(weekStartDate, weekEndDate)).called(1);
+    });
+
+    group('switchDate', () {
+      test('should switch the selected date', () async {
+        final diaryEntries = [
+          generateDiaryEntry(date: initialDate),
+          generateDiaryEntry(date: initialDate.add(days: 1)),
+        ];
+        when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = DiaryCubit(diaryRepository, initialDate);
         await cubit.stream.first;
 
-        const glassesOfWater = 5;
-        await cubit.setGlassesOfWater(glassesOfWater);
+        final newDate = initialDate.add(days: 1);
+        await cubit.switchDate(newDate);
 
-        final capturedDiaryEntry = verify(diaryRepository.saveDiaryEntry(captureAny)).captured.single as DiaryEntry;
-        expect(capturedDiaryEntry.date, diaryEntry.date);
-        expect(capturedDiaryEntry.glassesOfWater, glassesOfWater);
+        expect(cubit.state.selectedDate, newDate);
+        expect(cubit.state.selectedDiaryEntry, diaryEntries[1]);
       });
 
-      test('should create a new diary entry with the given amount of glasses of water if no diary entry exists',
-          () async {
-        when(diaryRepository.observeEntryOnDate(any)).thenAnswer((_) => Stream.value(null));
+      test('should allow switching to a date with no diary entry', () async {
+        final diaryEntries = [
+          generateDiaryEntry(date: initialDate),
+        ];
+        when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
 
-        final cubit = DiaryCubit(userRepository, diaryRepository);
+        final cubit = DiaryCubit(diaryRepository, initialDate);
         await cubit.stream.first;
 
-        const glassesOfWater = 5;
-        await cubit.setGlassesOfWater(glassesOfWater);
+        final newDate = initialDate.add(days: 1);
+        await cubit.switchDate(newDate);
 
-        final capturedDiaryEntry = verify(diaryRepository.saveDiaryEntry(captureAny)).captured.single as DiaryEntry;
-        expect(capturedDiaryEntry.date, cubit.state.date);
-        expect(capturedDiaryEntry.glassesOfWater, glassesOfWater);
+        expect(cubit.state.selectedDate, newDate);
+        expect(cubit.state.selectedDiaryEntry, isNull);
+      });
+
+      test('should not reload the diary entries if the new date is in the same week', () async {
+        final diaryEntries = [
+          generateDiaryEntry(date: initialDate.subtract(days: 1)),
+          generateDiaryEntry(date: initialDate),
+          generateDiaryEntry(date: initialDate.add(days: 2)),
+        ];
+        when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = DiaryCubit(diaryRepository, initialDate);
+        await cubit.stream.first;
+
+        verify(diaryRepository.observeEntriesBetween(weekStartDate, weekEndDate));
+
+        final newDate = initialDate.add(days: 1);
+        await cubit.switchDate(newDate);
+
+        expect(cubit.state.weekStartDate, initialDate.floorToWeek());
+        expect(cubit.state.weekEndDate, initialDate.floorToWeek().add(days: 6));
+        verifyNever(diaryRepository.observeEntriesBetween(any, any));
+      });
+
+      test('should reload the diary entries if the new date is in a different week', () async {
+        final diaryEntries = [
+          generateDiaryEntry(date: initialDate.subtract(days: 1)),
+          generateDiaryEntry(date: initialDate),
+          generateDiaryEntry(date: initialDate.add(days: 2)),
+        ];
+        when(diaryRepository.observeEntriesBetween(any, any)).thenAnswer((_) => Stream.value(diaryEntries));
+
+        final cubit = DiaryCubit(diaryRepository, initialDate);
+        await cubit.stream.first;
+
+        final newDate = initialDate.add(days: 8);
+        await cubit.switchDate(newDate);
+
+        verify(diaryRepository.observeEntriesBetween(newDate.floorToWeek(), newDate.floorToWeek().add(days: 6)));
       });
     });
   });

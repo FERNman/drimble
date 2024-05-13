@@ -17,13 +17,13 @@ class DiaryBACChart extends StatefulWidget {
   static const displayRange = Duration(hours: 5);
 
   final BACCalculationResults results;
-  final Date currentDate;
+  final Date date;
 
-  bool get isShowingToday => currentDate == Date.today();
+  bool get isShowingToday => date == Date.today();
 
   const DiaryBACChart({
     required this.results,
-    required this.currentDate,
+    required this.date,
     super.key,
   });
 
@@ -36,7 +36,7 @@ class _DiaryBACChartState extends State<DiaryBACChart> {
   DateTime get _displayStart => __displayStart;
 
   set _displayStart(DateTime value) {
-    final startTime = widget.currentDate.toDateTime();
+    final startTime = widget.date.toDateTime();
     final endTime = startTime.add(const Duration(days: 1)).subtract(DiaryBACChart.displayRange);
     if (value.isBefore(startTime)) {
       value = startTime;
@@ -141,7 +141,7 @@ class _DiaryBACChartState extends State<DiaryBACChart> {
       _startRedrawTimer();
     } else {
       _displayStart =
-          widget.results.timeOfFirstDrink?.subtract(DiaryBACChart.timeOffset) ?? DateTime.now().setDate(widget.currentDate);
+          widget.results.timeOfFirstDrink?.subtract(DiaryBACChart.timeOffset) ?? DateTime.now().setDate(widget.date);
     }
   }
 
