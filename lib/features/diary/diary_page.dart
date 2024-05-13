@@ -6,11 +6,14 @@ import '../../router.gr.dart';
 import '../common/widgets/remove_drink_dialog.dart';
 import '../diary_calendar/diary_calendar.dart';
 import 'diary_cubit.dart';
-import 'widgets/bac_chart.dart';
-import 'widgets/bac_chart_title.dart';
 import 'widgets/diary_app_bar.dart';
+import 'widgets/diary_bac_chart.dart';
 import 'widgets/diary_consumed_drinks.dart';
+import 'widgets/diary_current_bac.dart';
+import 'widgets/diary_drink_free_day.dart';
+import 'widgets/diary_mark_as_drink_free.dart';
 import 'widgets/diary_statistics.dart';
+import 'widgets/diary_water_tracking.dart';
 
 @RoutePage()
 class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
@@ -38,19 +41,45 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
             ),
             _buildCalendar(),
             const SizedBox(height: 24),
-            _buildTitle(),
-            const SizedBox(height: 18),
-            _buildChart(),
-            const SizedBox(height: 24),
-            _buildStatistics(),
-            const SizedBox(height: 24),
-            _buildRecentDrinks(),
-            const SizedBox(height: 16),
+            BlocBuilder<DiaryCubit, DiaryCubitState>(
+              buildWhen: (previous, current) =>
+                  previous.diaryEntry?.isDrinkFreeDay != current.diaryEntry?.isDrinkFreeDay,
+              builder: (context, state) {
+                if (state.diaryEntry == null) {
+                  return DiaryMarkAsDrinkFree(
+                    onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+                  );
+                }
+
+                if (state.diaryEntry!.isDrinkFreeDay == true) {
+                  return const DiaryDrinkFreeDay();
+                }
+
+                return _buildBody();
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: _buildFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  Widget _buildBody() {
+    return Column(
+      children: [
+        _buildCurrentBAC(),
+        const SizedBox(height: 24),
+        _buildBACChart(),
+        const SizedBox(height: 24),
+        _buildWaterTracking(),
+        const SizedBox(height: 24),
+        _buildStatistics(),
+        const SizedBox(height: 24),
+        _buildConsumedDrinks(),
+        const SizedBox(height: 100),
+      ],
     );
   }
 
@@ -66,26 +95,41 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildCurrentBAC() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
       builder: (context, state) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: BACChartTitle(
+        child: DiaryCurrentBAC(
           date: state.date,
           results: state.calculationResults,
-          diaryEntry: state.diaryEntry,
-          onMarkAsDrinkFreeDay: () => context.read<DiaryCubit>().markAsDrinkFreeDay(),
+          diaryEntry: state.diaryEntry!,
         ),
       ),
     );
   }
 
-  Widget _buildChart() {
+  Widget _buildBACChart() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
       buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
-      builder: (context, state) => BACChart(
+      builder: (context, state) => DiaryBACChart(
         results: state.calculationResults,
         currentDate: state.date,
+      ),
+    );
+  }
+
+  Widget _buildWaterTracking() {
+    return BlocBuilder<DiaryCubit, DiaryCubitState>(
+      buildWhen: (previous, current) => previous.glassesOfWater != current.glassesOfWater,
+      builder: (context, state) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: DiaryWaterTracking(
+          value: state.glassesOfWater,
+          onValueChange: (glassesOfWater) {
+            context.read<DiaryCubit>().setGlassesOfWater(glassesOfWater);
+          },
+        ),
       ),
     );
   }
@@ -96,7 +140,6 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
       builder: (context, state) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: DiaryStatistics(
-          numberOfConsumedDrinks: state.drinks.length,
           gramsOfAlcohol: state.gramsOfAlcohol,
           calories: state.calories,
         ),
@@ -104,14 +147,10 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
     );
   }
 
-  Widget _buildRecentDrinks() {
+  Widget _buildConsumedDrinks() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
       buildWhen: (previous, current) => previous.drinks != current.drinks,
       builder: (context, state) {
-        if (state.drinks.isEmpty) {
-          return const SizedBox();
-        }
-
         return DiaryConsumedDrinks(
           state.drinks,
           onEdit: (drink) {
@@ -129,9 +168,6 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
                 },
               ),
             );
-          },
-          onViewAll: () {
-            context.router.push(TodaysDrinksRoute(date: state.date));
           },
         );
       },

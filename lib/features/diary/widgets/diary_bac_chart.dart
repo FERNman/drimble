@@ -11,7 +11,7 @@ import '../../common/build_context_extensions.dart';
 import '../../common/line_chart/horizontal_line_chart_labels.dart';
 import '../../common/line_chart/line_chart.dart';
 
-class BACChart extends StatefulWidget {
+class DiaryBACChart extends StatefulWidget {
   static const timestep = Duration(minutes: 5);
   static const timeOffset = Duration(minutes: 45);
   static const displayRange = Duration(hours: 5);
@@ -21,23 +21,23 @@ class BACChart extends StatefulWidget {
 
   bool get isShowingToday => currentDate == Date.today();
 
-  const BACChart({
+  const DiaryBACChart({
     required this.results,
     required this.currentDate,
     super.key,
   });
 
   @override
-  State<BACChart> createState() => _BACChartState();
+  State<DiaryBACChart> createState() => _DiaryBACChartState();
 }
 
-class _BACChartState extends State<BACChart> {
+class _DiaryBACChartState extends State<DiaryBACChart> {
   DateTime __displayStart = DateTime.now();
   DateTime get _displayStart => __displayStart;
 
   set _displayStart(DateTime value) {
     final startTime = widget.currentDate.toDateTime();
-    final endTime = startTime.add(const Duration(days: 1)).subtract(BACChart.displayRange);
+    final endTime = startTime.add(const Duration(days: 1)).subtract(DiaryBACChart.displayRange);
     if (value.isBefore(startTime)) {
       value = startTime;
     } else if (value.isAfter(endTime)) {
@@ -52,7 +52,7 @@ class _BACChartState extends State<BACChart> {
   Timer? refreshTimer;
 
   int get _currentBacIndex =>
-      (DateTime.now().difference(_displayStart).inMinutes / BACChart.timestep.inMinutes).floor();
+      (DateTime.now().difference(_displayStart).inMinutes / DiaryBACChart.timestep.inMinutes).floor();
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _BACChartState extends State<BACChart> {
   }
 
   @override
-  void didUpdateWidget(BACChart oldWidget) {
+  void didUpdateWidget(DiaryBACChart oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _initializeDisplayStart();
@@ -105,8 +105,8 @@ class _BACChartState extends State<BACChart> {
   List<double> _getChartData() {
     final List<double> spots = [];
 
-    final displayEnd = _displayStart.add(BACChart.displayRange);
-    for (var time = _displayStart; time.isBefore(displayEnd); time = time.add(BACChart.timestep)) {
+    final displayEnd = _displayStart.add(DiaryBACChart.displayRange);
+    for (var time = _displayStart; time.isBefore(displayEnd); time = time.add(DiaryBACChart.timestep)) {
       final currentEntry = widget.results.getEntryAt(time);
       spots.add(currentEntry.value);
     }
@@ -118,9 +118,9 @@ class _BACChartState extends State<BACChart> {
     final List<ChartLabelData> data = [];
 
     final firstFullHour = _displayStart.copyWith(hour: _displayStart.hour + 1, minute: 0);
-    final displayEnd = _displayStart.add(BACChart.displayRange);
+    final displayEnd = _displayStart.add(DiaryBACChart.displayRange);
     for (var hour = firstFullHour; hour.isBefore(displayEnd); hour = hour.add(const Duration(hours: 1))) {
-      final percentageOfChart = hour.difference(_displayStart).inMinutes / BACChart.displayRange.inMinutes;
+      final percentageOfChart = hour.difference(_displayStart).inMinutes / DiaryBACChart.displayRange.inMinutes;
 
       data.add(ChartLabelData(
         offset: percentageOfChart,
@@ -136,12 +136,12 @@ class _BACChartState extends State<BACChart> {
 
   void _initializeDisplayStart() {
     if (widget.isShowingToday) {
-      _displayStart = DateTime.now().subtract(BACChart.timeOffset);
+      _displayStart = DateTime.now().subtract(DiaryBACChart.timeOffset);
 
       _startRedrawTimer();
     } else {
       _displayStart =
-          widget.results.timeOfFirstDrink?.subtract(BACChart.timeOffset) ?? DateTime.now().setDate(widget.currentDate);
+          widget.results.timeOfFirstDrink?.subtract(DiaryBACChart.timeOffset) ?? DateTime.now().setDate(widget.currentDate);
     }
   }
 
