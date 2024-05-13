@@ -1,38 +1,51 @@
 import 'package:drimble/domain/alcohol/alcohol.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../generate_entities.dart';
 
 void main() {
   group(DiaryEntry, () {
+    test('should throw an assertion when creating a DiaryEntry with drinks and no stomach fullness', () {
+      expect(() => DiaryEntry(date: faker.date.date(), drinks: [generateConsumedDrink()]), throwsAssertionError);
+    });
+
     group('drinks', () {
       test('should be empty by default', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = DiaryEntry(date: faker.date.date());
         expect(diaryEntry.drinks, []);
       });
 
       test('should be unmodifiable', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = DiaryEntry(date: faker.date.date());
         expect(() => diaryEntry.drinks.add(generateConsumedDrink()), throwsUnsupportedError);
       });
 
       test('should be the same as the drinks passed to the constructor', () {
         final drinks = [generateConsumedDrink(), generateConsumedDrink()];
-        final diaryEntry = generateDiaryEntry(drinks: drinks);
+        final diaryEntry = DiaryEntry(
+          date: faker.date.date(),
+          stomachFullness: StomachFullness.full,
+          drinks: drinks,
+        );
         expect(diaryEntry.drinks, drinks);
       });
     });
 
     group('isDrinkFreeDay', () {
       test('should be true if there are no drinks', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = DiaryEntry(date: faker.date.date());
         final result = diaryEntry.isDrinkFreeDay;
         expect(result, true);
       });
 
       test('should be false if there are drinks', () {
-        final diaryEntry = generateDiaryEntry(drinks: [generateConsumedDrink()]);
+        final diaryEntry = DiaryEntry(
+          date: faker.date.date(),
+          stomachFullness: StomachFullness.litte,
+          drinks: [generateConsumedDrink()],
+        );
         final result = diaryEntry.isDrinkFreeDay;
         expect(result, false);
       });
@@ -40,7 +53,7 @@ void main() {
 
     group('gramsOfAlcohol', () {
       test('should be 0 if there are no drinks', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = DiaryEntry(date: faker.date.date());
         final result = diaryEntry.gramsOfAlcohol;
         expect(result, 0);
       });
@@ -57,7 +70,7 @@ void main() {
 
     group('calories', () {
       test('should be 0 if there are no drinks', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = generateDiaryEntry(drinks: []);
         final result = diaryEntry.calories;
         expect(result, 0);
       });
@@ -74,7 +87,7 @@ void main() {
 
     group('upsertDrink', () {
       test('should add the drink if it does not exist', () {
-        final diaryEntry = generateDiaryEntry();
+        final diaryEntry = generateDiaryEntry(stomachFullness: StomachFullness.full);
         final drink = generateConsumedDrink();
         final updatedDiaryEntry = diaryEntry.upsertDrink(drink.id, drink);
         expect(updatedDiaryEntry.drinks, [drink]);
@@ -119,6 +132,14 @@ void main() {
         final diaryEntry = generateDiaryEntry(glassesOfWater: 0);
         final updatedDiaryEntry = diaryEntry.removeGlassOfWater();
         expect(updatedDiaryEntry.glassesOfWater, 0);
+      });
+    });
+
+    group('setStomachFullness', () {
+      test('should set the stomach fullness of the diary entry', () {
+        final diaryEntry = generateDiaryEntry();
+        final updatedDiaryEntry = diaryEntry.setStomachFullness(StomachFullness.full);
+        expect(updatedDiaryEntry.stomachFullness, StomachFullness.full);
       });
     });
   });
