@@ -21,19 +21,15 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
   }
 
   Future<void> addGlassOfWater() async {
-    final diaryEntry = state.diaryEntry.copyWith(glassesOfWater: state.diaryEntry.glassesOfWater + 1);
-    await _diaryRepository.saveDiaryEntry(diaryEntry);
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry.addGlassOfWater());
   }
 
   Future<void> removeGlassOfWater() async {
-    if (state.diaryEntry.glassesOfWater > 0) {
-      final diaryEntry = state.diaryEntry.copyWith(glassesOfWater: state.diaryEntry.glassesOfWater - 1);
-      await _diaryRepository.saveDiaryEntry(diaryEntry);
-    }
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry.removeGlassOfWater());
   }
 
-  Future<void> deleteDrink(ConsumedDrink drink) async {
-    await _diaryRepository.removeDrinkFromDiaryEntry(state.diaryEntry, drink);
+  Future<void> removeDrink(ConsumedDrink drink) async {
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry.removeDrink(drink.id));
   }
 
   void _subscribeToDiaryEntryChanges(DiaryEntry diaryEntry) {

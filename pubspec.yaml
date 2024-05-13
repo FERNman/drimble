@@ -1,9 +1,9 @@
 name: drimble
 description: Make yesterdays hangover the last.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0+3
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: ">=3.2.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -29,6 +29,7 @@ dependencies:
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.0.0
   json_annotation: ^4.8.1
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:

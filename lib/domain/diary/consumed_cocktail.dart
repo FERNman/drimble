@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 
 import '../alcohol/alcohol.dart';
+import '../alcohol/cocktail.dart';
 import '../alcohol/drink_category.dart';
 import '../alcohol/ingredient.dart';
 import 'consumed_drink.dart';
@@ -45,22 +46,28 @@ class ConsumedCocktail extends ConsumedDrink {
         duration: duration ?? this.duration,
       );
 
-  factory ConsumedCocktail.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) =>
-      ConsumedCocktail(
-        id: snapshot.id,
-        name: snapshot['name'] as String,
-        iconPath: snapshot['iconPath'] as String,
-        volume: snapshot['volume'] as int,
-        ingredients: (snapshot['ingredients'] as List).map((e) => Ingredient.fromFirestore(e)).toList(),
-        startTime: (snapshot['startTime'] as Timestamp).toDate(),
-        duration: Duration(milliseconds: snapshot['duration'] as int),
+  factory ConsumedCocktail.fromDrink(Cocktail drink, {required DateTime startTime}) => ConsumedCocktail(
+        name: drink.name,
+        iconPath: drink.iconPath,
+        volume: drink.volume,
+        ingredients: drink.ingredients,
+        startTime: startTime,
+        duration: drink.defaultDuration,
+      );
+
+  factory ConsumedCocktail.fromJSON(Map<String, dynamic> json) => ConsumedCocktail(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        iconPath: json['iconPath'] as String,
+        volume: json['volume'] as int,
+        ingredients: (json['ingredients'] as List).map((e) => Ingredient.fromJSON(e)).toList(),
+        startTime: (json['startTime'] as Timestamp).toDate(),
+        duration: Duration(milliseconds: json['duration'] as int),
       );
 
   @override
-  Map<String, dynamic> toFirestore() => {
+  Map<String, dynamic> toJSON() => {
+        'id': id,
         'name': name,
         'iconPath': iconPath,
         'category': category.toString(),
@@ -68,7 +75,7 @@ class ConsumedCocktail extends ConsumedDrink {
         'alcoholByVolume': alcoholByVolume,
         'startTime': startTime,
         'duration': duration.inMilliseconds,
-        'ingredients': ingredients.map((e) => e.toFirestore()).toList(),
+        'ingredients': ingredients.map((e) => e.toJSON()).toList(),
         'type': 'cocktail', // Inheritance
       };
 }

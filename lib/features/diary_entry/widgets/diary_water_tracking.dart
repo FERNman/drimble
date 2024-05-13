@@ -37,12 +37,12 @@ class DiaryWaterTracking extends StatelessWidget {
                       amount,
                       (index) => IconButton(
                         icon: Image.asset('assets/icons/water_glass.png', width: 32),
-                        onPressed: onAdd,
+                        onPressed: onRemove,
                       ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.plus_one),
-                      onPressed: onRemove,
+                      onPressed: onAdd,
                     ),
                   ],
                 ),

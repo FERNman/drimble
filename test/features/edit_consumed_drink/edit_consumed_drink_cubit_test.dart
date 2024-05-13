@@ -1,7 +1,7 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/drinks_repository.dart';
-import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
+import 'package:drimble/domain/diary/diary_entry.dart';
 import 'package:drimble/features/edit_consumed_drink/edit_consumed_drink_cubit.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +15,52 @@ import 'edit_consumed_drink_cubit_test.mocks.dart';
 void main() {
   group(EditConsumedDrinkCubit, () {
     final date = faker.date.dateTime();
-    final diaryEntry = generateDiaryEntry(date: date.toDate());
+
+    group('save', () {
+      test('should save the diary entry with the original drink if no properties were changed', () async {
+        final diaryRepository = MockDiaryRepository();
+        final drinksRepository = MockDrinksRepository();
+
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(drinks: [consumedDrink]);
+
+        final cubit = EditConsumedDrinkCubit(
+          diaryRepository,
+          drinksRepository,
+          diaryEntry: diaryEntry,
+          consumedDrink: consumedDrink,
+        );
+
+        await cubit.save();
+
+        final updatedDiaryEntry = verify(diaryRepository.saveDiaryEntry(captureAny)).captured.first as DiaryEntry;
+        expect(updatedDiaryEntry.drinks, hasLength(1));
+        expect(updatedDiaryEntry.drinks.first, consumedDrink);
+      });
+
+      test('should save the diary entry with the updated drinks after changing a property', () async {
+        final diaryRepository = MockDiaryRepository();
+        final drinksRepository = MockDrinksRepository();
+
+        final consumedDrink = generateConsumedDrink(volume: 200);
+        final diaryEntry = generateDiaryEntry(drinks: [consumedDrink]);
+
+        final cubit = EditConsumedDrinkCubit(
+          diaryRepository,
+          drinksRepository,
+          diaryEntry: diaryEntry,
+          consumedDrink: consumedDrink,
+        );
+
+        const volume = 100;
+        cubit.updateVolume(volume);
+        await cubit.save();
+
+        final updatedDiaryEntry = verify(diaryRepository.saveDiaryEntry(captureAny)).captured.first as DiaryEntry;
+        expect(updatedDiaryEntry.drinks, hasLength(1));
+        expect(updatedDiaryEntry.drinks.first.volume, volume);
+      });
+    });
 
     group('updateStartTime', () {
       test('should correctly update the date if the time is before 6am', () {
@@ -24,7 +69,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
-          diaryEntry: diaryEntry,
+          diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
         );
 
@@ -40,7 +85,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
-          diaryEntry: diaryEntry,
+          diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
         );
 
@@ -56,7 +101,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           MockDrinksRepository(),
-          diaryEntry: diaryEntry,
+          diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
         );
 
@@ -81,7 +126,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           mockDrinksRepository,
-          diaryEntry: diaryEntry,
+          diaryEntry: generateDiaryEntry(drinks: [consumedCocktail]),
           consumedDrink: consumedCocktail,
         );
 
@@ -94,7 +139,7 @@ void main() {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
           mockDrinksRepository,
-          diaryEntry: diaryEntry,
+          diaryEntry: generateDiaryEntry(drinks: [consumedCocktail]),
           consumedDrink: consumedCocktail,
         );
 
