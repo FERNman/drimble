@@ -15,15 +15,7 @@ void main() {
         generateIngredient(percentOfCocktailVolume: percentPerIngredient, alcoholByVolume: abvPerIngredient),
         generateIngredient(percentOfCocktailVolume: percentPerIngredient, alcoholByVolume: abvPerIngredient),
       ];
-      final consumedCocktail = ConsumedCocktail(
-        id: 'id',
-        name: 'name',
-        iconPath: 'iconPath',
-        volume: volume,
-        ingredients: ingredients,
-        startTime: DateTime.now(),
-        duration: Duration.zero,
-      );
+      final consumedCocktail = generateConsumedCocktail(volume: volume, ingredients: ingredients);
 
       final expectedAlcoholByVolume = percentPerIngredient * abvPerIngredient * ingredients.length;
       expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);
@@ -35,15 +27,7 @@ void main() {
         generateIngredient(percentOfCocktailVolume: 0.25, alcoholByVolume: 0.5),
         generateIngredient(percentOfCocktailVolume: 0.5, alcoholByVolume: 0.5),
       ];
-      final consumedCocktail = ConsumedCocktail(
-        id: 'id',
-        name: 'name',
-        iconPath: 'iconPath',
-        volume: volume,
-        ingredients: ingredients,
-        startTime: DateTime.now(),
-        duration: Duration.zero,
-      );
+      final consumedCocktail = generateConsumedCocktail(volume: volume, ingredients: ingredients);
 
       final expectedAlcoholByVolume = ingredients.map((e) => e.alcoholByVolume * e.percentOfCocktailVolume).sum;
       expect(consumedCocktail.alcoholByVolume, expectedAlcoholByVolume);

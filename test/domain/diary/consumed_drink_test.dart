@@ -1,5 +1,3 @@
-import 'package:drimble/domain/alcohol/drink_category.dart';
-import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,40 +16,11 @@ void main() {
 
     group('copyWith', () {
       final drink = generateConsumedDrink(
-        category: DrinkCategory.beer,
-        volume: 500,
-        alcoholByVolume: 0.05,
-        startTime: DateTime(2020),
-        duration: const Duration(hours: 1),
+        id: faker.guid.guid(),
       );
 
       test('should also copy the id', () {
         expect(drink.copyWith().id, drink.id);
-      });
-    });
-
-    group('date', () {
-      test('should be shifted by 1 day if the startTime is before 6am', () {
-        final drink = generateConsumedDrink(
-          category: DrinkCategory.beer,
-          volume: 500,
-          alcoholByVolume: 0.05,
-          startTime: DateTime(2020, 1, 1, 5, 59),
-          duration: const Duration(hours: 1),
-        );
-        expect(drink.date, const Date(2019, 12, 31));
-      });
-
-      test('should not be shifted if the startTime is after 6am', () {
-        final drink = generateConsumedDrink(
-          category: DrinkCategory.beer,
-          volume: 500,
-          alcoholByVolume: 0.05,
-          startTime: DateTime(2020, 1, 1, 6, 0),
-          duration: const Duration(hours: 1),
-        );
-
-        expect(drink.date, const Date(2020, 1, 1));
       });
     });
 

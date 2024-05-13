@@ -16,6 +16,12 @@ void main() {
         final diaryEntry = generateDiaryEntry();
         expect(() => diaryEntry.drinks.add(generateConsumedDrink()), throwsUnsupportedError);
       });
+
+      test('should be the same as the drinks passed to the constructor', () {
+        final drinks = [generateConsumedDrink(), generateConsumedDrink()];
+        final diaryEntry = generateDiaryEntry(drinks: drinks);
+        expect(diaryEntry.drinks, drinks);
+      });
     });
 
     group('isDrinkFreeDay', () {
