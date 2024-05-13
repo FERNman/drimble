@@ -141,7 +141,7 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
                 onRemove: () async {
                   await context
                       .read<DiaryEntryCubit>()
-                      .deleteDrink(drink)
+                      .removeDrink(drink)
                       .then((value) => Navigator.pop(dialogContext));
                 },
               ),

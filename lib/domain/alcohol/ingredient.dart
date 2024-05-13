@@ -17,7 +17,7 @@ class Ingredient {
     return (cocktailVolume * percentOfCocktailVolume).round();
   }
 
-  factory Ingredient.fromFirestore(Map<String, dynamic> data) {
+  factory Ingredient.fromJSON(Map<String, dynamic> data) {
     return Ingredient(
       name: data['name'] as String,
       iconPath: data['iconPath'] as String,
@@ -26,7 +26,7 @@ class Ingredient {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toJSON() {
     return {
       'name': name,
       'iconPath': iconPath,
