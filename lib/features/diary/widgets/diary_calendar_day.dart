@@ -3,22 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../domain/date.dart';
+import '../../../domain/diary/diary_entry.dart';
 import '../../../infra/extensions/format_date.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryCalendarDay extends StatelessWidget {
-  static const double width = 72;
-  static const double height = 92;
-
   final Date date;
   final bool isSelected;
-  final bool? isDrinkFreeDay;
+  final DiaryEntry? diaryEntry;
   final GestureTapCallback? onTap;
 
   const DiaryCalendarDay({
     required this.date,
     required this.isSelected,
-    required this.isDrinkFreeDay,
+    required this.diaryEntry,
     required this.onTap,
     super.key,
   });
@@ -26,60 +24,51 @@ class DiaryCalendarDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dayOfWeek = DateFormat(DateFormat.ABBR_WEEKDAY).formatDate(date);
-    final formattedDate = DateFormat('dd').formatDate(date);
 
     final dayOfWeekTextStyle = context.textTheme.labelSmall?.copyWith(
       color: onTap == null ? Colors.black26 : Colors.black87,
       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
     );
 
-    final dateTextStyle = context.textTheme.titleMedium?.copyWith(
-      color: onTap == null ? Colors.black26 : Colors.black87,
-      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-    );
+    final gramsOfAlcohol = diaryEntry == null ? '-' : context.l10n.common_mass(diaryEntry!.gramsOfAlcohol.round());
 
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        border: isSelected ? Border.all() : null,
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-      ),
-      child: InkWell(
+    return InkWell(
         onTap: onTap,
         borderRadius: const BorderRadius.all(Radius.circular(16)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(dayOfWeek.toLowerCase(), style: dayOfWeekTextStyle),
-              Text(formattedDate, style: dateTextStyle),
-              const SizedBox(height: 8),
-              _drawCircleIndicator(),
+              const SizedBox(height: 6),
+              _drawHangoverIndicator(),
+              const SizedBox(height: 6),
+              Text(gramsOfAlcohol, style: dayOfWeekTextStyle),
             ],
           ),
         ),
-      ),
     );
   }
 
-  Widget _drawCircleIndicator() {
+  Widget _drawHangoverIndicator() {
     final container = Container(
-      width: 12,
-      height: 12,
+      width: 28,
+      height: 28,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _getColor(),
+        border: Border.all(color: _getColor(), width: 3, strokeAlign: BorderSide.strokeAlignCenter),
       ),
+      child: Center(child: Text(_getText())),
     );
 
-    if (isDrinkFreeDay == null) {
+    if (diaryEntry == null) {
       return DottedBorder(
         color: onTap == null ? Colors.black26 : Colors.black87,
         borderType: BorderType.Circle,
         dashPattern: const <double>[2, 3],
+        strokeWidth: 2,
         padding: EdgeInsets.zero,
         child: container,
       );
@@ -88,10 +77,20 @@ class DiaryCalendarDay extends StatelessWidget {
     }
   }
 
+  String _getText() {
+    if (diaryEntry == null) {
+      return '';
+    } else if (diaryEntry?.isDrinkFreeDay == true) {
+      return '🥳';
+    } else {
+      return '🤯';
+    }
+  }
+
   Color _getColor() {
-    if (isDrinkFreeDay == null) {
+    if (diaryEntry == null) {
       return Colors.transparent;
-    } else if (isDrinkFreeDay == true) {
+    } else if (diaryEntry?.isDrinkFreeDay == true) {
       return Colors.green;
     } else {
       return Colors.red;

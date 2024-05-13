@@ -6,12 +6,10 @@ import '../../../domain/diary/diary_entry.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryCurrentBAC extends StatelessWidget {
-  final Date date;
   final BACCalculationResults results;
   final DiaryEntry diaryEntry;
 
   const DiaryCurrentBAC({
-    required this.date,
     required this.results,
     required this.diaryEntry,
     super.key,
@@ -32,16 +30,16 @@ class DiaryCurrentBAC extends StatelessWidget {
   }
 
   Widget _buildBAC(BuildContext context) {
-    final text = Date.today() == date
+    final text = Date.today() == diaryEntry.date
         ? TextSpan(
             text: '${results.getEntryAt(DateTime.now())}',
-            style: context.textTheme.displaySmall,
+            style: context.textTheme.headlineMedium,
           )
         : TextSpan(
             children: [
               TextSpan(
                 text: results.maxBAC.toString(),
-                style: context.textTheme.displaySmall,
+                style: context.textTheme.headlineMedium,
               ),
               TextSpan(
                 text: context.l10n.diary_maxBAC,

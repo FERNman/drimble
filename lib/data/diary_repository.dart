@@ -17,22 +17,8 @@ class DiaryRepository {
 
   DiaryRepository(this._auth, this._firestore);
 
-  Stream<List<DiaryEntry>> observeEntriesAfter(Date date) {
-    return _collection
-        .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .where('date', isGreaterThanOrEqualTo: date.toDateTime())
-        .snapshots()
-        .toDiaryEntries(_firestore);
-  }
-
-  Stream<DiaryEntry?> observeEntryOnDate(Date date) {
-    return _collection
-        .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .where('date', isEqualTo: date.toDateTime())
-        .limit(1)
-        .snapshots()
-        .toDiaryEntries(_firestore)
-        .map((event) => event.singleOrNull);
+  Stream<DiaryEntry> observeEntryById(String id) {
+    return _collection.doc(id).snapshots().toDiaryEntry(_firestore);
   }
 
   Stream<List<DiaryEntry>> observeEntriesBetween(Date startDate, Date endDate) {
@@ -42,16 +28,6 @@ class DiaryRepository {
         .where('date', isLessThanOrEqualTo: endDate.toDateTime())
         .snapshots()
         .toDiaryEntries(_firestore);
-  }
-
-  Future<DiaryEntry?> findEntryOnDate(Date date) async {
-    return _collection
-        .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .where('date', isEqualTo: date.toDateTime())
-        .limit(1)
-        .get()
-        .toDiaryEntries(_firestore)
-        .then((value) => value.singleOrNull);
   }
 
   Future<void> saveDiaryEntry(DiaryEntry diaryEntry) async {
@@ -81,7 +57,7 @@ extension _DrinksSubcollection on DocumentReference<DiaryEntry> {
       );
 }
 
-extension _DiaryEntryStreamExtension on Stream<QuerySnapshot<DiaryEntry>> {
+extension _DiaryEntriesStreamExtension on Stream<QuerySnapshot<DiaryEntry>> {
   Stream<List<DiaryEntry>> toDiaryEntries(FirebaseFirestore firestore) {
     return map((event) => event.docs).flatMap((diaryEntriesDocs) => Rx.combineLatestList(diaryEntriesDocs
         .map((diaryEntryDoc) => diaryEntryDoc.reference.drinks
@@ -89,6 +65,15 @@ extension _DiaryEntryStreamExtension on Stream<QuerySnapshot<DiaryEntry>> {
             .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
             .map((drinks) => DiaryEntry.withDrinks(diaryEntryDoc.data(), drinks: drinks)))
         .toList()));
+  }
+}
+
+extension _DiaryEntryStreamExtension on Stream<DocumentSnapshot<DiaryEntry>> {
+  Stream<DiaryEntry> toDiaryEntry(FirebaseFirestore firestore) {
+    return flatMap((diaryEntryDoc) => diaryEntryDoc.reference.drinks
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+        .map((drinks) => DiaryEntry.withDrinks(diaryEntryDoc.data()!, drinks: drinks)));
   }
 }
 

@@ -7,11 +7,11 @@ import '../../domain/date.dart';
 import '../../domain/diary/diary_entry.dart';
 import '../../infra/disposable.dart';
 
-class AnalyticsSwitchWeekCubit extends Cubit<AnalyticsSwitchWeekBaseState> with Disposable {
+class CalendarCubit extends Cubit<CalendarCubitBaseState> with Disposable {
   final DiaryRepository _diaryRepository;
 
-  AnalyticsSwitchWeekCubit(this._diaryRepository, {required Date initialDate})
-      : super(AnalyticsSwitchWeekLoadingState(
+  CalendarCubit(this._diaryRepository, {required Date initialDate})
+      : super(CalendarCubitLoadingState(
           visibleMonth: initialDate.floorToMonth(),
           selectedDate: initialDate,
         )) {
@@ -19,7 +19,7 @@ class AnalyticsSwitchWeekCubit extends Cubit<AnalyticsSwitchWeekBaseState> with 
   }
 
   void _initState() {
-    final visibleMonth$ = stream.map((state) => state.visibleMonth).distinct().startWith(state.visibleMonth);
+    final visibleMonth$ = stream.map((state) => state.visibleMonth).startWith(state.visibleMonth).distinct();
 
     final diaryEntries$ = visibleMonth$.flatMap((month) {
       final firstDayOfFirstWeek = month.floorToWeek();
@@ -31,7 +31,7 @@ class AnalyticsSwitchWeekCubit extends Cubit<AnalyticsSwitchWeekBaseState> with 
     addSubscription(
       diaryEntries$
           .map(
-            (entries) => AnalyticsSwitchWeekState(
+            (entries) => CalendarCubitState(
               visibleMonth: state.visibleMonth,
               selectedDate: state.selectedDate,
               diaryEntries: entries.groupFoldBy((el) => el.date, (_, el) => el),
@@ -42,7 +42,7 @@ class AnalyticsSwitchWeekCubit extends Cubit<AnalyticsSwitchWeekBaseState> with 
   }
 
   void changeVisibleMonth(Date month) {
-    emit(AnalyticsSwitchWeekLoadingState(
+    emit(CalendarCubitLoadingState(
       visibleMonth: month.floorToMonth(),
       selectedDate: state.selectedDate,
     ));
@@ -53,42 +53,42 @@ class AnalyticsSwitchWeekCubit extends Cubit<AnalyticsSwitchWeekBaseState> with 
   }
 }
 
-abstract class AnalyticsSwitchWeekBaseState {
+abstract class CalendarCubitBaseState {
   final Date visibleMonth;
   final Date selectedDate;
 
-  const AnalyticsSwitchWeekBaseState({
+  const CalendarCubitBaseState({
     required this.visibleMonth,
     required this.selectedDate,
   });
 
-  AnalyticsSwitchWeekBaseState copyWith({Date? visibleMonth, Date? selectedDate});
+  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate});
 }
 
-class AnalyticsSwitchWeekLoadingState extends AnalyticsSwitchWeekBaseState {
-  const AnalyticsSwitchWeekLoadingState({
+class CalendarCubitLoadingState extends CalendarCubitBaseState {
+  const CalendarCubitLoadingState({
     required super.visibleMonth,
     required super.selectedDate,
   });
 
   @override
-  AnalyticsSwitchWeekBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => AnalyticsSwitchWeekLoadingState(
+  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => CalendarCubitLoadingState(
         visibleMonth: visibleMonth ?? this.visibleMonth,
         selectedDate: selectedDate ?? this.selectedDate,
       );
 }
 
-class AnalyticsSwitchWeekState extends AnalyticsSwitchWeekBaseState {
+class CalendarCubitState extends CalendarCubitBaseState {
   final Map<Date, DiaryEntry> diaryEntries;
 
-  const AnalyticsSwitchWeekState({
+  const CalendarCubitState({
     required super.visibleMonth,
     required super.selectedDate,
     this.diaryEntries = const {},
   });
 
   @override
-  AnalyticsSwitchWeekBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => AnalyticsSwitchWeekState(
+  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => CalendarCubitState(
         visibleMonth: visibleMonth ?? this.visibleMonth,
         selectedDate: selectedDate ?? this.selectedDate,
         diaryEntries: diaryEntries,

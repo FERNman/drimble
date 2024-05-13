@@ -6,7 +6,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../generate_entities.dart';
-import '../analytics/analytics_cubit_test.mocks.dart';
+import 'edit_weekly_goal_cubit_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<UserRepository>()])
 void main() {

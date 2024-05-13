@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../build_context_extensions.dart';
+import '../../common/build_context_extensions.dart';
 
 class RemoveDrinkDialog extends StatelessWidget {
   final GestureTapCallback onCancel;
