@@ -223,13 +223,16 @@ Ingredient generateIngredient({
 DiaryEntry generateDiaryEntry({
   String? id,
   Date? date,
-  List<ConsumedDrink>? drinks,
+  StomachFullness? stomachFullness,
   int? glassesOfWater,
+  List<ConsumedDrink>? drinks,
 }) =>
     // This is to be able to generate a diary entry with drinks, which we don't allow anywhere except here
     DiaryEntry(
       id: id,
       date: date ?? faker.date.date(),
+      stomachFullness: stomachFullness ??
+          ((drinks == null || drinks.isEmpty) ? null : faker.randomGenerator.element(StomachFullness.values)),
       glassesOfWater: glassesOfWater ?? faker.randomGenerator.integer(10),
       drinks: drinks ?? [],
     );

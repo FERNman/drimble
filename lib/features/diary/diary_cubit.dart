@@ -30,8 +30,7 @@ class DiaryCubit extends Cubit<DiaryCubitState> with Disposable {
   void _subscribeToRepository() {
     final weekChangedStream = stream
         .map((state) => (state.weekStartDate, state.weekEndDate))
-        .startWith((state.weekStartDate, state.weekEndDate))
-        .distinct();
+        .startWith((state.weekStartDate, state.weekEndDate)).distinct();
 
     addSubscription(weekChangedStream
         .switchMap((val) => _diaryRepository

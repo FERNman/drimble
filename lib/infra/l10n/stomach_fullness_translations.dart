@@ -8,6 +8,8 @@ extension StomachFullnessTranslations on StomachFullness {
     switch (this) {
       case StomachFullness.empty:
         return context.l10n.common_stomachFullnessEmpty;
+      case StomachFullness.litte:
+        return context.l10n.common_stomachFullnessLittle;
       case StomachFullness.normal:
         return context.l10n.common_stomachFullnessNormal;
       case StomachFullness.full:

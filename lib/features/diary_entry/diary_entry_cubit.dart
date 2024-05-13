@@ -8,7 +8,6 @@ import '../../domain/bac/bac_calculation_results.dart';
 import '../../domain/bac/bac_calculator.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
-import '../../domain/diary/stomach_fullness.dart';
 import '../../infra/disposable.dart';
 
 class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
@@ -48,8 +47,7 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
   Future<BACCalculationResults> _calculateBAC(DiaryEntry diaryEntry) async {
     final user = await _userRepository.loadUser();
 
-    // TODO: Integrate stomach fullness in diary entry
-    final calculator = BACCalculator(user!, StomachFullness.normal);
+    final calculator = BACCalculator(user!, diaryEntry.stomachFullness!);
     return compute(calculator.calculate, diaryEntry.drinks);
   }
 }

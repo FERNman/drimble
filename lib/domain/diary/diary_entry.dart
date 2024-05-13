@@ -3,15 +3,14 @@ import 'package:collection/collection.dart';
 
 import '../date.dart';
 import 'consumed_drink.dart';
+import 'stomach_fullness.dart';
 
 class DiaryEntry {
   final String? id;
-
   final Date date;
-
-  final UnmodifiableListView<ConsumedDrink> drinks;
-
   final int glassesOfWater;
+  final StomachFullness? stomachFullness;
+  final UnmodifiableListView<ConsumedDrink> drinks;
 
   bool get isDrinkFreeDay => drinks.isEmpty;
 
@@ -22,9 +21,11 @@ class DiaryEntry {
   DiaryEntry({
     this.id,
     required this.date,
-    List<ConsumedDrink> drinks = const [],
+    this.stomachFullness,
     this.glassesOfWater = 0,
-  }) : drinks = UnmodifiableListView(drinks);
+    List<ConsumedDrink> drinks = const [],
+  })  : assert(stomachFullness != null || drinks.isEmpty),
+        drinks = UnmodifiableListView(drinks);
 
   DiaryEntry upsertDrink(String id, ConsumedDrink drink) {
     if (drinks.any((d) => d.id == id)) {
@@ -43,13 +44,17 @@ class DiaryEntry {
 
   DiaryEntry removeGlassOfWater() => glassesOfWater > 0 ? _copyWith(glassesOfWater: glassesOfWater - 1) : this;
 
+  DiaryEntry setStomachFullness(StomachFullness stomachFullness) => _copyWith(stomachFullness: stomachFullness);
+
   DiaryEntry _copyWith({
     int? glassesOfWater,
     List<ConsumedDrink>? drinks,
+    StomachFullness? stomachFullness,
   }) =>
       DiaryEntry(
         id: id,
         date: date,
+        stomachFullness: stomachFullness ?? this.stomachFullness,
         drinks: drinks ?? this.drinks,
         glassesOfWater: glassesOfWater ?? this.glassesOfWater,
       );
@@ -57,6 +62,7 @@ class DiaryEntry {
   factory DiaryEntry.withDrinks(DiaryEntry diaryEntry, {required List<ConsumedDrink> drinks}) => DiaryEntry(
         id: diaryEntry.id,
         date: diaryEntry.date,
+        stomachFullness: diaryEntry.stomachFullness,
         glassesOfWater: diaryEntry.glassesOfWater,
         drinks: drinks,
       );
@@ -68,6 +74,8 @@ class DiaryEntry {
       DiaryEntry(
         id: snapshot.id,
         date: (snapshot['date'] as Timestamp).toDate().toDate(),
+        stomachFullness:
+            snapshot['stomachFullness'] == null ? null : StomachFullness.values[snapshot['stomachFullness'] as int],
         glassesOfWater: snapshot['glassesOfWater'] as int,
         drinks: (snapshot['drinks'] as List).map((drink) => ConsumedDrink.fromJSON(drink)).toList(),
       );
@@ -75,6 +83,7 @@ class DiaryEntry {
   Map<String, dynamic> toFirestore(String userId) => {
         'userId': userId,
         'date': date.toDateTime(),
+        'stomachFullness': stomachFullness?.index,
         'glassesOfWater': glassesOfWater,
         'drinks': drinks.map((drink) => drink.toJSON()).toList(),
       };
