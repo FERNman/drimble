@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/date.dart';
+import '../../domain/diary/stomach_fullness.dart';
 import '../../router.gr.dart';
 import '../diary_entry/diary_entry_page.dart';
 import 'diary_cubit.dart';
@@ -113,8 +114,13 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (previous, current) => previous.selectedDiaryEntry != current.selectedDiaryEntry,
       builder: (context, state) => FloatingActionButton(
         onPressed: () {
-          if (state.selectedDiaryEntry == null || state.selectedDiaryEntry!.isDrinkFreeDay) {
-            context.router.push(SelectStomachFullnessRoute(diaryEntry: state.getOrCreateDiaryEntry()));
+          if (state.selectedDiaryEntry == null || state.selectedDiaryEntry!.drinks.isEmpty) {
+            context.router.push(const SelectStomachFullnessRoute()).then((value) {
+              if (value != null) {
+                final diaryEntry = state.getOrCreateDiaryEntry().setStomachFullness(value as StomachFullness);
+                context.router.push(AddConsumedDrinkRoute(diaryEntry: diaryEntry));
+              }
+            });
           } else {
             context.router.push(AddConsumedDrinkRoute(diaryEntry: state.selectedDiaryEntry!));
           }

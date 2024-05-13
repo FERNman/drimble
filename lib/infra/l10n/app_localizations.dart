@@ -984,6 +984,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'How much did you eat today before drinking?'**
   String get select_stomach_fullness_title;
+
+  /// No description provided for @diary_quickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick add'**
+  String get diary_quickAdd;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
