@@ -46,6 +46,15 @@ class ConsumedCocktail extends ConsumedDrink {
         duration: duration ?? this.duration,
       );
 
+  factory ConsumedCocktail.deepCopy(ConsumedCocktail cocktail, {required DateTime startTime}) => ConsumedCocktail(
+        name: cocktail.name,
+        iconPath: cocktail.iconPath,
+        volume: cocktail.volume,
+        ingredients: cocktail.ingredients,
+        startTime: startTime,
+        duration: cocktail.duration,
+      );
+
   factory ConsumedCocktail.fromDrink(Cocktail drink, {required DateTime startTime}) => ConsumedCocktail(
         name: drink.name,
         iconPath: drink.iconPath,

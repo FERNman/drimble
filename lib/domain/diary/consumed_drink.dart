@@ -33,6 +33,22 @@ class ConsumedDrink extends Alcohol {
   })  : assert(alcoholByVolume >= 0.0 && alcoholByVolume <= 1.0),
         id = id ?? const Uuid().v4();
 
+  factory ConsumedDrink.deepCopy(ConsumedDrink drink, {required DateTime startTime}) {
+    if (drink is ConsumedCocktail) {
+      return ConsumedCocktail.deepCopy(drink, startTime: startTime);
+    }
+
+    return ConsumedDrink(
+      name: drink.name,
+      iconPath: drink.iconPath,
+      category: drink.category,
+      volume: drink.volume,
+      alcoholByVolume: drink.alcoholByVolume,
+      startTime: startTime,
+      duration: drink.duration,
+    );
+  }
+
   factory ConsumedDrink.fromDrink(Drink drink, {required DateTime startTime}) {
     if (drink is Cocktail) {
       return ConsumedCocktail.fromDrink(drink, startTime: startTime);

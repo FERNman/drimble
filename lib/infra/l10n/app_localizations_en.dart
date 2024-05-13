@@ -509,4 +509,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_stomach_fullness_title => 'How much did you eat today before drinking?';
+
+  @override
+  String get diary_quickAdd => 'Quick add';
 }

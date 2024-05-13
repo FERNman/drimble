@@ -8,6 +8,7 @@ import 'diary_entry_cubit.dart';
 import 'widgets/diary_bac_chart.dart';
 import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_current_bac.dart';
+import 'widgets/diary_quick_add_drink.dart';
 import 'widgets/diary_statistics.dart';
 import 'widgets/diary_water_tracking.dart';
 import 'widgets/remove_drink_dialog.dart';
@@ -57,6 +58,8 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
           const SizedBox(height: 24),
           _buildBACChart(),
           const SizedBox(height: 24),
+          _buildQuickAdd(),
+          const SizedBox(height: 24),
           _buildWaterTracking(),
           const SizedBox(height: 24),
           _buildStatistics(),
@@ -88,6 +91,21 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
         results: state.calculationResults,
         date: state.diaryEntry.date,
       ),
+    );
+  }
+
+  Widget _buildQuickAdd() {
+    return BlocBuilder<DiaryEntryCubit, DiaryEntryCubitState>(
+      buildWhen: (previous, current) => previous.recentDrinks != current.recentDrinks,
+      builder: (context, state) => state.recentDrinks.isEmpty
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DiaryQuickAddDrink(
+                recentDrinks: state.recentDrinks,
+                onAddDrink: (drink) => context.read<DiaryEntryCubit>().addDrinkFromRecent(drink),
+              ),
+            ),
     );
   }
 
@@ -129,7 +147,7 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
         return DiaryConsumedDrinks(
           state.drinks,
           onEdit: (drink) {
-            context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry!, consumedDrink: drink));
+            context.router.push(EditConsumedDrinkRoute(diaryEntry: state.diaryEntry, consumedDrink: drink));
           },
           onDelete: (drink) {
             showDialog(

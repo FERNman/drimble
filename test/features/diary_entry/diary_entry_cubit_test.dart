@@ -111,6 +111,22 @@ void main() {
       });
     });
 
+    group('addDrink', () {
+      test('should create a new drink from the consumed drink', () async {
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [consumedDrink]);
+        final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
+
+        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        await cubit.stream.first;
+
+        await cubit.addDrinkFromRecent(consumedDrink);
+
+        expect(cubit.state.diaryEntry.drinks.length, 2);
+        expect(cubit.state.diaryEntry.drinks.last.id, isNot(consumedDrink.id));
+      });
+    });
+
     group('removeDrink', () {
       test('should remove the drink from the diary entry', () async {
         final consumedDrink = generateConsumedDrink();
@@ -123,6 +139,42 @@ void main() {
         await cubit.removeDrink(consumedDrink);
 
         expect(cubit.state.diaryEntry.drinks, isEmpty);
+      });
+    });
+
+    group('drinks', () {
+      test('should contain the consumed drinks ordered by startTime descending', () async {
+        final dateTime = faker.date.dateTime();
+        final consumedDrinks = [
+          generateConsumedDrink(startTime: dateTime.subtract(const Duration(hours: 1))),
+          generateConsumedDrink(startTime: dateTime.add(const Duration(hours: 1))),
+          generateConsumedDrink(startTime: dateTime),
+        ];
+        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: consumedDrinks);
+        final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
+
+        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        await cubit.stream.first;
+
+        expect(cubit.state.drinks, [consumedDrinks[1], consumedDrinks[2], consumedDrinks[0]]);
+      });
+    });
+
+    group('recentDrinks', () {
+      test('should contain the consumed drinks that are distinct by name ordered by startTime descending', () async {
+        final dateTime = faker.date.dateTime();
+        final consumedDrinks = [
+          generateConsumedDrink(name: 'test', startTime: dateTime),
+          generateConsumedDrink(name: 'test', startTime: dateTime.subtract(const Duration(hours: 1))),
+          generateConsumedDrink(name: 'not test', startTime: dateTime.add(const Duration(hours: 2))),
+        ];
+        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: consumedDrinks);
+        final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
+
+        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        await cubit.stream.first;
+
+        expect(cubit.state.recentDrinks, [consumedDrinks[2], consumedDrinks[0]]);
       });
     });
   });

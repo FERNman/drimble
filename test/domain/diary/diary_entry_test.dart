@@ -85,6 +85,21 @@ void main() {
       }, skip: 'Weird rounding error');
     });
 
+    group('addDrink', () {
+      test('should add the drink to the drinks list', () {
+        final diaryEntry = generateDiaryEntry(stomachFullness: StomachFullness.full);
+        final drink = generateConsumedDrink();
+        final updatedDiaryEntry = diaryEntry.addDrink(drink);
+        expect(updatedDiaryEntry.drinks, [drink]);
+      });
+
+      test('should throw an assertion if the drink is already in the drinks list', () {
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(drinks: [consumedDrink]);
+        expect(() => diaryEntry.addDrink(consumedDrink), throwsAssertionError);
+      });
+    });
+
     group('upsertDrink', () {
       test('should add the drink if it does not exist', () {
         final diaryEntry = generateDiaryEntry(stomachFullness: StomachFullness.full);
