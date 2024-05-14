@@ -990,6 +990,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quick add'**
   String get diary_quickAdd;
+
+  /// No description provided for @track_hangover_severity_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.'**
+  String get track_hangover_severity_description;
+
+  /// No description provided for @track_hangover_severity_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you have a hangover?'**
+  String get track_hangover_severity_title;
+
+  /// No description provided for @diary_trackYourHangover.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your hangover'**
+  String get diary_trackYourHangover;
+
+  /// No description provided for @common_hangoverSeverityNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No hangover 🙌🏻'**
+  String get common_hangoverSeverityNone;
+
+  /// No description provided for @common_hangoverSeverityVeryMild.
+  ///
+  /// In en, this message translates to:
+  /// **'Barely noticeable 🙂'**
+  String get common_hangoverSeverityVeryMild;
+
+  /// No description provided for @common_hangoverSeverityMild.
+  ///
+  /// In en, this message translates to:
+  /// **'Slightly stirred 😐'**
+  String get common_hangoverSeverityMild;
+
+  /// No description provided for @common_hangoverSeverityModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate 😕'**
+  String get common_hangoverSeverityModerate;
+
+  /// No description provided for @common_hangoverSeverityPrettyBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Pretty bad 🙁'**
+  String get common_hangoverSeverityPrettyBad;
+
+  /// No description provided for @common_hangoverSeverityHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not fun 😖'**
+  String get common_hangoverSeverityHeavy;
+
+  /// No description provided for @common_hangoverSeveritySevere.
+  ///
+  /// In en, this message translates to:
+  /// **'I\\\'m dying 🤯'**
+  String get common_hangoverSeveritySevere;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

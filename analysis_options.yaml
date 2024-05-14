@@ -12,3 +12,4 @@ analyzer:
     - lib/**/*.g.dart
     - lib/**/*.gr.dart
     - lib/infra/l10n/intl/*.dart
+    - lib/infra/l10n/app_localizations*.dart

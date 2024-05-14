@@ -7,6 +7,7 @@ import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/consumed_drink.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/diary/hangover_severity.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:drimble/domain/user/body_composition.dart';
 import 'package:drimble/domain/user/gender.dart';
@@ -226,6 +227,7 @@ DiaryEntry generateDiaryEntry({
   StomachFullness? stomachFullness,
   int? glassesOfWater,
   List<ConsumedDrink>? drinks,
+  HangoverSeverity? hangoverSeverity,
 }) =>
     // This is to be able to generate a diary entry with drinks, which we don't allow anywhere except here
     DiaryEntry(
@@ -235,6 +237,7 @@ DiaryEntry generateDiaryEntry({
           ((drinks == null || drinks.isEmpty) ? null : faker.randomGenerator.element(StomachFullness.values)),
       glassesOfWater: glassesOfWater ?? faker.randomGenerator.integer(10),
       drinks: drinks ?? [],
+      hangoverSeverity: hangoverSeverity,
     );
 
 UserGoals generateGoals({

@@ -111,13 +111,14 @@ class DiaryPage extends StatelessWidget implements AutoRouteWrapper {
 
   Widget _buildFAB() {
     return BlocBuilder<DiaryCubit, DiaryCubitState>(
-      buildWhen: (previous, current) => previous.selectedDiaryEntry != current.selectedDiaryEntry,
+      buildWhen: (previous, current) =>
+          previous.selectedDiaryEntry != current.selectedDiaryEntry || previous.selectedDate != current.selectedDate,
       builder: (context, state) => FloatingActionButton(
         onPressed: () {
           if (state.selectedDiaryEntry == null || state.selectedDiaryEntry!.drinks.isEmpty) {
-            context.router.push(const SelectStomachFullnessRoute()).then((value) {
+            context.router.push<StomachFullness>(const SelectStomachFullnessRoute()).then((value) {
               if (value != null) {
-                final diaryEntry = state.getOrCreateDiaryEntry().setStomachFullness(value as StomachFullness);
+                final diaryEntry = state.getOrCreateDiaryEntry().setStomachFullness(value);
                 context.router.push(AddConsumedDrinkRoute(diaryEntry: diaryEntry));
               }
             });

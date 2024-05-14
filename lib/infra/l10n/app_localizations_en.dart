@@ -512,4 +512,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diary_quickAdd => 'Quick add';
+
+  @override
+  String get track_hangover_severity_description => 'Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.';
+
+  @override
+  String get track_hangover_severity_title => 'Do you have a hangover?';
+
+  @override
+  String get diary_trackYourHangover => 'Track your hangover';
+
+  @override
+  String get common_hangoverSeverityNone => 'No hangover 🙌🏻';
+
+  @override
+  String get common_hangoverSeverityVeryMild => 'Barely noticeable 🙂';
+
+  @override
+  String get common_hangoverSeverityMild => 'Slightly stirred 😐';
+
+  @override
+  String get common_hangoverSeverityModerate => 'Moderate 😕';
+
+  @override
+  String get common_hangoverSeverityPrettyBad => 'Pretty bad 🙁';
+
+  @override
+  String get common_hangoverSeverityHeavy => 'This is not fun 😖';
+
+  @override
+  String get common_hangoverSeveritySevere => 'I\\\'m dying 🤯';
 }

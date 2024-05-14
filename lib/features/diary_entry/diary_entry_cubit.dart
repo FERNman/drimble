@@ -9,6 +9,7 @@ import '../../domain/bac/bac_calculation_results.dart';
 import '../../domain/bac/bac_calculator.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../domain/diary/hangover_severity.dart';
 import '../../infra/disposable.dart';
 
 class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
@@ -35,6 +36,10 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
 
   Future<void> removeDrink(ConsumedDrink drink) async {
     await _diaryRepository.saveDiaryEntry(state.diaryEntry.removeDrink(drink.id));
+  }
+
+  Future<void> setHangoverSeverity(HangoverSeverity severity) async {
+    await _diaryRepository.saveDiaryEntry(state.diaryEntry.setHangoverSeverity(severity));
   }
 
   void _subscribeToDiaryEntryChanges(DiaryEntry diaryEntry) {

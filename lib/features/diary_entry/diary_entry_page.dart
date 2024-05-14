@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/diary/diary_entry.dart';
+import '../../domain/diary/hangover_severity.dart';
 import '../../router.gr.dart';
 import 'diary_entry_cubit.dart';
 import 'widgets/diary_bac_chart.dart';
@@ -79,6 +80,13 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
         child: DiaryCurrentBAC(
           results: state.calculationResults,
           diaryEntry: state.diaryEntry,
+          onSelectHangoverSeverity: () {
+            context.router.push<HangoverSeverity>(const SelectHangoverSeverityRoute()).then((value) {
+              if (value != null) {
+                context.read<DiaryEntryCubit>().setHangoverSeverity(value);
+              }
+            });
+          },
         ),
       ),
     );

@@ -2,6 +2,8 @@ import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/user_repository.dart';
 import 'package:drimble/domain/bac/bac_calculation_results.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/diary/hangover_severity.dart';
+import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:drimble/features/diary_entry/diary_entry_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -34,6 +36,7 @@ class FakeDiaryRepository extends Fake implements DiaryRepository {
         stomachFullness: diaryEntry.stomachFullness,
         glassesOfWater: diaryEntry.glassesOfWater,
         drinks: List.unmodifiable(diaryEntry.drinks),
+        hangoverSeverity: diaryEntry.hangoverSeverity,
       );
 }
 
@@ -139,6 +142,25 @@ void main() {
         await cubit.removeDrink(consumedDrink);
 
         expect(cubit.state.diaryEntry.drinks, isEmpty);
+      });
+    });
+
+    group('setHangoverSeverity', () {
+      test('should set the hangover severity', () async {
+        final diaryEntry = generateDiaryEntry(
+          id: faker.guid.guid(),
+          drinks: [generateConsumedDrink()],
+          stomachFullness: StomachFullness.full,
+        );
+        final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
+
+        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        await cubit.stream.first;
+
+        const severity = HangoverSeverity.mild;
+        await cubit.setHangoverSeverity(severity);
+
+        expect(cubit.state.diaryEntry.hangoverSeverity, severity);
       });
     });
 

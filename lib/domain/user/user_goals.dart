@@ -22,7 +22,6 @@ class UserGoals {
   operator ==(Object other) =>
       identical(this, other) ||
       other is UserGoals &&
-          runtimeType == other.runtimeType &&
           weeklyGramsOfAlcohol == other.weeklyGramsOfAlcohol &&
           weeklyDrinkFreeDays == other.weeklyDrinkFreeDays;
 

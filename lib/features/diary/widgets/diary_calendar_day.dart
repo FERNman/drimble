@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 
 import '../../../domain/date.dart';
 import '../../../domain/diary/diary_entry.dart';
+import '../../../domain/diary/hangover_severity.dart';
 import '../../../infra/extensions/format_date.dart';
+import '../../../infra/l10n/hangover_severity_translations.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryCalendarDay extends StatelessWidget {
@@ -12,6 +14,8 @@ class DiaryCalendarDay extends StatelessWidget {
   final bool isSelected;
   final DiaryEntry? diaryEntry;
   final GestureTapCallback? onTap;
+
+  static const _emojiSize = 15.0;
 
   const DiaryCalendarDay({
     required this.date,
@@ -33,26 +37,26 @@ class DiaryCalendarDay extends StatelessWidget {
     final gramsOfAlcohol = diaryEntry == null ? '-' : context.l10n.common_mass(diaryEntry!.gramsOfAlcohol.round());
 
     return InkWell(
-        onTap: onTap,
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(dayOfWeek.toLowerCase(), style: dayOfWeekTextStyle),
-              const SizedBox(height: 6),
-              _drawHangoverIndicator(),
-              const SizedBox(height: 6),
-              Text(gramsOfAlcohol, style: dayOfWeekTextStyle),
-            ],
-          ),
+      onTap: onTap,
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(dayOfWeek.toLowerCase(), style: dayOfWeekTextStyle),
+            const SizedBox(height: 6),
+            _drawHangoverIndicator(context),
+            const SizedBox(height: 6),
+            Text(gramsOfAlcohol, style: dayOfWeekTextStyle),
+          ],
         ),
+      ),
     );
   }
 
-  Widget _drawHangoverIndicator() {
+  Widget _drawHangoverIndicator(BuildContext context) {
     final container = Container(
       width: 28,
       height: 28,
@@ -60,7 +64,17 @@ class DiaryCalendarDay extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: _getColor(), width: 3, strokeAlign: BorderSide.strokeAlignCenter),
       ),
-      child: Center(child: Text(_getText())),
+      child: Center(
+        child: SizedBox(
+          width: _emojiSize,
+          height: _emojiSize,
+          child: Text(
+            _getIcon(),
+            style: context.textTheme.bodyMedium?.copyWith(height: 1),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
     );
 
     if (diaryEntry == null) {
@@ -77,13 +91,13 @@ class DiaryCalendarDay extends StatelessWidget {
     }
   }
 
-  String _getText() {
+  String _getIcon() {
     if (diaryEntry == null) {
       return '';
-    } else if (diaryEntry?.isDrinkFreeDay == true) {
-      return '🥳';
+    } else if (diaryEntry!.isDrinkFreeDay == true) {
+      return '🎉';
     } else {
-      return '🤯';
+      return diaryEntry!.hangoverSeverity?.icon() ?? '🤔';
     }
   }
 
@@ -92,6 +106,8 @@ class DiaryCalendarDay extends StatelessWidget {
       return Colors.transparent;
     } else if (diaryEntry?.isDrinkFreeDay == true) {
       return Colors.green;
+    } else if (diaryEntry?.hangoverSeverity == HangoverSeverity.none) {
+      return Colors.orange;
     } else {
       return Colors.red;
     }

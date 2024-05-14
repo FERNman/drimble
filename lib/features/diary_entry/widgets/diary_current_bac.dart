@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../domain/bac/bac_calculation_results.dart';
 import '../../../domain/date.dart';
 import '../../../domain/diary/diary_entry.dart';
+import '../../../infra/l10n/hangover_severity_translations.dart';
 import '../../common/build_context_extensions.dart';
 
 class DiaryCurrentBAC extends StatelessWidget {
   final BACCalculationResults results;
   final DiaryEntry diaryEntry;
 
+  final GestureTapCallback onSelectHangoverSeverity;
+
   const DiaryCurrentBAC({
     required this.results,
     required this.diaryEntry,
+    required this.onSelectHangoverSeverity,
     super.key,
   });
 
@@ -59,10 +63,11 @@ class DiaryCurrentBAC extends StatelessWidget {
     }
 
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
 
     if (soberAt.isAfter(now)) {
+      final today = DateTime(now.year, now.month, now.day);
+      final tomorrow = today.add(const Duration(days: 1));
+
       final soberAtDay = DateTime(soberAt.year, soberAt.month, soberAt.day);
       final isTomorrow = soberAtDay.isAtSameMomentAs(tomorrow);
       final isInFuture = soberAtDay.isAfter(tomorrow);
@@ -75,7 +80,18 @@ class DiaryCurrentBAC extends StatelessWidget {
         return Text(context.l10n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
       }
     } else {
-      return Text(context.l10n.diary_youreSober, style: context.textTheme.bodyMedium);
+      if (diaryEntry.hangoverSeverity == null) {
+        return _buildHangoverSelection(context);
+      } else {
+        return Text(diaryEntry.hangoverSeverity!.translate(context), style: context.textTheme.bodyMedium);
+      }
     }
+  }
+
+  Widget _buildHangoverSelection(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onSelectHangoverSeverity,
+      child: Text(context.l10n.diary_trackYourHangover),
+    );
   }
 }
