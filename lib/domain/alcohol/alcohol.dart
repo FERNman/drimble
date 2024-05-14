@@ -11,7 +11,7 @@ abstract class Alcohol {
   static const density = 0.789;
 
   /// The limit of alcohol in the blood to be considered sober in g/100mL
-  static const soberLimit = 0.001;
+  static const soberLimit = 0.002;
   static const caloriesPerGramOfAlcohol = 7.1;
 
   final String name;

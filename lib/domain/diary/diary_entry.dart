@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 
 import '../date.dart';
 import 'consumed_drink.dart';
+import 'hangover_severity.dart';
 import 'stomach_fullness.dart';
 
 class DiaryEntry {
@@ -11,6 +12,7 @@ class DiaryEntry {
   final int glassesOfWater;
   final StomachFullness? stomachFullness;
   final UnmodifiableListView<ConsumedDrink> drinks;
+  final HangoverSeverity? hangoverSeverity;
 
   bool get isDrinkFreeDay => drinks.isEmpty;
 
@@ -23,8 +25,10 @@ class DiaryEntry {
     required this.date,
     this.stomachFullness,
     this.glassesOfWater = 0,
+    this.hangoverSeverity,
     List<ConsumedDrink> drinks = const [],
   })  : assert(stomachFullness != null || drinks.isEmpty),
+        assert(hangoverSeverity == null || drinks.isNotEmpty),
         drinks = UnmodifiableListView(drinks);
 
   DiaryEntry addDrink(ConsumedDrink drink) {
@@ -42,7 +46,11 @@ class DiaryEntry {
 
   DiaryEntry removeDrink(String id) {
     final updatedDrinks = drinks.where((drink) => drink.id != id).toList();
-    return _copyWith(drinks: updatedDrinks);
+    if (updatedDrinks.isEmpty) {
+      return DiaryEntry(id: this.id, date: date);
+    } else {
+      return _copyWith(drinks: updatedDrinks);
+    }
   }
 
   DiaryEntry addGlassOfWater() => _copyWith(glassesOfWater: glassesOfWater + 1);
@@ -51,10 +59,13 @@ class DiaryEntry {
 
   DiaryEntry setStomachFullness(StomachFullness stomachFullness) => _copyWith(stomachFullness: stomachFullness);
 
+  DiaryEntry setHangoverSeverity(HangoverSeverity hangoverSeverity) => _copyWith(hangoverSeverity: hangoverSeverity);
+
   DiaryEntry _copyWith({
     int? glassesOfWater,
     List<ConsumedDrink>? drinks,
     StomachFullness? stomachFullness,
+    HangoverSeverity? hangoverSeverity,
   }) =>
       DiaryEntry(
         id: id,
@@ -62,6 +73,7 @@ class DiaryEntry {
         stomachFullness: stomachFullness ?? this.stomachFullness,
         drinks: drinks ?? this.drinks,
         glassesOfWater: glassesOfWater ?? this.glassesOfWater,
+        hangoverSeverity: hangoverSeverity ?? this.hangoverSeverity,
       );
 
   factory DiaryEntry.withDrinks(DiaryEntry diaryEntry, {required List<ConsumedDrink> drinks}) => DiaryEntry(
@@ -83,6 +95,8 @@ class DiaryEntry {
             snapshot['stomachFullness'] == null ? null : StomachFullness.values[snapshot['stomachFullness'] as int],
         glassesOfWater: snapshot['glassesOfWater'] as int,
         drinks: (snapshot['drinks'] as List).map((drink) => ConsumedDrink.fromJSON(drink)).toList(),
+        hangoverSeverity:
+            snapshot['hangoverSeverity'] == null ? null : HangoverSeverity.values[snapshot['hangoverSeverity'] as int],
       );
 
   Map<String, dynamic> toFirestore(String userId) => {
@@ -91,5 +105,6 @@ class DiaryEntry {
         'stomachFullness': stomachFullness?.index,
         'glassesOfWater': glassesOfWater,
         'drinks': drinks.map((drink) => drink.toJSON()).toList(),
+        'hangoverSeverity': hangoverSeverity?.index,
       };
 }
