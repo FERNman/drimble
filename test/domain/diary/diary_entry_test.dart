@@ -1,5 +1,6 @@
 import 'package:drimble/domain/alcohol/alcohol.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/diary/hangover_severity.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,6 +10,11 @@ void main() {
   group(DiaryEntry, () {
     test('should throw an assertion when creating a DiaryEntry with drinks and no stomach fullness', () {
       expect(() => DiaryEntry(date: faker.date.date(), drinks: [generateConsumedDrink()]), throwsAssertionError);
+    });
+
+    test('should throw an assertion when creating a DiaryEntry with a hangover severity and no drinks', () {
+      expect(() => DiaryEntry(date: faker.date.date(), drinks: [], hangoverSeverity: HangoverSeverity.prettyBad),
+          throwsAssertionError);
     });
 
     group('drinks', () {
@@ -98,6 +104,12 @@ void main() {
         final diaryEntry = generateDiaryEntry(drinks: [consumedDrink]);
         expect(() => diaryEntry.addDrink(consumedDrink), throwsAssertionError);
       });
+
+      test('should throw an assertion if the stomach fullness is not set', () {
+        final diaryEntry = generateDiaryEntry(stomachFullness: null);
+        final drink = generateConsumedDrink();
+        expect(() => diaryEntry.addDrink(drink), throwsAssertionError);
+      });
     });
 
     group('upsertDrink', () {
@@ -122,9 +134,22 @@ void main() {
     group('removeDrink', () {
       test('should remove the drink from the drinks list', () {
         final consumedDrink = generateConsumedDrink();
-        final diaryEntry = generateDiaryEntry(drinks: [consumedDrink]);
+        final diaryEntry = generateDiaryEntry(drinks: [generateConsumedDrink(), consumedDrink]);
         final updatedDiaryEntry = diaryEntry.removeDrink(consumedDrink.id);
-        expect(updatedDiaryEntry.drinks, isEmpty);
+        expect(updatedDiaryEntry.drinks, isNot(contains(consumedDrink)));
+      });
+
+      test('should return a drink-free diary entry if it was the last drink', () {
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(stomachFullness: StomachFullness.full, drinks: [consumedDrink]);
+
+        final updatedDiaryEntry = diaryEntry.removeDrink(consumedDrink.id);
+        expect(updatedDiaryEntry.isDrinkFreeDay, true);
+
+        expect(updatedDiaryEntry.id, diaryEntry.id);
+        expect(updatedDiaryEntry.date, diaryEntry.date);
+        expect(updatedDiaryEntry.stomachFullness, isNull);
+        expect(updatedDiaryEntry.hangoverSeverity, isNull);
       });
     });
 

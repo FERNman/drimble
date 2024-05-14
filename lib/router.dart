@@ -16,6 +16,7 @@ class DrimbleRouter extends $DrimbleRouter {
   late final routes = <AutoRoute>[
     AutoRoute(page: DiaryRoute.page, path: '/', guards: [_diaryGuard]),
     AutoRoute(page: SelectStomachFullnessRoute.page),
+    AutoRoute(page: SelectHangoverSeverityRoute.page),
     AutoRoute(page: SearchDrinkRoute.page),
     AutoRoute(page: AddConsumedDrinkRoute.page),
     AutoRoute(page: EditConsumedDrinkRoute.page),

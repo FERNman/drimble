@@ -22,25 +22,21 @@ class SelectStomachFullnessPage extends StatelessWidget implements AutoRouteWrap
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          ExtendedAppBar.medium(
-            leading: const CloseButton(),
-            title: Text(context.l10n.select_stomach_fullness_title),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 24, right: 16),
-            child: Column(
-              children: [
-                Text(context.l10n.select_stomach_fullness_description),
-                const SizedBox(height: 24),
-                _buildStomachFullnessSelection(),
-                const SizedBox(height: 24),
-                _buildNextButton(),
-              ],
-            ),
-          ),
-        ],
+      appBar: ExtendedAppBar.large(
+        leading: const CloseButton(),
+        title: Text(context.l10n.select_stomach_fullness_title),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, bottom: 24, right: 16),
+        child: Column(
+          children: [
+            Text(context.l10n.select_stomach_fullness_description),
+            const SizedBox(height: 24),
+            _buildStomachFullnessSelection(),
+            const SizedBox(height: 24),
+            _buildNextButton(),
+          ],
+        ),
       ),
     );
   }

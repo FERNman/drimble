@@ -38,14 +38,15 @@ class BACCalculator {
     const timestep = Duration(minutes: 5);
     final deltaTime = (1 / 60) * timestep.inMinutes;
 
-    final startTime = minBy(drinks, (drink) => drink.startTime)!.startTime;
-    final endTime = maxBy(drinks, (drink) => drink.endTime)!
-        .endTime
+    final startTime = drinks.map((e) => e.startTime).min;
+    final endTime = drinks
+        .map((e) => e.endTime)
+        .max
         .add(const Duration(minutes: 30)); // add 30 minutes to make sure also the last drink is absorbed
 
     final results = <BACEntry>[];
     for (var time = startTime;
-        time.isBefore(endTime) || alcoholInCentralCompartment >= Alcohol.soberLimit;
+        time.isBefore(endTime) || alcoholInCentralCompartment / 10.0 >= Alcohol.soberLimit;
         time = time.add(timestep)) {
       // Step 0: Calculate the amount of ingested alcohol in grams per liter of the total body water
       final ingestedAlcohol = _calculateIngestedAlcohol(drinks, time, time.add(timestep)) / user.volumeOfDistribution;
