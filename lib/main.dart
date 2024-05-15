@@ -15,7 +15,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   tz.initializeTimeZones();
-
   final localTimezone = await FlutterTimezone.getLocalTimezone();
   tz.setLocalLocation(tz.getLocation(localTimezone));
 

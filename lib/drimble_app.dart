@@ -75,7 +75,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
       child: Builder(
         builder: (context) {
           // Has to be done here to be able to access the context
-          _router ??= DrimbleRouter(DiaryGuard(context.read()));
+          _router ??= DrimbleRouter(DiaryGuard(context.read(), context.read()));
 
           return MaterialApp.router(
             theme: ThemeData(
