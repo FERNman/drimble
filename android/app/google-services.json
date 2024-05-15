@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1061709448056-gv9ftu18e1oofvjosu8p06kjotec540e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.drimble",
+            "certificate_hash": "df2ccdf40d8a48dae3d85e96c421b92fc7edc2a6"
+          }
+        },
+        {
           "client_id": "1061709448056-0abo31eldqfa90kinqks5h2ini4p9ovc.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -259,5 +259,10 @@
   "common_hangoverSeverityModerate": "Moderate 😕",
   "common_hangoverSeverityPrettyBad": "Pretty bad 🙁",
   "common_hangoverSeverityHeavy": "This is not fun 😖",
-  "common_hangoverSeveritySevere": "I\\'m dying 🤯"
+  "common_hangoverSeveritySevere": "I\\'m dying 🤯",
+  "push_notification_permission_title": "Tracking reminders",
+  "push_notification_permission_description": "Can we send you reminders to drink water, take a break, and track your hangovers?",
+  "push_notification_permission_notNow": "Not now",
+  "push_notification_permission_sure": "Sure!",
+  "pushNotificationChannelName": "Reminders"
 }

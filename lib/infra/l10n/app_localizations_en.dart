@@ -542,4 +542,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get common_hangoverSeveritySevere => 'I\\\'m dying 🤯';
+
+  @override
+  String get push_notification_permission_title => 'Tracking reminders';
+
+  @override
+  String get push_notification_permission_description => 'Can we send you reminders to drink water, take a break, and track your hangovers?';
+
+  @override
+  String get push_notification_permission_notNow => 'Not now';
+
+  @override
+  String get push_notification_permission_sure => 'Sure!';
+
+  @override
+  String get pushNotificationChannelName => 'Reminders';
 }

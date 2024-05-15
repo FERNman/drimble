@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1061709448056',
     projectId: 'drimble-5413f',
     storageBucket: 'drimble-5413f.appspot.com',
+    androidClientId: '1061709448056-gv9ftu18e1oofvjosu8p06kjotec540e.apps.googleusercontent.com',
     iosClientId: '1061709448056-s810ors7e9dcs30cjalluopfdvcia2bk.apps.googleusercontent.com',
     iosBundleId: 'app.drimble',
   );
