@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
 import 'data/user_repository.dart';
+import 'features/common/build_context_extensions.dart';
 import 'features/diary/diary_guard.dart';
 import 'infra/l10n/l10n.dart';
 import 'infra/push_notifications_service.dart';
@@ -133,6 +134,7 @@ class _DrimbleAppState extends State<DrimbleApp> {
             ],
             title: 'Drimble',
             routerConfig: _router!.config(),
+            builder: (context, child) => RepositoryProvider.value(value: context.l10n, child: child),
           );
         },
       ),

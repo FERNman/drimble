@@ -264,5 +264,7 @@
   "push_notification_permission_description": "Can we send you reminders to drink water, take a break, and track your hangovers?",
   "push_notification_permission_notNow": "Not now",
   "push_notification_permission_sure": "Sure!",
-  "pushNotificationChannelName": "Reminders"
+  "pushNotificationChannelName": "Reminders",
+  "pushNotification_trackHangoverSeverity_title": "Good morning! How are you doing?",
+  "pushNotification_trackHangoverSeverity_description": "Track your hangover"
 }

@@ -557,4 +557,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushNotificationChannelName => 'Reminders';
+
+  @override
+  String get pushNotification_trackHangoverSeverity_title => 'Good morning! How are you doing?';
+
+  @override
+  String get pushNotification_trackHangoverSeverity_description => 'Track your hangover';
 }

@@ -26,13 +26,13 @@ class PushNotificationsService {
     int id, {
     required String title,
     required String description,
-    required DateTime when,
+    required DateTime at,
   }) async {
     await _localNotificationsService.zonedSchedule(
       id,
       title,
       description,
-      tz.TZDateTime.from(when, tz.local),
+      tz.TZDateTime.from(at, tz.local),
       _getDefaultNotificationDetails(),
       androidScheduleMode: AndroidScheduleMode.inexact,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,

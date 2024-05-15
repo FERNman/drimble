@@ -1080,6 +1080,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reminders'**
   String get pushNotificationChannelName;
+
+  /// No description provided for @pushNotification_trackHangoverSeverity_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning! How are you doing?'**
+  String get pushNotification_trackHangoverSeverity_title;
+
+  /// No description provided for @pushNotification_trackHangoverSeverity_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your hangover'**
+  String get pushNotification_trackHangoverSeverity_description;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -4,15 +4,23 @@ import '../../data/diary_repository.dart';
 import '../../data/drinks_repository.dart';
 import '../../domain/alcohol/alcohol.dart';
 import '../../domain/alcohol/drink.dart';
+import '../../domain/date.dart';
 import '../../domain/diary/consumed_cocktail.dart';
 import '../../domain/diary/consumed_drink.dart';
 import '../../domain/diary/diary_entry.dart';
+import '../../infra/l10n/l10n.dart';
+import '../../infra/push_notifications_service.dart';
 
 class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
   final DiaryRepository _diaryRepository;
 
+  final PushNotificationsService _pushNotificationsService;
+  final AppLocalizations _localizations;
+
   EditConsumedDrinkCubit(
     this._diaryRepository,
+    this._pushNotificationsService,
+    this._localizations,
     DrinksRepository drinksRepository, {
     required DiaryEntry diaryEntry,
     required ConsumedDrink consumedDrink,
@@ -40,6 +48,15 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
 
   Future<void> save() async {
     await _diaryRepository.saveDiaryEntry(state.diaryEntry);
+
+    if (state.diaryEntry.date == Date.today()) {
+      _pushNotificationsService.scheduleNotification(
+        0,
+        title: _localizations.pushNotification_trackHangoverSeverity_title,
+        description: _localizations.pushNotification_trackHangoverSeverity_description,
+        at: DateTime.now().add(const Duration(seconds: 10)),
+      );
+    }
   }
 
   DateTime _shiftDate(DateTime newTime, DateTime previousTime) {

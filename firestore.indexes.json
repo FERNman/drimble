@@ -4,8 +4,14 @@
       "collectionGroup": "diaries",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "userId" },
-        { "fieldPath": "date", "order": "DESCENDING" }
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "order": "ASCENDING"
+        }
       ]
     }
   ],
