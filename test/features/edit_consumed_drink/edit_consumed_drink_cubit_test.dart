@@ -1,9 +1,12 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/drinks_repository.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/consumed_cocktail.dart';
 import 'package:drimble/domain/diary/diary_entry.dart';
 import 'package:drimble/features/edit_consumed_drink/edit_consumed_drink_cubit.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
+import 'package:drimble/infra/l10n/l10n.dart';
+import 'package:drimble/infra/push_notifications_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -11,10 +14,45 @@ import 'package:mockito/mockito.dart';
 import '../../generate_entities.dart';
 import 'edit_consumed_drink_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<DiaryRepository>(), MockSpec<DrinksRepository>()])
+@GenerateNiceMocks([
+  MockSpec<DiaryRepository>(),
+  MockSpec<DrinksRepository>(),
+  MockSpec<PushNotificationsService>(),
+  MockSpec<AppLocalizations>(),
+])
 void main() {
   group(EditConsumedDrinkCubit, () {
     final date = faker.date.dateTime();
+
+    test('should schedule a push notification to track tomorrows hangover if the drink was consumed today', () async {
+      final diaryRepository = MockDiaryRepository();
+      final drinksRepository = MockDrinksRepository();
+      final mockPushNotificationsService = MockPushNotificationsService();
+
+      final today = Date.today();
+
+      final consumedDrink = generateConsumedDrink(startTime: today.toDateTime().add(const Duration(hours: 1)));
+      final diaryEntry = generateDiaryEntry(drinks: [consumedDrink], date: today);
+
+      final cubit = EditConsumedDrinkCubit(
+        diaryRepository,
+        mockPushNotificationsService,
+        MockAppLocalizations(),
+        drinksRepository,
+        diaryEntry: diaryEntry,
+        consumedDrink: consumedDrink,
+      );
+
+      cubit.updateStartTime(today.toDateTime().add(const Duration(hours: 2)));
+      await cubit.save();
+
+      verify(mockPushNotificationsService.scheduleNotification(
+        any,
+        title: anyNamed('title'),
+        description: anyNamed('description'),
+        at: anyNamed('at'),
+      ));
+    });
 
     group('save', () {
       test('should save the diary entry with the original drink if no properties were changed', () async {
@@ -26,6 +64,8 @@ void main() {
 
         final cubit = EditConsumedDrinkCubit(
           diaryRepository,
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           drinksRepository,
           diaryEntry: diaryEntry,
           consumedDrink: consumedDrink,
@@ -47,6 +87,8 @@ void main() {
 
         final cubit = EditConsumedDrinkCubit(
           diaryRepository,
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           drinksRepository,
           diaryEntry: diaryEntry,
           consumedDrink: consumedDrink,
@@ -68,6 +110,8 @@ void main() {
         final drink = generateConsumedDrink(startTime: at10Am);
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           MockDrinksRepository(),
           diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
@@ -84,6 +128,8 @@ void main() {
         final drink = generateConsumedDrink(startTime: at5Am);
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           MockDrinksRepository(),
           diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
@@ -100,6 +146,8 @@ void main() {
         final drink = generateConsumedDrink(startTime: at5Am);
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           MockDrinksRepository(),
           diaryEntry: generateDiaryEntry(drinks: [drink]),
           consumedDrink: drink,
@@ -125,6 +173,8 @@ void main() {
       test('should still be a cocktail after changing the amount', () {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           mockDrinksRepository,
           diaryEntry: generateDiaryEntry(drinks: [consumedCocktail]),
           consumedDrink: consumedCocktail,
@@ -138,6 +188,8 @@ void main() {
       test('should throw an exception when trying to change the ABV directly', () {
         final cubit = EditConsumedDrinkCubit(
           MockDiaryRepository(),
+          MockPushNotificationsService(),
+          MockAppLocalizations(),
           mockDrinksRepository,
           diaryEntry: generateDiaryEntry(drinks: [consumedCocktail]),
           consumedDrink: consumedCocktail,

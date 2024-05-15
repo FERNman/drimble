@@ -5,7 +5,6 @@ import '../alcohol/alcohol.dart';
 import '../alcohol/cocktail.dart';
 import '../alcohol/drink.dart';
 import '../alcohol/drink_category.dart';
-import '../date.dart';
 import 'consumed_cocktail.dart';
 
 class ConsumedDrink extends Alcohol {
@@ -14,12 +13,9 @@ class ConsumedDrink extends Alcohol {
   /// The time when drinking this drink started. Only to be used for calculating the BAC.
   ///
   /// <b>Must not be used for date comparisons!</b>
+  // TODO: Refactor to TimeOfDay
   final DateTime startTime;
   final Duration duration;
-
-  /// The date of this drink.
-  /// If the drink started before 6am, it is considered to be on the previous day.
-  Date get date => startTime.toDate();
 
   ConsumedDrink({
     String? id,

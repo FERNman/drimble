@@ -24,6 +24,7 @@ class DrimbleRouter extends $DrimbleRouter {
     AutoRoute(page: CalendarRoute.page),
     AutoRoute(page: FAQRoute.page),
     AutoRoute(page: SignInRoute.page),
+    AutoRoute(page: RequestPushNotificationRoute.page),
     AutoRoute(
       page: OnboardingRoute.page,
       children: [
@@ -34,6 +35,6 @@ class DrimbleRouter extends $DrimbleRouter {
         AutoRoute(page: OnboardingSelectWeightRoute.page),
         AutoRoute(page: OnboardingSelectBodyCompositionRoute.page),
       ],
-    )
+    ),
   ];
 }

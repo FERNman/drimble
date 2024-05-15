@@ -23,6 +23,8 @@ class EditConsumedDrinkPage extends StatelessWidget implements AutoRouteWrapper 
         create: (context) => EditConsumedDrinkCubit(
           context.read(),
           context.read(),
+          context.read(),
+          context.read(),
           diaryEntry: diaryEntry,
           consumedDrink: consumedDrink,
         ),
