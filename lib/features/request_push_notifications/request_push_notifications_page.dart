@@ -19,9 +19,19 @@ class RequestPushNotificationPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Spacer(flex: 1),
-              Text(context.l10n.push_notification_permission_title, style: context.textTheme.headlineMedium),
-              Text(context.l10n.push_notification_permission_description),
+              const Spacer(),
+              Image.asset('assets/images/clock_and_calendar.png', height: 200),
+              const SizedBox(height: 48),
+              Text(
+                context.l10n.push_notification_permission_title,
+                style: context.textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                context.l10n.push_notification_permission_description,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +51,7 @@ class RequestPushNotificationPage extends StatelessWidget {
                   )
                 ],
               ),
-              const Spacer(flex: 2),
+              const Spacer(),
             ],
           ),
         ),

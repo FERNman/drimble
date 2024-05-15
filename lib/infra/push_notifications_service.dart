@@ -17,7 +17,7 @@ class PushNotificationsService {
           .requestNotificationsPermission();
     } else {
       await _localNotificationsService
-          .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()!
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()!
           .requestPermissions(alert: true);
     }
   }
