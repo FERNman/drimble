@@ -54,7 +54,7 @@ class EditConsumedDrinkCubit extends Cubit<EditDrinkCubitState> {
         0,
         title: _localizations.pushNotification_trackHangoverSeverity_title,
         description: _localizations.pushNotification_trackHangoverSeverity_description,
-        at: DateTime.now().add(const Duration(seconds: 10)),
+        at: Date.today().add(days: 1).toDateTime().copyWith(hour: 8),
       );
     }
   }
