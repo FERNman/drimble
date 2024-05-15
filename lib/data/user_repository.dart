@@ -15,12 +15,12 @@ class UserRepository {
 
   bool isSignedIn() => _auth.currentUser != null;
 
-  Future<void> signInWithCredential(firebase_auth.OAuthCredential credential) async {
-    await _auth.signInWithCredential(credential);
+  Future<firebase_auth.UserCredential> signInWithCredential(firebase_auth.OAuthCredential credential) {
+    return _auth.signInWithCredential(credential);
   }
 
-  Future<void> signInAnonymously() async {
-    await _auth.signInAnonymously();
+  Future<firebase_auth.UserCredential> signInAnonymously() {
+    return _auth.signInAnonymously();
   }
 
   Future<void> signOut() async {

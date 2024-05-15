@@ -1092,6 +1092,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Track your hangover'**
   String get pushNotification_trackHangoverSeverity_description;
+
+  /// No description provided for @sign_in_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while signing in.'**
+  String get sign_in_error;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

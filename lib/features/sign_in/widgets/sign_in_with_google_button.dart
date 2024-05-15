@@ -9,13 +9,14 @@ class SignInWithGoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
+    return ElevatedButton(
       onPressed: onPressed,
-      icon: const Icon(Icons.login),
-      label: Text(context.l10n.sign_in_signInWithGoogle),
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 48),
+        backgroundColor: const Color(0xff4285f4), // Official Google color
+        foregroundColor: Colors.white,
       ),
+      child: Text(context.l10n.sign_in_signInWithGoogle),
     );
   }
 }
