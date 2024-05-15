@@ -1050,6 +1050,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I\\\'m dying 🤯'**
   String get common_hangoverSeveritySevere;
+
+  /// No description provided for @push_notification_permission_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking reminders'**
+  String get push_notification_permission_title;
+
+  /// No description provided for @push_notification_permission_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Can we send you reminders to drink water, take a break, and track your hangovers?'**
+  String get push_notification_permission_description;
+
+  /// No description provided for @push_notification_permission_notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get push_notification_permission_notNow;
+
+  /// No description provided for @push_notification_permission_sure.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure!'**
+  String get push_notification_permission_sure;
+
+  /// No description provided for @pushNotificationChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get pushNotificationChannelName;
+
+  /// No description provided for @pushNotification_trackHangoverSeverity_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning! How are you doing?'**
+  String get pushNotification_trackHangoverSeverity_title;
+
+  /// No description provided for @pushNotification_trackHangoverSeverity_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your hangover'**
+  String get pushNotification_trackHangoverSeverity_description;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
