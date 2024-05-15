@@ -8,11 +8,11 @@ class SignInCubit extends Cubit<SignInCubitState> {
 
   SignInCubit(this._userRepository) : super(SignInCubitState());
 
-  Future<void> signInAnonymously() {
+  Future<UserCredential> signInAnonymously() {
     return _userRepository.signInAnonymously();
   }
 
-  Future<void> signInWithCredential(OAuthCredential credential) {
+  Future<UserCredential> signInWithCredential(OAuthCredential credential) {
     return _userRepository.signInWithCredential(credential);
   }
 }

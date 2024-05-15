@@ -563,4 +563,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushNotification_trackHangoverSeverity_description => 'Track your hangover';
+
+  @override
+  String get sign_in_error => 'An error occurred while signing in.';
 }

@@ -266,5 +266,6 @@
   "push_notification_permission_sure": "Sure!",
   "pushNotificationChannelName": "Reminders",
   "pushNotification_trackHangoverSeverity_title": "Good morning! How are you doing?",
-  "pushNotification_trackHangoverSeverity_description": "Track your hangover"
+  "pushNotification_trackHangoverSeverity_description": "Track your hangover",
+  "sign_in_error": "An error occurred while signing in."
 }
