@@ -19,25 +19,23 @@ void main() {
     });
 
     test('should be in loading state initially', () async {
-      final cubit = CalendarCubit(MockDiaryRepository(), initialDate: date);
+      final cubit = CalendarCubit(MockDiaryRepository(), initiallyVisibleDate: date);
 
       expect(cubit.state, isA<CalendarCubitLoadingState>());
     });
 
-    test('should load the diary entries for all weeks of this month, including the days before and after', () async {
-      final firstDayOfFirstWeek = month.floorToWeek();
-      final lastDayOfLastWeek = month.add(months: 1).floorToWeek().add(days: 6);
+    test('should load the diary entries for half a year', () async {
+      final firstDayOfPreviousMonth = month.subtract(months: 3);
+      final firstDayOfNextMonth = month.add(months: 2);
 
       final diaryEntry = generateDiaryEntry();
 
       final mockDiaryRepository = MockDiaryRepository();
-      when(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek))
-          .thenAnswer((_) => Stream.value([diaryEntry]));
+      when(mockDiaryRepository.loadEntriesBetween(firstDayOfPreviousMonth, firstDayOfNextMonth))
+          .thenAnswer((_) async => [diaryEntry]);
 
-      final cubit = CalendarCubit(mockDiaryRepository, initialDate: date);
+      final cubit = CalendarCubit(mockDiaryRepository, initiallyVisibleDate: date);
       await cubit.stream.first;
-
-      verify(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek));
 
       expect(cubit.state, isA<CalendarCubitState>());
 
@@ -45,96 +43,78 @@ void main() {
       expect(state.diaryEntries, {diaryEntry.date: diaryEntry});
     });
 
-    group('changeVisibleMonth', () {
-      final mockDiaryRepository = MockDiaryRepository();
+    test('should keep previously loaded diary entries if loading more', () async {
       final diaryEntry = generateDiaryEntry();
 
-      final newDate = faker.date.date();
-      final newMonth = newDate.floorToMonth();
+      final mockDiaryRepository = MockDiaryRepository();
+      when(mockDiaryRepository.loadEntriesBetween(month.subtract(months: 3), month.add(months: 2)))
+          .thenAnswer((_) async => [diaryEntry]);
 
-      setUp(() {
-        final firstDayOfFirstWeek = month.floorToWeek();
-        final lastDayOfLastWeek = month.add(months: 1).floorToWeek().add(days: 6);
+      final cubit = CalendarCubit(mockDiaryRepository, initiallyVisibleDate: date);
+      await cubit.stream.first;
 
-        when(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek))
-            .thenAnswer((_) => Stream.value([diaryEntry]));
-      });
+      final anotherMonth = date.subtract(months: 4);
+      final anotherDiaryEntry = generateDiaryEntry(date: anotherMonth.add(days: 1));
+      when(mockDiaryRepository.loadEntriesBetween(anotherMonth.subtract(months: 3), anotherMonth.add(months: 2)))
+          .thenAnswer((_) async => [anotherDiaryEntry]);
 
-      test('should be in loading state when changing visible month', () async {
-        final cubit = CalendarCubit(mockDiaryRepository, initialDate: date);
-        await cubit.stream.first;
+      await cubit.loadEntriesForMonth(anotherMonth);
 
-        expect(cubit.state, isA<CalendarCubitState>());
+      expect(cubit.state, isA<CalendarCubitState>());
 
-        cubit.changeVisibleMonth(newDate);
-
-        expect(cubit.state, isA<CalendarCubitLoadingState>());
-      });
-
-      test('should load the diary entries for the given month', () async {
-        final firstDayOfFirstWeek = newMonth.floorToWeek();
-        final lastDayOfLastWeek = newMonth.add(months: 1).floorToWeek().add(days: 6);
-
-        final cubit = CalendarCubit(mockDiaryRepository, initialDate: date);
-        await cubit.stream.first;
-
-        final newDiaryEntry = generateDiaryEntry();
-        when(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek))
-            .thenAnswer((_) => Stream.value([newDiaryEntry]));
-
-        cubit.changeVisibleMonth(newDate);
-        await cubit.stream.elementAt(0);
-
-        verify(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek));
-
-        expect(cubit.state, isA<CalendarCubitState>());
-
-        final state = cubit.state as CalendarCubitState;
-        expect(state.diaryEntries, {newDiaryEntry.date: newDiaryEntry});
-      });
+      final state = cubit.state as CalendarCubitState;
+      expect(state.diaryEntries, {diaryEntry.date: diaryEntry, anotherDiaryEntry.date: anotherDiaryEntry});
     });
 
-    group('changeSelectedDate', () {
-      test('should change the selected date while keeping the rest of the state as-is', () async {
-        final mockDiaryRepository = MockDiaryRepository();
-        final diaryEntry = generateDiaryEntry();
+    test('should not load the same month twice', () async {
+      final mockDiaryRepository = MockDiaryRepository();
+      when(mockDiaryRepository.loadEntriesBetween(any, any)).thenAnswer((_) async => []);
 
-        final firstDayOfFirstWeek = month.floorToWeek();
-        final lastDayOfLastWeek = month.add(months: 1).floorToWeek().add(days: 6);
+      final cubit = CalendarCubit(mockDiaryRepository, initiallyVisibleDate: date);
+      await cubit.stream.first;
 
-        when(mockDiaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek))
-            .thenAnswer((_) => Stream.value([diaryEntry]));
+      verify(mockDiaryRepository.loadEntriesBetween(any, any));
 
-        final cubit = CalendarCubit(mockDiaryRepository, initialDate: date);
-        await cubit.stream.first;
+      await cubit.loadEntriesForMonth(month);
 
-        final state = cubit.state as CalendarCubitState;
-        expect(state.selectedDate, date);
+      verifyNever(mockDiaryRepository.loadEntriesBetween(any, any));
+    });
 
-        final newDate = faker.date.date();
-        cubit.changeSelectedDate(newDate);
+    test('should not load a month that has already been loaded', () async {
+      final mockDiaryRepository = MockDiaryRepository();
+      when(mockDiaryRepository.loadEntriesBetween(any, any)).thenAnswer((_) async => []);
 
-        expect(cubit.state, isA<CalendarCubitState>());
+      final cubit = CalendarCubit(mockDiaryRepository, initiallyVisibleDate: date);
+      await cubit.stream.first;
 
-        final newState = cubit.state as CalendarCubitState;
-        expect(newState.selectedDate, newDate);
-        expect(newState.diaryEntries, state.diaryEntries);
-        expect(newState.visibleMonth, state.visibleMonth);
-      });
+      verify(mockDiaryRepository.loadEntriesBetween(any, any));
 
-      test('should also work if the state is currently loading', () {
-        final cubit = CalendarCubit(MockDiaryRepository(), initialDate: date);
+      final anotherMonth = date.subtract(months: 4);
+      await cubit.loadEntriesForMonth(anotherMonth);
 
-        expect(cubit.state, isA<CalendarCubitLoadingState>());
+      verify(mockDiaryRepository.loadEntriesBetween(any, any));
 
-        final newDate = faker.date.date();
-        cubit.changeSelectedDate(newDate);
+      final monthBetween = anotherMonth.add(months: 1);
+      await cubit.loadEntriesForMonth(monthBetween);
 
-        expect(cubit.state, isA<CalendarCubitLoadingState>());
+      verifyNever(mockDiaryRepository.loadEntriesBetween(any, any));
+    });
 
-        expect(cubit.state.selectedDate, newDate);
-        expect(cubit.state.visibleMonth, month);
-      });
+    test('should keep track of the loaded months', () async {
+      final mockDiaryRepository = MockDiaryRepository();
+      when(mockDiaryRepository.loadEntriesBetween(any, any)).thenAnswer((_) async => []);
+
+      final cubit = CalendarCubit(mockDiaryRepository, initiallyVisibleDate: date);
+      await cubit.stream.first;
+
+      final anotherMonth = date.subtract(months: 4);
+      await cubit.loadEntriesForMonth(anotherMonth);
+
+      expect(cubit.state, isA<CalendarCubitState>());
+
+      final state = cubit.state as CalendarCubitState;
+      expect(state.earliestLoadedDate, anotherMonth.subtract(months: 3));
+      expect(state.latestLoadedDate, month.add(months: 2));
     });
   });
 }

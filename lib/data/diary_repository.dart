@@ -28,6 +28,16 @@ class DiaryRepository {
         .map((event) => event.docs.map((doc) => doc.data()).toList());
   }
 
+  Future<List<DiaryEntry>> loadEntriesBetween(Date startDate, Date endDate) async {
+    final snapshot = await _collection
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('date', isGreaterThanOrEqualTo: startDate.toDateTime())
+        .where('date', isLessThanOrEqualTo: endDate.toDateTime())
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
   Future<void> saveDiaryEntry(DiaryEntry diaryEntry) async {
     await _collection.doc(diaryEntry.id).set(diaryEntry);
   }

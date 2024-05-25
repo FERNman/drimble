@@ -35,6 +35,12 @@ class Date {
 
   Duration difference(Date other) => toDateTime().difference(other.toDateTime());
 
+  int differenceInMonths(Date other) {
+    return ((year - other.year) * 12 + month - other.month).abs();
+  }
+
+  bool isBefore(Date other) => toDateTime().isBefore(other.toDateTime());
+
   bool isAfter(Date other) => toDateTime().isAfter(other.toDateTime());
 
   @override

@@ -62,8 +62,6 @@
   "onboarding_bodyCompositionSelectionDescription": "The amount of muscle and fat you carry influences the amount of alcohol you can metabolize at once.",
   "onboarding_bodyCompositionSelectionLabel": "Body composition",
   "onboarding_finish": "Finish",
-  "home_appBarDiary": "Diary",
-  "home_appBarAnalytics": "Analytics",
   "diary_notDrinkingToday": "Not drinking today?",
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
@@ -130,55 +128,6 @@
   "diary_consumedDrinksSeeAll": "see all",
   "diary_bacChartDisclaimer": "These values are estimates and may not reflect your actual blood alcohol level",
   "diary_maxBAC": " max",
-  "analytics_title": "Analytics",
-  "analytics_weekFromTo": "{start} - {end}",
-  "@analytics_weekFromTo": {
-    "placeholders": {
-      "start": {
-        "type": "DateTime",
-        "format": "yMd"
-      },
-      "end": {
-        "type": "DateTime",
-        "format": "yMd"
-      }
-    }
-  },
-  "analytics_changeFromLastWeek": "from last week",
-  "analytics_highestBloodAlcoholLevel": "highest blood alcohol level",
-  "analytics_maxBACInfo": "Stay below 0.08% to minimize immediate health consequences and damage to your brain.",
-  "analytics_totalAlcoholConsumption": "Alcohol consumption",
-  "analytics_totalAlcoholConsumptionDescription": "Your weekly alcohol consumption is the main indicator for the effect that alcohol has on you.",
-  "analytics_setAGoal": "Set a goal",
-  "analytics_statistics": "Statistics",
-  "analytics_drinkingTrends": "Drinking trends",
-  "analytics_date_thisWeek": "This week",
-  "analytics_noAlcoholConsumedYet": "No drinks yet! 🎉",
-  "analytics_alcoholConsumptionWithinLimits": "within your limits 💪",
-  "analytics_alcoholConsumptionCloseToLimit": "close to your limit 😬",
-  "analytics_alcoholConsumptionOverLimit": "surpassed your limit 😔",
-  "analytics_goalsWeeklyAlcoholRemaining": "{remainingAlcohol}g remaining",
-  "@analytics_goalsWeeklyAlcoholRemaining": {
-    "placeholders": {
-      "remainingAlcohol": {
-        "type": "int"
-      }
-    }
-  },
-  "analytics_gramsOfAlcohol": "of alcohol",
-  "analytics_drinkFreeDays": "drink-free {days, plural, zero{days} one{day} other{days}}",
-  "@analytics_drinkFreeDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "analytics_remainingDrinkFreeDaysToGoal": "more to hit your goal!",
-  "analytics_drinkFreeDaysGoalHit": "You hit your goal! 😍",
-  "analytics_drinksThisWeek": "this week",
-  "analytics_averageAlcoholPerSession": "avg. per session",
-  "analytics_maybeTrySettingAGoal": "Maybe try setting a goal?",
   "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
@@ -227,8 +176,7 @@
   "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
   "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
   "editWeeklyGoal_setGoal": "Set goal!",
-  "analytics_switch_week_selectWeek": "Select week",
-  "analytics_switch_week_apply": "Apply",
+  "calendar_title": "Calendar",
   "add_drink_search": "Search...",
   "search_drink_whatAreYouLookingFor": "What are you looking for?",
   "search_drink_noResults": "We couldn''t find any drinks matching your search...",

@@ -136,12 +136,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_finish => 'Finish';
 
   @override
-  String get home_appBarDiary => 'Diary';
-
-  @override
-  String get home_appBarAnalytics => 'Analytics';
-
-  @override
   String get diary_notDrinkingToday => 'Not drinking today?';
 
   @override
@@ -231,93 +225,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diary_maxBAC => ' max';
-
-  @override
-  String get analytics_title => 'Analytics';
-
-  @override
-  String analytics_weekFromTo(DateTime start, DateTime end) {
-    final intl.DateFormat startDateFormat = intl.DateFormat.yMd(localeName);
-    final String startString = startDateFormat.format(start);
-    final intl.DateFormat endDateFormat = intl.DateFormat.yMd(localeName);
-    final String endString = endDateFormat.format(end);
-
-    return '$startString - $endString';
-  }
-
-  @override
-  String get analytics_changeFromLastWeek => 'from last week';
-
-  @override
-  String get analytics_highestBloodAlcoholLevel => 'highest blood alcohol level';
-
-  @override
-  String get analytics_maxBACInfo => 'Stay below 0.08% to minimize immediate health consequences and damage to your brain.';
-
-  @override
-  String get analytics_totalAlcoholConsumption => 'Alcohol consumption';
-
-  @override
-  String get analytics_totalAlcoholConsumptionDescription => 'Your weekly alcohol consumption is the main indicator for the effect that alcohol has on you.';
-
-  @override
-  String get analytics_setAGoal => 'Set a goal';
-
-  @override
-  String get analytics_statistics => 'Statistics';
-
-  @override
-  String get analytics_drinkingTrends => 'Drinking trends';
-
-  @override
-  String get analytics_date_thisWeek => 'This week';
-
-  @override
-  String get analytics_noAlcoholConsumedYet => 'No drinks yet! 🎉';
-
-  @override
-  String get analytics_alcoholConsumptionWithinLimits => 'within your limits 💪';
-
-  @override
-  String get analytics_alcoholConsumptionCloseToLimit => 'close to your limit 😬';
-
-  @override
-  String get analytics_alcoholConsumptionOverLimit => 'surpassed your limit 😔';
-
-  @override
-  String analytics_goalsWeeklyAlcoholRemaining(int remainingAlcohol) {
-    return '${remainingAlcohol}g remaining';
-  }
-
-  @override
-  String get analytics_gramsOfAlcohol => 'of alcohol';
-
-  @override
-  String analytics_drinkFreeDays(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: 'days',
-      one: 'day',
-      zero: 'days',
-    );
-    return 'drink-free $_temp0';
-  }
-
-  @override
-  String get analytics_remainingDrinkFreeDaysToGoal => 'more to hit your goal!';
-
-  @override
-  String get analytics_drinkFreeDaysGoalHit => 'You hit your goal! 😍';
-
-  @override
-  String get analytics_drinksThisWeek => 'this week';
-
-  @override
-  String get analytics_averageAlcoholPerSession => 'avg. per session';
-
-  @override
-  String get analytics_maybeTrySettingAGoal => 'Maybe try setting a goal?';
 
   @override
   String get todays_drinks_history => 'History';
@@ -445,10 +352,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editWeeklyGoal_setGoal => 'Set goal!';
 
   @override
-  String get analytics_switch_week_selectWeek => 'Select week';
-
-  @override
-  String get analytics_switch_week_apply => 'Apply';
+  String get calendar_title => 'Calendar';
 
   @override
   String get add_drink_search => 'Search...';
