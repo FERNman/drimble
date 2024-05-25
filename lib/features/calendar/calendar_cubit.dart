@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../data/diary_repository.dart';
 import '../../domain/date.dart';
@@ -10,87 +8,68 @@ import '../../infra/disposable.dart';
 class CalendarCubit extends Cubit<CalendarCubitBaseState> with Disposable {
   final DiaryRepository _diaryRepository;
 
-  CalendarCubit(this._diaryRepository, {required Date initialDate})
-      : super(CalendarCubitLoadingState(
-          visibleMonth: initialDate.floorToMonth(),
-          selectedDate: initialDate,
-        )) {
-    _initState();
+  CalendarCubit(this._diaryRepository, {required Date initiallyVisibleDate})
+      : super(const CalendarCubitLoadingState()) {
+    loadEntriesForMonth(initiallyVisibleDate.floorToMonth());
   }
 
-  void _initState() {
-    final visibleMonth$ = stream.map((state) => state.visibleMonth).startWith(state.visibleMonth).distinct();
+  Future<void> loadEntriesForMonth(Date month) async {
+    if (state is CalendarCubitState) {
+      final earliestLoadedDate = (state as CalendarCubitState).earliestLoadedDate;
+      final latestLoadedDate = (state as CalendarCubitState).latestLoadedDate;
+      if (earliestLoadedDate.isBefore(month) && latestLoadedDate.isAfter(month)) {
+        return;
+      }
+    }
 
-    final diaryEntries$ = visibleMonth$.flatMap((month) {
-      final firstDayOfFirstWeek = month.floorToWeek();
-      final lastDayOfLastWeek = month.add(months: 1).floorToWeek().add(days: 6);
+    final loadingStart = month.subtract(months: 3);
+    final loadingEnd = month.add(months: 2);
 
-      return _diaryRepository.observeEntriesBetween(firstDayOfFirstWeek, lastDayOfLastWeek);
-    });
-
-    addSubscription(
-      diaryEntries$
-          .map(
-            (entries) => CalendarCubitState(
-              visibleMonth: state.visibleMonth,
-              selectedDate: state.selectedDate,
-              diaryEntries: entries.groupFoldBy((el) => el.date, (_, el) => el),
-            ),
-          )
-          .listen(emit),
-    );
-  }
-
-  void changeVisibleMonth(Date month) {
-    emit(CalendarCubitLoadingState(
-      visibleMonth: month.floorToMonth(),
-      selectedDate: state.selectedDate,
+    final entries = await _diaryRepository.loadEntriesBetween(loadingStart, loadingEnd);
+    emit(state.addEntries(
+      diaryEntries: Map.fromEntries(entries.map((entry) => MapEntry(entry.date, entry))),
+      earliestLoadedDate: loadingStart,
+      latestLoadedDate: loadingEnd,
     ));
-  }
-
-  void changeSelectedDate(Date date) {
-    emit(state.copyWith(selectedDate: date));
   }
 }
 
 abstract class CalendarCubitBaseState {
-  final Date visibleMonth;
-  final Date selectedDate;
+  const CalendarCubitBaseState();
 
-  const CalendarCubitBaseState({
-    required this.visibleMonth,
-    required this.selectedDate,
-  });
-
-  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate});
-}
-
-class CalendarCubitLoadingState extends CalendarCubitBaseState {
-  const CalendarCubitLoadingState({
-    required super.visibleMonth,
-    required super.selectedDate,
-  });
-
-  @override
-  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => CalendarCubitLoadingState(
-        visibleMonth: visibleMonth ?? this.visibleMonth,
-        selectedDate: selectedDate ?? this.selectedDate,
+  CalendarCubitBaseState addEntries({
+    required Map<Date, DiaryEntry> diaryEntries,
+    required Date earliestLoadedDate,
+    required Date latestLoadedDate,
+  }) =>
+      CalendarCubitState(
+        diaryEntries: diaryEntries,
+        earliestLoadedDate: earliestLoadedDate,
+        latestLoadedDate: latestLoadedDate,
       );
 }
 
+class CalendarCubitLoadingState extends CalendarCubitBaseState {
+  const CalendarCubitLoadingState();
+}
+
 class CalendarCubitState extends CalendarCubitBaseState {
+  final Date earliestLoadedDate;
+  final Date latestLoadedDate;
   final Map<Date, DiaryEntry> diaryEntries;
 
-  const CalendarCubitState({
-    required super.visibleMonth,
-    required super.selectedDate,
-    this.diaryEntries = const {},
-  });
+  CalendarCubitState({required this.diaryEntries, required this.earliestLoadedDate, required this.latestLoadedDate});
 
   @override
-  CalendarCubitBaseState copyWith({Date? visibleMonth, Date? selectedDate}) => CalendarCubitState(
-        visibleMonth: visibleMonth ?? this.visibleMonth,
-        selectedDate: selectedDate ?? this.selectedDate,
-        diaryEntries: diaryEntries,
+  CalendarCubitBaseState addEntries({
+    required Map<Date, DiaryEntry> diaryEntries,
+    required Date earliestLoadedDate,
+    required Date latestLoadedDate,
+  }) =>
+      CalendarCubitState(
+        diaryEntries: {...this.diaryEntries, ...diaryEntries},
+        earliestLoadedDate:
+            earliestLoadedDate.isBefore(this.earliestLoadedDate) ? earliestLoadedDate : this.earliestLoadedDate,
+        latestLoadedDate: latestLoadedDate.isAfter(this.latestLoadedDate) ? latestLoadedDate : this.latestLoadedDate,
       );
 }

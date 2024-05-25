@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/date.dart';
 import '../../../domain/diary/diary_entry.dart';
-import 'diary_calendar_day.dart';
+import '../../common/widgets/diary_calendar_day.dart';
 
 class DiaryCalendarWeek extends StatelessWidget {
   final Date selectedDate;

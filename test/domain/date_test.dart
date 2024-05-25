@@ -99,7 +99,40 @@ void main() {
       expect(date2.difference(date1), const Duration(days: 365));
     });
   });
-  
+
+  group('differenceInMonths', () {
+    test('should return the difference in months between two dates', () {
+      const date1 = Date(2021, 1, 1);
+      const date2 = Date(2021, 3, 1);
+      expect(date2.differenceInMonths(date1), 2);
+    });
+
+    test('should return 0 if the dates are in the same month', () {
+      const date1 = Date(2021, 1, 1);
+      const date2 = Date(2021, 1, 15);
+      expect(date2.differenceInMonths(date1), 0);
+    });
+
+    test('should return the difference for adjacent years', () {
+      const date1 = Date(2020, 12, 31);
+      const date2 = Date(2021, 1, 1);
+      expect(date2.differenceInMonths(date1), 1);
+    });
+
+    test('should return the difference for years with a leap year in between', () {
+      const date1 = Date(2020, 1, 1);
+      const date2 = Date(2022, 1, 1);
+      expect(date2.differenceInMonths(date1), 24);
+    });
+
+    test('should always return the absolute difference', () {
+      const date1 = Date(2021, 12, 1);
+      const date2 = Date(2020, 1, 1);
+      expect(date2.differenceInMonths(date1), 23);
+      expect(date1.differenceInMonths(date2), 23);
+    });
+  });
+
   group('DateTime.setDate', () {
     test('should shift the day by 1 if the hour is before 6am', () {
       final date = DateTime(2021, 1, 1, 5, 59, 59);
