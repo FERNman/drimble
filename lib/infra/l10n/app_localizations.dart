@@ -337,18 +337,6 @@ abstract class AppLocalizations {
   /// **'Finish'**
   String get onboarding_finish;
 
-  /// No description provided for @home_appBarDiary.
-  ///
-  /// In en, this message translates to:
-  /// **'Diary'**
-  String get home_appBarDiary;
-
-  /// No description provided for @home_appBarAnalytics.
-  ///
-  /// In en, this message translates to:
-  /// **'Analytics'**
-  String get home_appBarAnalytics;
-
   /// No description provided for @diary_notDrinkingToday.
   ///
   /// In en, this message translates to:
@@ -468,144 +456,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **' max'**
   String get diary_maxBAC;
-
-  /// No description provided for @analytics_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Analytics'**
-  String get analytics_title;
-
-  /// No description provided for @analytics_weekFromTo.
-  ///
-  /// In en, this message translates to:
-  /// **'{start} - {end}'**
-  String analytics_weekFromTo(DateTime start, DateTime end);
-
-  /// No description provided for @analytics_changeFromLastWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'from last week'**
-  String get analytics_changeFromLastWeek;
-
-  /// No description provided for @analytics_highestBloodAlcoholLevel.
-  ///
-  /// In en, this message translates to:
-  /// **'highest blood alcohol level'**
-  String get analytics_highestBloodAlcoholLevel;
-
-  /// No description provided for @analytics_maxBACInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Stay below 0.08% to minimize immediate health consequences and damage to your brain.'**
-  String get analytics_maxBACInfo;
-
-  /// No description provided for @analytics_totalAlcoholConsumption.
-  ///
-  /// In en, this message translates to:
-  /// **'Alcohol consumption'**
-  String get analytics_totalAlcoholConsumption;
-
-  /// No description provided for @analytics_totalAlcoholConsumptionDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Your weekly alcohol consumption is the main indicator for the effect that alcohol has on you.'**
-  String get analytics_totalAlcoholConsumptionDescription;
-
-  /// No description provided for @analytics_setAGoal.
-  ///
-  /// In en, this message translates to:
-  /// **'Set a goal'**
-  String get analytics_setAGoal;
-
-  /// No description provided for @analytics_statistics.
-  ///
-  /// In en, this message translates to:
-  /// **'Statistics'**
-  String get analytics_statistics;
-
-  /// No description provided for @analytics_drinkingTrends.
-  ///
-  /// In en, this message translates to:
-  /// **'Drinking trends'**
-  String get analytics_drinkingTrends;
-
-  /// No description provided for @analytics_date_thisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'This week'**
-  String get analytics_date_thisWeek;
-
-  /// No description provided for @analytics_noAlcoholConsumedYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No drinks yet! 🎉'**
-  String get analytics_noAlcoholConsumedYet;
-
-  /// No description provided for @analytics_alcoholConsumptionWithinLimits.
-  ///
-  /// In en, this message translates to:
-  /// **'within your limits 💪'**
-  String get analytics_alcoholConsumptionWithinLimits;
-
-  /// No description provided for @analytics_alcoholConsumptionCloseToLimit.
-  ///
-  /// In en, this message translates to:
-  /// **'close to your limit 😬'**
-  String get analytics_alcoholConsumptionCloseToLimit;
-
-  /// No description provided for @analytics_alcoholConsumptionOverLimit.
-  ///
-  /// In en, this message translates to:
-  /// **'surpassed your limit 😔'**
-  String get analytics_alcoholConsumptionOverLimit;
-
-  /// No description provided for @analytics_goalsWeeklyAlcoholRemaining.
-  ///
-  /// In en, this message translates to:
-  /// **'{remainingAlcohol}g remaining'**
-  String analytics_goalsWeeklyAlcoholRemaining(int remainingAlcohol);
-
-  /// No description provided for @analytics_gramsOfAlcohol.
-  ///
-  /// In en, this message translates to:
-  /// **'of alcohol'**
-  String get analytics_gramsOfAlcohol;
-
-  /// No description provided for @analytics_drinkFreeDays.
-  ///
-  /// In en, this message translates to:
-  /// **'drink-free {days, plural, zero{days} one{day} other{days}}'**
-  String analytics_drinkFreeDays(int days);
-
-  /// No description provided for @analytics_remainingDrinkFreeDaysToGoal.
-  ///
-  /// In en, this message translates to:
-  /// **'more to hit your goal!'**
-  String get analytics_remainingDrinkFreeDaysToGoal;
-
-  /// No description provided for @analytics_drinkFreeDaysGoalHit.
-  ///
-  /// In en, this message translates to:
-  /// **'You hit your goal! 😍'**
-  String get analytics_drinkFreeDaysGoalHit;
-
-  /// No description provided for @analytics_drinksThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'this week'**
-  String get analytics_drinksThisWeek;
-
-  /// No description provided for @analytics_averageAlcoholPerSession.
-  ///
-  /// In en, this message translates to:
-  /// **'avg. per session'**
-  String get analytics_averageAlcoholPerSession;
-
-  /// No description provided for @analytics_maybeTrySettingAGoal.
-  ///
-  /// In en, this message translates to:
-  /// **'Maybe try setting a goal?'**
-  String get analytics_maybeTrySettingAGoal;
 
   /// No description provided for @todays_drinks_history.
   ///
@@ -853,17 +703,11 @@ abstract class AppLocalizations {
   /// **'Set goal!'**
   String get editWeeklyGoal_setGoal;
 
-  /// No description provided for @analytics_switch_week_selectWeek.
+  /// No description provided for @calendar_title.
   ///
   /// In en, this message translates to:
-  /// **'Select week'**
-  String get analytics_switch_week_selectWeek;
-
-  /// No description provided for @analytics_switch_week_apply.
-  ///
-  /// In en, this message translates to:
-  /// **'Apply'**
-  String get analytics_switch_week_apply;
+  /// **'Calendar'**
+  String get calendar_title;
 
   /// No description provided for @add_drink_search.
   ///
