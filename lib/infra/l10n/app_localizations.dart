@@ -199,6 +199,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get common_save;
 
+  /// No description provided for @common_invalidTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid time format'**
+  String get common_invalidTimeFormat;
+
   /// No description provided for @remove_drink_title.
   ///
   /// In en, this message translates to:
@@ -240,6 +246,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue without signing in'**
   String get sign_in_continueWithoutSigningIn;
+
+  /// No description provided for @sign_in_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while signing in.'**
+  String get sign_in_error;
 
   /// No description provided for @onboarding_firstNameTitle.
   ///
@@ -361,72 +373,6 @@ abstract class AppLocalizations {
   /// **'Great job!'**
   String get diary_drinkFreeDayGreatJob;
 
-  /// No description provided for @diary_reachesMaxBACAt.
-  ///
-  /// In en, this message translates to:
-  /// **'reaches {bac} at {time}'**
-  String diary_reachesMaxBACAt(String bac, DateTime time);
-
-  /// No description provided for @diary_soberAt.
-  ///
-  /// In en, this message translates to:
-  /// **'sober at {time}'**
-  String diary_soberAt(DateTime time);
-
-  /// No description provided for @diary_soberInFuture.
-  ///
-  /// In en, this message translates to:
-  /// **'sober on {date} at {time}'**
-  String diary_soberInFuture(DateTime date, DateTime time);
-
-  /// No description provided for @diary_soberTomorrowAt.
-  ///
-  /// In en, this message translates to:
-  /// **'sober tomorrow at {time}'**
-  String diary_soberTomorrowAt(DateTime time);
-
-  /// No description provided for @diary_youreSober.
-  ///
-  /// In en, this message translates to:
-  /// **'you\'re sober! 🎉'**
-  String get diary_youreSober;
-
-  /// No description provided for @diary_statisticsGramsOfAlcohol.
-  ///
-  /// In en, this message translates to:
-  /// **'grams of alcohol'**
-  String get diary_statisticsGramsOfAlcohol;
-
-  /// No description provided for @diary_statisticsGramsOfAlcoholGuidelines.
-  ///
-  /// In en, this message translates to:
-  /// **'Aim for less than 40 grams of alcohol in one session to stay healthy'**
-  String get diary_statisticsGramsOfAlcoholGuidelines;
-
-  /// No description provided for @diary_statisticsDrinks.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, zero{drinks} one{drink} other{drinks}}'**
-  String diary_statisticsDrinks(int count);
-
-  /// No description provided for @diary_statisticsCalories.
-  ///
-  /// In en, this message translates to:
-  /// **'calories'**
-  String get diary_statisticsCalories;
-
-  /// No description provided for @diary_statisticsConsumedToday.
-  ///
-  /// In en, this message translates to:
-  /// **'consumed today'**
-  String get diary_statisticsConsumedToday;
-
-  /// No description provided for @diary_statisticsFromAlcohol.
-  ///
-  /// In en, this message translates to:
-  /// **'from alcohol'**
-  String get diary_statisticsFromAlcohol;
-
   /// No description provided for @diary_consumedDrinksTitle.
   ///
   /// In en, this message translates to:
@@ -457,12 +403,6 @@ abstract class AppLocalizations {
   /// **' max'**
   String get diary_maxBAC;
 
-  /// No description provided for @todays_drinks_history.
-  ///
-  /// In en, this message translates to:
-  /// **'History'**
-  String get todays_drinks_history;
-
   /// No description provided for @add_drink_addADrink.
   ///
   /// In en, this message translates to:
@@ -480,6 +420,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Common'**
   String get add_drink_common;
+
+  /// No description provided for @add_drink_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get add_drink_search;
+
+  /// No description provided for @search_drink_whatAreYouLookingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you looking for?'**
+  String get search_drink_whatAreYouLookingFor;
+
+  /// No description provided for @search_drink_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'\'t find any drinks matching your search...'**
+  String get search_drink_noResults;
 
   /// No description provided for @edit_drink_youreAboutToConsume.
   ///
@@ -673,59 +631,11 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get profile_signOutDialog_confirm;
 
-  /// No description provided for @editWeeklyAlcoholGoal_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Weekly alcohol consumption'**
-  String get editWeeklyAlcoholGoal_title;
-
-  /// No description provided for @editWeeklyAlcoholGoal_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!'**
-  String get editWeeklyAlcoholGoal_description;
-
-  /// No description provided for @editWeeklyDrinkFreeDaysGoal_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Drink-free days'**
-  String get editWeeklyDrinkFreeDaysGoal_title;
-
-  /// No description provided for @editWeeklyDrinkFreeDaysGoal_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!'**
-  String get editWeeklyDrinkFreeDaysGoal_description;
-
-  /// No description provided for @editWeeklyGoal_setGoal.
-  ///
-  /// In en, this message translates to:
-  /// **'Set goal!'**
-  String get editWeeklyGoal_setGoal;
-
   /// No description provided for @calendar_title.
   ///
   /// In en, this message translates to:
   /// **'Calendar'**
   String get calendar_title;
-
-  /// No description provided for @add_drink_search.
-  ///
-  /// In en, this message translates to:
-  /// **'Search...'**
-  String get add_drink_search;
-
-  /// No description provided for @search_drink_whatAreYouLookingFor.
-  ///
-  /// In en, this message translates to:
-  /// **'What are you looking for?'**
-  String get search_drink_whatAreYouLookingFor;
-
-  /// No description provided for @search_drink_noResults.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'\'t find any drinks matching your search...'**
-  String get search_drink_noResults;
 
   /// No description provided for @faq_title.
   ///
@@ -769,12 +679,6 @@ abstract class AppLocalizations {
   /// **'No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb.'**
   String get faq_doesTheEstimatedBACCorrespondToTheActualBACText;
 
-  /// No description provided for @common_invalidTimeFormat.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid time format'**
-  String get common_invalidTimeFormat;
-
   /// No description provided for @diary_glassesOfWaterDescription.
   ///
   /// In en, this message translates to:
@@ -817,6 +721,24 @@ abstract class AppLocalizations {
   /// **'of alcohol'**
   String get diary_ofAlcohol;
 
+  /// No description provided for @diary_quickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick add'**
+  String get diary_quickAdd;
+
+  /// No description provided for @diary_trackYourHangover.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your hangover'**
+  String get diary_trackYourHangover;
+
+  /// No description provided for @diary_hangoverPrediction.
+  ///
+  /// In en, this message translates to:
+  /// **'Hangover prediction'**
+  String get diary_hangoverPrediction;
+
   /// No description provided for @select_stomach_fullness_description.
   ///
   /// In en, this message translates to:
@@ -829,12 +751,6 @@ abstract class AppLocalizations {
   /// **'How much did you eat today before drinking?'**
   String get select_stomach_fullness_title;
 
-  /// No description provided for @diary_quickAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick add'**
-  String get diary_quickAdd;
-
   /// No description provided for @track_hangover_severity_description.
   ///
   /// In en, this message translates to:
@@ -846,12 +762,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do you have a hangover?'**
   String get track_hangover_severity_title;
-
-  /// No description provided for @diary_trackYourHangover.
-  ///
-  /// In en, this message translates to:
-  /// **'Track your hangover'**
-  String get diary_trackYourHangover;
 
   /// No description provided for @common_hangoverSeverityNone.
   ///
@@ -936,12 +846,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Track your hangover'**
   String get pushNotification_trackHangoverSeverity_description;
-
-  /// No description provided for @sign_in_error.
-  ///
-  /// In en, this message translates to:
-  /// **'An error occurred while signing in.'**
-  String get sign_in_error;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

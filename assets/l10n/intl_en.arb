@@ -39,6 +39,7 @@
   "common_stomachFullnessNormal": "A normal amount",
   "common_stomachFullnessFull": "A lot",
   "common_save": "Save",
+  "common_invalidTimeFormat": "Invalid time format",
   "remove_drink_title": "Remove drink",
   "remove_drink_description": "Are you sure you want to remove this drink?",
   "remove_drink_cancel": "Cancel",
@@ -46,6 +47,7 @@
   "sign_in_welcomeToDrimble": "Welcome to Drimble",
   "sign_in_signInWithGoogle": "Sign in with Google",
   "sign_in_continueWithoutSigningIn": "Continue without signing in",
+  "sign_in_error": "An error occurred while signing in.",
   "onboarding_firstNameTitle": "How can I call you?",
   "onboarding_enterFirstName": "Enter your first name...",
   "onboarding_getStarted": "Get started",
@@ -66,72 +68,17 @@
   "diary_markAsDrinkFreeDay": "Mark as drink-free day",
   "diary_drinkFreeDay": "Drink-free day 🎉",
   "diary_drinkFreeDayGreatJob": "Great job!",
-  "diary_reachesMaxBACAt": "reaches {bac} at {time}",
-  "@diary_reachesMaxBACAt": {
-    "placeholders": {
-      "bac": {
-        "type": "String"
-      },
-      "time": {
-        "type": "DateTime",
-        "format": "jm"
-      }
-    }
-  },
-  "diary_soberAt": "sober at {time}",
-  "@diary_soberAt": {
-    "placeholders": {
-      "time": {
-        "type": "DateTime",
-        "format": "jm"
-      }
-    }
-  },
-  "diary_soberInFuture": "sober on {date} at {time}",
-  "@diary_soberInFuture": {
-    "placeholders": {
-      "date": {
-        "type": "DateTime",
-        "format": "Md"
-      },
-      "time": {
-        "type": "DateTime",
-        "format": "jm"
-      }
-    }
-  },
-  "diary_soberTomorrowAt": "sober tomorrow at {time}",
-  "@diary_soberTomorrowAt": {
-    "placeholders": {
-      "time": {
-        "type": "DateTime",
-        "format": "jm"
-      }
-    }
-  },
-  "diary_youreSober": "you're sober! 🎉",
-  "diary_statisticsGramsOfAlcohol": "grams of alcohol",
-  "diary_statisticsGramsOfAlcoholGuidelines": "Aim for less than 40 grams of alcohol in one session to stay healthy",
-  "diary_statisticsDrinks": "{count, plural, zero{drinks} one{drink} other{drinks}}",
-  "@diary_statisticsDrinks": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "diary_statisticsCalories": "calories",
-  "diary_statisticsConsumedToday": "consumed today",
-  "diary_statisticsFromAlcohol": "from alcohol",
   "diary_consumedDrinksTitle": "Consumed drinks",
   "diary_consumedDrinksMore": "more",
   "diary_consumedDrinksSeeAll": "see all",
   "diary_bacChartDisclaimer": "These values are estimates and may not reflect your actual blood alcohol level",
   "diary_maxBAC": " max",
-  "todays_drinks_history": "History",
   "add_drink_addADrink": "Add a drink",
   "add_drink_recentlyAdded": "Recently added",
   "add_drink_common": "Common",
+  "add_drink_search": "Search...",
+  "search_drink_whatAreYouLookingFor": "What are you looking for?",
+  "search_drink_noResults": "We couldn''t find any drinks matching your search...",
   "edit_drink_youreAboutToConsume": "You''re about to consume",
   "edit_drink_youreAboutToConsumeGrams": "{grams}g",
   "@edit_drink_youreAboutToConsumeGrams": {
@@ -171,15 +118,7 @@
   "profile_signOutDialog_content": "Are you sure you want to sign out? This will delete all your data.",
   "profile_signOutDialog_cancel": "Cancel",
   "profile_signOutDialog_confirm": "Sign out",
-  "editWeeklyAlcoholGoal_title": "Weekly alcohol consumption",
-  "editWeeklyAlcoholGoal_description": "Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!",
-  "editWeeklyDrinkFreeDaysGoal_title": "Drink-free days",
-  "editWeeklyDrinkFreeDaysGoal_description": "Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!",
-  "editWeeklyGoal_setGoal": "Set goal!",
   "calendar_title": "Calendar",
-  "add_drink_search": "Search...",
-  "search_drink_whatAreYouLookingFor": "What are you looking for?",
-  "search_drink_noResults": "We couldn''t find any drinks matching your search...",
   "faq_title": "FAQ",
   "faq_howIsTheBloodAlcoholLevelEstimated": "How is the blood alcohol level estimated?",
   "faq_howIsTheBloodAlcoholLevelEstimatedText": "To estimate the BAC, an adapted version of the Watson formula is used. The estimate is based on the amount of alcohol consumed, the time of consumption, and the amount of water in your body. To estimate those values, the formula takes gender, weight, height, and age into account. In addition, the formula assumes an average metabolism of up to 20mg/100ml (depending on the BAC) per hour.",
@@ -187,7 +126,6 @@
   "faq_canTheAppReplaceABreathalyzerText": "No! The app is only intended to give an approximate indication of the blood alcohol level. The actual blood alcohol level can only be determined by a breathalyzer or a blood test.",
   "faq_doesTheEstimatedBACCorrespondToTheActualBAC": "Does the estimated blood alcohol level correspond to the actual blood alcohol level?",
   "faq_doesTheEstimatedBACCorrespondToTheActualBACText": "No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb.",
-  "common_invalidTimeFormat": "Invalid time format",
   "diary_glassesOfWaterDescription": "To avoid hangovers, consume one glass of water between every alcoholic drink.",
   "diary_yourDrinking": "Your drinking",
   "diary_statisticsAlcohol": "alcohol",
@@ -195,13 +133,13 @@
   "diary_water": "Water",
   "diary_selectedWeek": "selected week",
   "diary_ofAlcohol": "of alcohol",
+  "diary_quickAdd": "Quick add",
+  "diary_trackYourHangover": "Track your hangover",
   "diary_hangoverPrediction": "Hangover prediction",
   "select_stomach_fullness_description": "Eating before drinking influences how fast alcohol is absorbed and metabolizes.",
   "select_stomach_fullness_title": "How much did you eat today before drinking?",
-  "diary_quickAdd": "Quick add",
   "track_hangover_severity_description": "Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.",
   "track_hangover_severity_title": "Do you have a hangover?",
-  "diary_trackYourHangover": "Track your hangover",
   "common_hangoverSeverityNone": "No hangover 🙌🏻",
   "common_hangoverSeverityVeryMild": "Barely noticeable 🙂",
   "common_hangoverSeverityMild": "Slightly stirred 😐",
@@ -215,6 +153,5 @@
   "push_notification_permission_sure": "Sure!",
   "pushNotificationChannelName": "Reminders",
   "pushNotification_trackHangoverSeverity_title": "Good morning! How are you doing?",
-  "pushNotification_trackHangoverSeverity_description": "Track your hangover",
-  "sign_in_error": "An error occurred while signing in."
+  "pushNotification_trackHangoverSeverity_description": "Track your hangover"
 }
