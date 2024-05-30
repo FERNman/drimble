@@ -4,12 +4,11 @@ import 'package:collection/collection.dart';
 
 import '../alcohol/alcohol.dart';
 import '../diary/consumed_drink.dart';
+import '../diary/diary_entry.dart';
 import '../diary/stomach_fullness.dart';
 import '../user/user.dart';
 import 'bac_calculation_results.dart';
-import 'drink_bac_extensions.dart';
-import 'stomach_fullness_bac_extensions.dart';
-import 'user_bac_extensions.dart';
+import 'bac_constants.dart';
 
 /// This class estimates the BAC for a given user and a given time range.
 /// It is based on a simple 3-compartment PBPK model introduced by Pieters that estimates the concentration of alcohol
@@ -23,13 +22,16 @@ import 'user_bac_extensions.dart';
 ///
 /// Largely based on Jones, 2019, and Heck, 2006
 class BACCalculator {
-  final StomachFullness stomachFullness;
   final User user;
 
-  BACCalculator(this.user, this.stomachFullness);
+  BACCalculator(this.user);
 
-  BACCalculationResults calculate(List<ConsumedDrink> drinks) {
-    assert(drinks.isNotEmpty, 'At least one drink is required to calculate the BAC');
+  BACCalculationResults calculate(DiaryEntry diaryEntry) {
+    if (diaryEntry.isDrinkFreeDay) {
+      return BACCalculationResults.empty(diaryEntry.date.toDateTime());
+    }
+
+    final drinks = diaryEntry.drinks;
 
     var alcoholInStomach = 0.0;
     var alcoholInSmallIntestine = 0.0;
@@ -52,7 +54,7 @@ class BACCalculator {
       final ingestedAlcohol = _calculateIngestedAlcohol(drinks, time, time.add(timestep)) / user.volumeOfDistribution;
 
       // Step 1: Calculate the concentration of alcohol in the stomach
-      final gastricEmptying = _rateOfChangeGastricEmptying(alcoholInStomach, deltaTime);
+      final gastricEmptying = _rateOfChangeGastricEmptying(alcoholInStomach, diaryEntry.stomachFullness!, deltaTime);
       alcoholInStomach = alcoholInStomach + ingestedAlcohol - gastricEmptying;
 
       // Step 2: Calculate concentration of alcohol in the small intestine
@@ -85,7 +87,7 @@ class BACCalculator {
     }).sum;
   }
 
-  double _rateOfChangeGastricEmptying(double alcoholInStomach, double dt) {
+  double _rateOfChangeGastricEmptying(double alcoholInStomach, StomachFullness stomachFullness, double dt) {
     final k1 = user.k1 * dt;
     return (k1 * alcoholInStomach) / (1 + stomachFullness.absorptionFactor * pow(alcoholInStomach, 2));
   }

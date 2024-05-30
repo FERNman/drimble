@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../domain/bac/bac_calculation_results.dart';
 import '../../../domain/date.dart';
 import '../../../infra/extensions/copy_date_time.dart';
-import '../../../infra/extensions/set_date.dart';
 import '../../common/build_context_extensions.dart';
 import '../../common/line_chart/horizontal_line_chart_labels.dart';
 import '../../common/line_chart/line_chart.dart';
@@ -140,8 +139,7 @@ class _DiaryBACChartState extends State<DiaryBACChart> {
 
       _startRedrawTimer();
     } else {
-      _displayStart =
-          widget.results.timeOfFirstDrink?.subtract(DiaryBACChart.timeOffset) ?? DateTime.now().setDate(widget.date);
+      _displayStart = widget.results.startTime.subtract(DiaryBACChart.timeOffset);
     }
   }
 

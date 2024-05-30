@@ -27,7 +27,7 @@ class DiaryCurrentBAC extends StatelessWidget {
         children: [
           _buildBAC(context),
           const SizedBox(height: 8),
-          _buildSobrietyText(context),
+          _buildHangoverSeverity(context),
         ],
       ),
     );
@@ -55,31 +55,14 @@ class DiaryCurrentBAC extends StatelessWidget {
     return RichText(text: text);
   }
 
-  Widget _buildSobrietyText(BuildContext context) {
-    final soberAt = results.soberAt;
-
-    if (soberAt == null) {
-      return const SizedBox();
-    }
-
+  Widget _buildHangoverSeverity(BuildContext context) {
     final now = DateTime.now();
 
-    if (soberAt.isAfter(now)) {
-      final today = DateTime(now.year, now.month, now.day);
-      final tomorrow = today.add(const Duration(days: 1));
-
-      final soberAtDay = DateTime(soberAt.year, soberAt.month, soberAt.day);
-      final isTomorrow = soberAtDay.isAtSameMomentAs(tomorrow);
-      final isInFuture = soberAtDay.isAfter(tomorrow);
-
-      if (isInFuture) {
-        return Text(context.l10n.diary_soberInFuture(soberAt, soberAt), style: context.textTheme.bodyMedium);
-      } else if (isTomorrow) {
-        return Text(context.l10n.diary_soberTomorrowAt(soberAt), style: context.textTheme.bodyMedium);
-      } else {
-        return Text(context.l10n.diary_soberAt(soberAt), style: context.textTheme.bodyMedium);
-      }
+    if (results.endTime.isAfter(now)) {
+      // Still drunk -> Display hangover prediction
+      return Text(context.l10n.diary_hangoverPrediction, style: context.textTheme.bodyMedium);
     } else {
+      // Sober -> Display hangover severity
       if (diaryEntry.hangoverSeverity == null) {
         return _buildHangoverSelection(context);
       } else {

@@ -9,12 +9,11 @@ class BACEntry {
   /// In g/100mL
   final double value;
 
-  BACEntry(this.time, this.value) {
-    assert(!value.isNaN);
-    assert(value >= 0.0);
-  }
+  BACEntry(this.time, this.value)
+      : assert(!value.isNaN),
+        assert(value >= 0.0);
 
-  BACEntry.sober(this.time) : value = 0.0;
+  const BACEntry.sober(this.time) : value = 0.0;
 
   bool get isSober {
     return value < Alcohol.soberLimit;
@@ -24,64 +23,92 @@ class BACEntry {
 
   @override
   String toString() => BacFormat().format(value);
+
+  @override
+  operator ==(Object other) =>
+      identical(this, other) || other is BACEntry && time == other.time && value == other.value;
+
+  @override
+  int get hashCode => time.hashCode ^ value.hashCode;
 }
 
 class BACCalculationResults {
-  static DateTime? _findFirstSoberEntry(List<BACEntry> results) {
-    return results.reversed.takeWhile((entry) => entry.isSober).lastOrNull?.time;
-  }
-
-  static DateTime? _findTimeOfFirstDrink(List<BACEntry> results) {
-    return results.firstWhereOrNull((element) => element.value > Alcohol.soberLimit)?.time;
-  }
-
   final List<BACEntry> _results;
-  final DateTime? timeOfFirstDrink;
-  final DateTime? soberAt;
+
+  final DateTime startTime;
+  final DateTime endTime;
   final BACEntry maxBAC;
 
-  BACCalculationResults(this._results)
-      : assert(_results.isNotEmpty),
-        timeOfFirstDrink = _findTimeOfFirstDrink(_results),
-        soberAt = _findFirstSoberEntry(_results),
-        maxBAC = _results.reduce((max, el) => max.value > el.value ? max : el);
+  BACCalculationResults(List<BACEntry> results)
+      : assert(results.isNotEmpty),
+        _results = results.sortedBy((element) => element.time),
+        startTime = results.first.time,
+        endTime = results.last.time,
+        maxBAC = results.reduce((max, el) => max.value > el.value ? max : el);
 
-  // TODO: Refactor the usage of this class to avoid the need for this constructor
-  BACCalculationResults.empty({
-    required DateTime startTime,
-    required DateTime endTime,
-  })  : _results = [BACEntry.sober(startTime), BACEntry.sober(endTime)],
-        timeOfFirstDrink = null,
-        soberAt = startTime,
-        maxBAC = BACEntry.sober(startTime);
+  BACCalculationResults.empty(final DateTime time)
+      : _results = const [],
+        maxBAC = BACEntry.sober(time),
+        startTime = time,
+        endTime = time;
 
+  /// Returns a `BACEntry` with the given `time` as time. The `value` is either the exact value on this time,
+  /// or, if no entry exists at the given time, interpolated between the two closests entries.
+  /// If `time` is outside the range of the results, the value of the first or last entry is used.
   BACEntry getEntryAt(DateTime time) {
-    if (time.isBefore(_results.first.time)) {
-      return _results.first.copyWith(time: time);
+    if (_results.isEmpty) {
+      return BACEntry.sober(time);
     }
 
-    if (time.isAfter(_results.last.time)) {
+    var start = 0;
+    var end = _results.length;
+    while (start < end) {
+      final mid = start + ((end - start) >> 1);
+      final midTime = _results[mid].time;
+      if (midTime.isBefore(time)) {
+        start = mid + 1;
+      } else if (midTime.isAfter(time)) {
+        end = mid;
+      } else {
+        return _results[mid];
+      }
+    }
+
+    // At this point, `start` is the index of the first element that's not less than `time`,
+    // or `_results.length` if all elements are less than `time`.
+
+    if (start == 0) {
+      // All elements are larger. Return the first one.
+      return _results[0].copyWith(time: time);
+    } else if (start >= _results.length) {
+      // All elements are smaller. Return the last one.
       return _results.last.copyWith(time: time);
+    } else {
+      // Interpolate between the two closest elements.
+      final prevEntry = _results[start - 1];
+      final nextEntry = _results[start];
+      return _interpolate(prevEntry, nextEntry, time);
     }
-
-    return _results
-        .reduce((lhs, rhs) => lhs.time.difference(time).abs() < rhs.time.difference(time).abs() ? lhs : rhs)
-        .copyWith(time: time);
   }
 
-  BACEntry findMaxEntryAfter(DateTime time) {
-    return _results.fold(BACEntry.sober(time), (max, el) {
-      if (el.time.isBefore(time)) {
-        return max;
-      }
+  BACEntry _interpolate(BACEntry prevEntry, BACEntry nextEntry, DateTime time) {
+    final prevTime = prevEntry.time.millisecondsSinceEpoch;
+    final nextTime = nextEntry.time.millisecondsSinceEpoch;
+    final targetTime = time.millisecondsSinceEpoch;
 
-      return max.value > el.value ? max : el;
-    });
+    final fraction = (targetTime - prevTime) / (nextTime - prevTime);
+    final interpolatedValue = prevEntry.value + fraction * (nextEntry.value - prevEntry.value);
+
+    return BACEntry(time, interpolatedValue);
   }
 
   @override
   operator ==(Object other) =>
-      identical(this, other) || other is BACCalculationResults && const ListEquality().equals(_results, other._results);
+      identical(this, other) ||
+      other is BACCalculationResults &&
+          startTime.isAtSameMomentAs(other.startTime) &&
+          endTime.isAtSameMomentAs(other.endTime) &&
+          const ListEquality().equals(_results, other._results);
 
   @override
   int get hashCode => _results.hashCode;

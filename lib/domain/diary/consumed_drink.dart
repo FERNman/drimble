@@ -15,6 +15,7 @@ class ConsumedDrink extends Alcohol {
   /// <b>Must not be used for date comparisons!</b>
   // TODO: Refactor to TimeOfDay
   final DateTime startTime;
+  final DateTime endTime;
   final Duration duration;
 
   ConsumedDrink({
@@ -27,7 +28,8 @@ class ConsumedDrink extends Alcohol {
     required this.startTime,
     required this.duration,
   })  : assert(alcoholByVolume >= 0.0 && alcoholByVolume <= 1.0),
-        id = id ?? const Uuid().v4();
+        id = id ?? const Uuid().v4(),
+        endTime = startTime.add(duration);
 
   factory ConsumedDrink.deepCopy(ConsumedDrink drink, {required DateTime startTime}) {
     if (drink is ConsumedCocktail) {

@@ -60,26 +60,18 @@ void main() {
       final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
       await cubit.stream.first;
 
-      final emptyResults = BACCalculationResults.empty(
-        startTime: diaryEntry.date.toDateTime(),
-        endTime: diaryEntry.date.toDateTime().add(const Duration(hours: 24)),
-      );
-
+      final emptyResults = BACCalculationResults.empty(diaryEntry.date.toDateTime());
       expect(cubit.state.calculationResults, emptyResults);
-    }, skip: 'Needs refactoring of empty BAC calculation results');
+    });
 
     test('should calculate the BAC', () async {
       final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [generateConsumedDrink()]);
       final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
       final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
-      await cubit.stream.first;
+      await cubit.stream.elementAt(1);
 
-      final emptyResults = BACCalculationResults.empty(
-        startTime: diaryEntry.date.toDateTime(),
-        endTime: diaryEntry.date.toDateTime().add(const Duration(hours: 24)),
-      );
-
+      final emptyResults = BACCalculationResults.empty(diaryEntry.date.toDateTime());
       expect(cubit.state.calculationResults, isNot(emptyResults));
     });
 

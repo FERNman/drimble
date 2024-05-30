@@ -1,8 +1,24 @@
 import '../alcohol/alcohol.dart';
+import '../diary/stomach_fullness.dart';
 import '../user/gender.dart';
 import '../user/user.dart';
 
-extension UserBACExtensions on User {
+extension StomachFullnessBACConstants on StomachFullness {
+  double get absorptionFactor {
+    switch (this) {
+      case StomachFullness.empty:
+        return -0.6;
+      case StomachFullness.litte:
+        return 0.2;
+      case StomachFullness.normal:
+        return 0.42;
+      case StomachFullness.full:
+        return 0.8;
+    }
+  }
+}
+
+extension UserBACConstants on User {
   double get totalBodyWater {
     switch (gender) {
       case Gender.male:

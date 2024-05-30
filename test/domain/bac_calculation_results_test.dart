@@ -2,6 +2,8 @@ import 'package:drimble/domain/bac/bac_calculation_results.dart';
 import 'package:drimble/infra/extensions/copy_date_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../generate_entities.dart';
+
 void main() {
   group(BACCalculationResults, () {
     group('getEntryAt', () {
@@ -43,7 +45,7 @@ void main() {
         expect(entry.value, lastEntry.value);
       });
 
-      test('should interpolate between two values if no entry exists at the given time', () {
+      test('should linearly interpolate between two values if no entry exists at the given time', () {
         final timestamp = DateTime(2022, 1, 1, 10, 30);
         final firstEntry = BACEntry(timestamp.copyWith(hour: 10, minute: 0), 1.0);
         final secondEntry = BACEntry(timestamp.copyWith(hour: 11, minute: 0), 2.0);
@@ -56,76 +58,27 @@ void main() {
 
         expect(entry.time, timestamp);
         expect(entry.value, interpolatedValue);
-      }, skip: 'TODO: Interpolate');
-    });
-
-    group('findMaxEntryAfter', () {
-      test('should be the entry with the hightest BAC', () {
-        final timestamp = DateTime(2022, 1, 1);
-        final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
-        final secondEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
-        final thirdEntry = BACEntry(timestamp.copyWith(hour: 13), 1.5);
-
-        final results = BACCalculationResults([firstEntry, secondEntry, thirdEntry]);
-
-        final maxBAC = results.findMaxEntryAfter(timestamp);
-        expect(maxBAC.value, secondEntry.value);
-      });
-
-      test('should ignore entries that are earlier than the given timestamp', () {
-        final timestamp = DateTime(2022, 1, 1);
-        final highestEntry = BACEntry(timestamp.copyWith(hour: 9), 5.0);
-        final lowEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
-        final desiredEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
-
-        final results = BACCalculationResults([highestEntry, lowEntry, desiredEntry]);
-
-        final maxBAC = results.findMaxEntryAfter(timestamp.copyWith(hour: 10));
-        expect(maxBAC.value, desiredEntry.value);
       });
     });
 
-    group('soberAt', () {
-      test('should return null if there is no sober entry', () {
-        final timestamp = DateTime(2022, 1, 1);
-        final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
-        final secondEntry = BACEntry(timestamp.copyWith(hour: 12), 0.5);
+    group('equality', () {
+      test('should be equal if empty and same time', () {
+        final start = faker.date.dateTime();
 
-        final results = BACCalculationResults([firstEntry, secondEntry]);
+        final results1 = BACCalculationResults.empty(start);
+        final results2 = BACCalculationResults.empty(start);
 
-        final soberAt = results.soberAt;
-        expect(soberAt, null);
+        expect(results1, results2);
       });
 
-      test('should return the first sober result', () {
-        final timestamp = DateTime(2022, 1, 1);
-        final firstTimeSober = timestamp.copyWith(hour: 13);
+      test('should not be equal if empty and different time', () {
+        final time1 = faker.date.dateTime();
+        final time2 = faker.date.dateTime();
 
-        final results = BACCalculationResults([
-          BACEntry(timestamp.copyWith(hour: 11), 1.0),
-          BACEntry(timestamp.copyWith(hour: 12), 0.2),
-          BACEntry(firstTimeSober, 0.0),
-          BACEntry(timestamp.copyWith(hour: 14), 0.0),
-        ]);
+        final results1 = BACCalculationResults.empty(time1);
+        final results2 = BACCalculationResults.empty(time2);
 
-        final soberAt = results.soberAt;
-        expect(soberAt, firstTimeSober);
-      });
-
-      test('should return the first time sober after all drinks even when sobering out in between', () {
-        final timestamp = DateTime(2022, 1, 1);
-        final firstTimeSober = timestamp.copyWith(hour: 13);
-
-        final results = BACCalculationResults([
-          BACEntry(timestamp.copyWith(hour: 10), 1.0),
-          BACEntry(timestamp.copyWith(hour: 11), 0.0),
-          BACEntry(timestamp.copyWith(hour: 12), 0.2),
-          BACEntry(firstTimeSober, 0.0),
-          BACEntry(timestamp.copyWith(hour: 14), 0.0),
-        ]);
-
-        final soberAt = results.soberAt;
-        expect(soberAt, firstTimeSober);
+        expect(results1, isNot(results2));
       });
     });
   });

@@ -47,8 +47,7 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
         .observeEntryById(state.diaryEntry.id!)
         .doOnData((data) => emit(state.copyWith(diaryEntry: data)))
         .startWith(diaryEntry)
-        .distinct() // TODO: Only recalculate if the drinks have changed
-        .where((el) => el.drinks.isNotEmpty)
+        .distinct()
         .listen((diaryEntry) async {
       final results = await _calculateBAC(diaryEntry);
       emit(state.copyWith(diaryEntry: diaryEntry, calculationResults: results));
@@ -58,8 +57,8 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
   Future<BACCalculationResults> _calculateBAC(DiaryEntry diaryEntry) async {
     final user = await _userRepository.loadUser();
 
-    final calculator = BACCalculator(user!, diaryEntry.stomachFullness!);
-    return compute(calculator.calculate, diaryEntry.drinks);
+    final calculator = BACCalculator(user!);
+    return compute(calculator.calculate, diaryEntry);
   }
 }
 
@@ -89,10 +88,7 @@ class DiaryEntryCubitState {
 
   factory DiaryEntryCubitState.initial(DiaryEntry diaryEntry) => DiaryEntryCubitState._(
         diaryEntry: diaryEntry,
-        calculationResults: BACCalculationResults.empty(
-          startTime: diaryEntry.date.toDateTime(),
-          endTime: diaryEntry.date.toDateTime().add(const Duration(hours: 24)),
-        ),
+        calculationResults: BACCalculationResults.empty(diaryEntry.date.toDateTime()),
       );
 
   DiaryEntryCubitState copyWith({
