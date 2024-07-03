@@ -340,7 +340,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diary_predictingMildHangover => 'Predicting a mild hangover';
 
   @override
-  String get diary_predictingBadHangover => 'Predicting a bad hangover';
+  String get diary_predictingBadHangover => 'Predicting a pretty bad hangover';
 
   @override
   String get diary_predictingSevereHangover => 'Predicting a severe hangover';

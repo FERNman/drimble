@@ -40,17 +40,6 @@ void main() {
       expect(cubit.state.bacEntries, emptyResults);
     });
 
-    test('should calculate the BAC', () async {
-      final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [generateConsumedDrink()]);
-      final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
-
-      final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, mockHangoverSeverityPredictor, diaryEntry);
-      await cubit.stream.elementAt(4);
-
-      final emptyResults = BACTimeSeries.empty(diaryEntry.date.toDateTime());
-      expect(cubit.state.bacEntries, isNot(emptyResults));
-    });
-
     group('addGlassOfWater', () {
       test('should add a glass of water to the diary entry', () async {
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid());

@@ -748,7 +748,7 @@ abstract class AppLocalizations {
   /// No description provided for @diary_predictingBadHangover.
   ///
   /// In en, this message translates to:
-  /// **'Predicting a bad hangover'**
+  /// **'Predicting a pretty bad hangover'**
   String get diary_predictingBadHangover;
 
   /// No description provided for @diary_predictingSevereHangover.
