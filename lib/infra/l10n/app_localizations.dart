@@ -733,11 +733,29 @@ abstract class AppLocalizations {
   /// **'Track your hangover'**
   String get diary_trackYourHangover;
 
-  /// No description provided for @diary_hangoverPrediction.
+  /// No description provided for @diary_predictingNoHangover.
   ///
   /// In en, this message translates to:
-  /// **'Hangover prediction'**
-  String get diary_hangoverPrediction;
+  /// **'Predicting no hangover'**
+  String get diary_predictingNoHangover;
+
+  /// No description provided for @diary_predictingMildHangover.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicting a mild hangover'**
+  String get diary_predictingMildHangover;
+
+  /// No description provided for @diary_predictingBadHangover.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicting a bad hangover'**
+  String get diary_predictingBadHangover;
+
+  /// No description provided for @diary_predictingSevereHangover.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicting a severe hangover'**
+  String get diary_predictingSevereHangover;
 
   /// No description provided for @select_stomach_fullness_description.
   ///
@@ -751,17 +769,17 @@ abstract class AppLocalizations {
   /// **'How much did you eat today before drinking?'**
   String get select_stomach_fullness_title;
 
-  /// No description provided for @track_hangover_severity_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.'**
-  String get track_hangover_severity_description;
-
   /// No description provided for @track_hangover_severity_title.
   ///
   /// In en, this message translates to:
-  /// **'Do you have a hangover?'**
+  /// **'Hungover?'**
   String get track_hangover_severity_title;
+
+  /// No description provided for @track_hangover_severity_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating the intensity of your hangover enables Drimble to better estimate your hangover severity the next time you’re drinking.'**
+  String get track_hangover_severity_description;
 
   /// No description provided for @common_hangoverSeverityNone.
   ///

@@ -334,7 +334,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diary_trackYourHangover => 'Track your hangover';
 
   @override
-  String get diary_hangoverPrediction => 'Hangover prediction';
+  String get diary_predictingNoHangover => 'Predicting no hangover';
+
+  @override
+  String get diary_predictingMildHangover => 'Predicting a mild hangover';
+
+  @override
+  String get diary_predictingBadHangover => 'Predicting a bad hangover';
+
+  @override
+  String get diary_predictingSevereHangover => 'Predicting a severe hangover';
 
   @override
   String get select_stomach_fullness_description => 'Eating before drinking influences how fast alcohol is absorbed and metabolizes.';
@@ -343,10 +352,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_stomach_fullness_title => 'How much did you eat today before drinking?';
 
   @override
-  String get track_hangover_severity_description => 'Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.';
+  String get track_hangover_severity_title => 'Hungover?';
 
   @override
-  String get track_hangover_severity_title => 'Do you have a hangover?';
+  String get track_hangover_severity_description => 'Rating the intensity of your hangover enables Drimble to better estimate your hangover severity the next time you’re drinking.';
 
   @override
   String get common_hangoverSeverityNone => 'No hangover 🙌🏻';

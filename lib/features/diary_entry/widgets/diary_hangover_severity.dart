@@ -37,7 +37,25 @@ class DiaryHangoverSeverity extends StatelessWidget {
       }
 
       // Diary entry is today -> Display hangover prediction
-      return Text(predictedHangoverSeverity!.translate(context), style: context.textTheme.bodyMedium);
+      return _buildPredictedHangoverSeverity(context);
+    }
+  }
+
+  Widget _buildPredictedHangoverSeverity(BuildContext context) {
+    final labelStyle = context.textTheme.labelMedium?.copyWith(color: context.colorScheme.onSurface.withOpacity(0.7));
+
+    switch (predictedHangoverSeverity!) {
+      case HangoverSeverity.none:
+        return Text(context.l10n.diary_predictingNoHangover, style: labelStyle);
+      case HangoverSeverity.veryMild:
+      case HangoverSeverity.mild:
+        return Text(context.l10n.diary_predictingMildHangover, style: labelStyle);
+      case HangoverSeverity.moderate:
+      case HangoverSeverity.prettyBad:
+        return Text(context.l10n.diary_predictingBadHangover, style: labelStyle);
+      case HangoverSeverity.heavy:
+      case HangoverSeverity.severe:
+        return Text(context.l10n.diary_predictingSevereHangover, style: labelStyle);
     }
   }
 
