@@ -7,59 +7,76 @@ import '../../generate_entities.dart';
 
 void main() {
   group(BACTimeSeries, () {
-    group('getEntryAt', () {
-      test('should return the exact value if a entry exists at the given time', () {
-        final when = DateTime(2022);
-        const value = 1.2;
+    test('should return the exact value if a entry exists at the given time', () {
+      final when = DateTime(2022);
+      const value = 1.2;
 
-        final entries = [BACEntry(when, value)];
-        final results = BACTimeSeries(entries);
+      final entries = [BACEntry(when, value)];
+      final results = BACTimeSeries(entries);
 
-        final entry = results.getEntryAt(when);
-        expect(entry.time, when);
-        expect(entry.value, value);
-      });
+      final entry = results.getEntryAt(when);
+      expect(entry.time, when);
+      expect(entry.value, value);
+    });
 
-      test('should correctly handle asking for a timestamp that is before the earliest entry', () {
-        final timestamp = DateTime(2022, 1, 1, 10);
-        final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
-        final lastEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
+    test('should correctly handle asking for a timestamp that is before the earliest entry', () {
+      final timestamp = DateTime(2022, 1, 1, 10);
+      final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
+      final lastEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
 
-        final results = BACTimeSeries([firstEntry, lastEntry]);
+      final results = BACTimeSeries([firstEntry, lastEntry]);
 
-        final entry = results.getEntryAt(timestamp);
+      final entry = results.getEntryAt(timestamp);
 
-        expect(entry.time, timestamp);
-        expect(entry.value, firstEntry.value);
-      });
+      expect(entry.time, timestamp);
+      expect(entry.value, firstEntry.value);
+    });
 
-      test('should correctly handle asking for a timestamp that is after the last entry', () {
-        final timestamp = DateTime(2022, 1, 1, 13);
-        final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
-        final lastEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
+    test('should correctly handle asking for a timestamp that is after the last entry', () {
+      final timestamp = DateTime(2022, 1, 1, 13);
+      final firstEntry = BACEntry(timestamp.copyWith(hour: 11), 1.0);
+      final lastEntry = BACEntry(timestamp.copyWith(hour: 12), 2.0);
 
-        final results = BACTimeSeries([firstEntry, lastEntry]);
+      final results = BACTimeSeries([firstEntry, lastEntry]);
 
-        final entry = results.getEntryAt(timestamp);
+      final entry = results.getEntryAt(timestamp);
 
-        expect(entry.time, timestamp);
-        expect(entry.value, lastEntry.value);
-      });
+      expect(entry.time, timestamp);
+      expect(entry.value, lastEntry.value);
+    });
 
-      test('should linearly interpolate between two values if no entry exists at the given time', () {
-        final timestamp = DateTime(2022, 1, 1, 10, 30);
-        final firstEntry = BACEntry(timestamp.copyWith(hour: 10, minute: 0), 1.0);
-        final secondEntry = BACEntry(timestamp.copyWith(hour: 11, minute: 0), 2.0);
+    test('should linearly interpolate between two values if no entry exists at the given time', () {
+      final timestamp = DateTime(2022, 1, 1, 10, 30);
+      final firstEntry = BACEntry(timestamp.copyWith(hour: 10, minute: 0), 1.0);
+      final secondEntry = BACEntry(timestamp.copyWith(hour: 11, minute: 0), 2.0);
 
-        final results = BACTimeSeries([firstEntry, secondEntry]);
+      final results = BACTimeSeries([firstEntry, secondEntry]);
 
-        final entry = results.getEntryAt(timestamp);
+      final entry = results.getEntryAt(timestamp);
 
-        final interpolatedValue = (secondEntry.value + firstEntry.value) / 2.0;
+      final interpolatedValue = (secondEntry.value + firstEntry.value) / 2.0;
 
-        expect(entry.time, timestamp);
-        expect(entry.value, interpolatedValue);
-      });
+      expect(entry.time, timestamp);
+      expect(entry.value, interpolatedValue);
+    });
+
+    test('should be able to retrieve a specific entry by date', () {
+      final timestamp = DateTime(2022, 1, 1, 14, 00);
+      final bacEntry = BACEntry(timestamp.copyWith(hour: 14, minute: 0), 5.0);
+      final entries = [
+        BACEntry(timestamp.copyWith(hour: 10, minute: 0), 1.0),
+        BACEntry(timestamp.copyWith(hour: 11, minute: 0), 2.0),
+        BACEntry(timestamp.copyWith(hour: 12, minute: 0), 3.0),
+        BACEntry(timestamp.copyWith(hour: 13, minute: 0), 4.0),
+        bacEntry,
+        BACEntry(timestamp.copyWith(hour: 15, minute: 0), 6.0),
+        BACEntry(timestamp.copyWith(hour: 16, minute: 0), 7.0),
+      ];
+
+      final results = BACTimeSeries(entries);
+
+      final entry = results.getEntryAt(timestamp);
+      expect(entry, bacEntry);
     });
 
     group('equality', () {
