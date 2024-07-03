@@ -25,11 +25,11 @@ class DiaryHangoverSeverity extends StatelessWidget {
     final today = Date.today();
 
     if (date.isBefore(today)) {
-      // Diary entry is in the past -> Display hangover severity
-      if (predictedHangoverSeverity == null) {
+      // Diary entry is in the past -> Display tracked hangover severity
+      if (trackedHangoverSeverity == null) {
         return _buildHangoverSelection(context);
       } else {
-        return Text(predictedHangoverSeverity!.translate(context), style: context.textTheme.bodyMedium);
+        return Text(trackedHangoverSeverity!.translate(context), style: context.textTheme.bodyMedium);
       }
     } else {
       if (predictedHangoverSeverity == null) {

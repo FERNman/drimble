@@ -45,6 +45,8 @@ class DiaryEntryCubit extends Cubit<DiaryEntryCubitState> with Disposable {
 
   Future<void> setHangoverSeverity(HangoverSeverity severity) async {
     await _diaryRepository.saveDiaryEntry(state.diaryEntry.setHangoverSeverity(severity));
+
+    await _hangoverSeverityPredictor.updatePrediction(state.diaryEntry, state.bacEntries.maxBAC, severity);
   }
 
   void _subscribeToDiaryEntryChanges(DiaryEntry diaryEntry) async {

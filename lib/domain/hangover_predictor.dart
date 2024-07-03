@@ -45,7 +45,7 @@ class HangoverSeverityPredictor {
     return HangoverSeverity.values[index];
   }
 
-  void fitToNewData(DiaryEntry diaryEntry, BACEntry maxBAC, HangoverSeverity severity) {
+  Future<void> updatePrediction(DiaryEntry diaryEntry, BACEntry maxBAC, HangoverSeverity severity) async {
     final features = [
       diaryEntry.stomachFullness!.index.toDouble(),
       diaryEntry.drinkingDuration.inMinutes.toDouble(),
@@ -55,6 +55,8 @@ class HangoverSeverityPredictor {
     ];
 
     _model.update(features, severity.index.toDouble());
+
+    await save();
   }
 
   Future<void> save() async {
