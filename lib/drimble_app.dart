@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'data/diary_repository.dart';
 import 'data/drinks_repository.dart';
 import 'data/user_repository.dart';
+import 'domain/hangover_predictor.dart';
 import 'features/common/build_context_extensions.dart';
 import 'features/diary/diary_guard.dart';
 import 'infra/l10n/l10n.dart';
@@ -72,71 +73,77 @@ class _DrimbleAppState extends State<DrimbleApp> {
         RepositoryProvider.value(value: FlutterLocalNotificationsPlugin()),
         RepositoryProvider(create: (context) => PushNotificationsService(context.read())),
       ],
-      child: Builder(
-        builder: (context) {
-          // Has to be done here to be able to access the context
-          _router ??= DrimbleRouter(DiaryGuard(context.read(), context.read()));
+      child: FutureBuilder<HangoverSeverityPredictor>(
+        future: HangoverSeverityPredictor.createFromBundle(rootBundle, 'assets/models/hangover_severity_model.json'),
+        builder: (context, hangoverSeverityPredictor) => RepositoryProvider.value(
+          value: hangoverSeverityPredictor.data,
+          child: Builder(
+            builder: (context) {
+              // Has to be done here to be able to access the context
+              _router ??= DrimbleRouter(DiaryGuard(context.read(), context.read()));
 
-          return MaterialApp.router(
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: colorScheme,
-              disabledColor: const Color(0x1F1F1F1F),
-              scaffoldBackgroundColor: colorScheme.background,
-              textTheme: textTheme,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.transparent,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                elevation: 0,
-              ),
-              inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
-              chipTheme: ChipThemeData(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.0, color: colorScheme.outline),
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+              return MaterialApp.router(
+                theme: ThemeData(
+                  useMaterial3: true,
+                  colorScheme: colorScheme,
+                  disabledColor: const Color(0x1F1F1F1F),
+                  scaffoldBackgroundColor: colorScheme.background,
+                  textTheme: textTheme,
+                  appBarTheme: const AppBarTheme(
+                    backgroundColor: Colors.transparent,
+                    systemOverlayStyle: SystemUiOverlayStyle.dark,
+                    elevation: 0,
+                  ),
+                  inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
+                  chipTheme: ChipThemeData(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1.0, color: colorScheme.outline),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    ),
+                    labelStyle: textTheme.labelMedium,
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    backgroundColor: Colors.transparent,
+                    selectedColor: colorScheme.primaryContainer,
+                    pressElevation: 0,
+                    showCheckmark: false,
+                  ),
+                  cardTheme: CardTheme(
+                    color: colorScheme.surface,
+                    margin: const EdgeInsets.all(0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: const BorderSide(color: Color.fromARGB(10, 0, 0, 0)),
+                    ),
+                  ),
+                  dividerTheme: const DividerThemeData(
+                    color: Colors.black54,
+                  ),
+                  floatingActionButtonTheme: FloatingActionButtonThemeData(
+                    backgroundColor: colorScheme.tertiaryContainer,
+                    foregroundColor: colorScheme.onTertiaryContainer,
+                  ),
+                  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+                    backgroundColor: Colors.white,
+                    selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                  ),
                 ),
-                labelStyle: textTheme.labelMedium,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                backgroundColor: Colors.transparent,
-                selectedColor: colorScheme.primaryContainer,
-                pressElevation: 0,
-                showCheckmark: false,
-              ),
-              cardTheme: CardTheme(
-                color: colorScheme.surface,
-                margin: const EdgeInsets.all(0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: const BorderSide(color: Color.fromARGB(10, 0, 0, 0)),
-                ),
-              ),
-              dividerTheme: const DividerThemeData(
-                color: Colors.black54,
-              ),
-              floatingActionButtonTheme: FloatingActionButtonThemeData(
-                backgroundColor: colorScheme.tertiaryContainer,
-                foregroundColor: colorScheme.onTertiaryContainer,
-              ),
-              bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-                backgroundColor: Colors.white,
-                selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-              ),
-            ),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-            ],
-            title: 'Drimble',
-            routerConfig: _router!.config(),
-            builder: (context, child) => RepositoryProvider.value(value: context.l10n, child: child),
-          );
-        },
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en'),
+                ],
+                title: 'Drimble',
+                routerConfig: _router!.config(),
+                builder: (context, child) => RepositoryProvider.value(value: context.l10n, child: child),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

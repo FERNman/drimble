@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../domain/bac/bac_calculation_results.dart';
+import '../../../domain/bac/bac_time_series.dart';
 import '../../../domain/date.dart';
 import '../../../infra/extensions/copy_date_time.dart';
 import '../../common/build_context_extensions.dart';
@@ -15,14 +15,14 @@ class DiaryBACChart extends StatefulWidget {
   static const timeOffset = Duration(minutes: 45);
   static const displayRange = Duration(hours: 5);
 
-  final BACCalculationResults results;
   final Date date;
+  final BACTimeSeries results;
 
   bool get isShowingToday => date == Date.today();
 
   const DiaryBACChart({
-    required this.results,
     required this.date,
+    required this.results,
     super.key,
   });
 

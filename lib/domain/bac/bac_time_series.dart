@@ -1,52 +1,23 @@
 import 'package:collection/collection.dart';
 
-import '../../features/common/bac_format/bac_format.dart';
-import '../alcohol/alcohol.dart';
+import 'bac_entry.dart';
 
-class BACEntry {
-  final DateTime time;
-
-  /// In g/100mL
-  final double value;
-
-  BACEntry(this.time, this.value)
-      : assert(!value.isNaN),
-        assert(value >= 0.0);
-
-  const BACEntry.sober(this.time) : value = 0.0;
-
-  bool get isSober {
-    return value < Alcohol.soberLimit;
-  }
-
-  BACEntry copyWith({DateTime? time, double? value}) => BACEntry(time ?? this.time, value ?? this.value);
-
-  @override
-  String toString() => BacFormat().format(value);
-
-  @override
-  operator ==(Object other) =>
-      identical(this, other) || other is BACEntry && time == other.time && value == other.value;
-
-  @override
-  int get hashCode => time.hashCode ^ value.hashCode;
-}
-
-class BACCalculationResults {
+/// A collection of `BACEntry`s, structured in a way that allows for efficient querying of the BAC at a given time.
+class BACTimeSeries {
   final List<BACEntry> _results;
 
   final DateTime startTime;
   final DateTime endTime;
   final BACEntry maxBAC;
 
-  BACCalculationResults(List<BACEntry> results)
+  BACTimeSeries(List<BACEntry> results)
       : assert(results.isNotEmpty),
         _results = results.sortedBy((element) => element.time),
         startTime = results.first.time,
         endTime = results.last.time,
         maxBAC = results.reduce((max, el) => max.value > el.value ? max : el);
 
-  BACCalculationResults.empty(final DateTime time)
+  BACTimeSeries.empty(final DateTime time)
       : _results = const [],
         maxBAC = BACEntry.sober(time),
         startTime = time,
@@ -105,7 +76,7 @@ class BACCalculationResults {
   @override
   operator ==(Object other) =>
       identical(this, other) ||
-      other is BACCalculationResults &&
+      other is BACTimeSeries &&
           startTime.isAtSameMomentAs(other.startTime) &&
           endTime.isAtSameMomentAs(other.endTime) &&
           const ListEquality().equals(_results, other._results);

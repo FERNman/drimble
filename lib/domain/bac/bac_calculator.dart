@@ -7,8 +7,9 @@ import '../diary/consumed_drink.dart';
 import '../diary/diary_entry.dart';
 import '../diary/stomach_fullness.dart';
 import '../user/user.dart';
-import 'bac_calculation_results.dart';
 import 'bac_constants.dart';
+import 'bac_entry.dart';
+import 'bac_time_series.dart';
 
 /// This class estimates the BAC for a given user and a given time range.
 /// It is based on a simple 3-compartment PBPK model introduced by Pieters that estimates the concentration of alcohol
@@ -22,39 +23,46 @@ import 'bac_constants.dart';
 ///
 /// Largely based on Jones, 2019, and Heck, 2006
 class BACCalculator {
-  final User user;
+  static const timestep = Duration(minutes: 5);
 
-  BACCalculator(this.user);
+  final User _user;
+  final List<ConsumedDrink> _drinks;
+  final StomachFullness _stomachFullness;
 
-  BACCalculationResults calculate(DiaryEntry diaryEntry) {
+  final DateTime _startTime;
+  final DateTime _endTime;
+
+  BACCalculator._(this._user, this._drinks, this._stomachFullness)
+      : _startTime = _drinks.map((e) => e.startTime).min,
+        _endTime = _drinks
+            .map((e) => e.endTime)
+            .max
+            .add(const Duration(minutes: 30)); // add 30 minutes to make sure also the last drink is absorbed
+
+  static BACTimeSeries calculate(User user, DiaryEntry diaryEntry) {
     if (diaryEntry.isDrinkFreeDay) {
-      return BACCalculationResults.empty(diaryEntry.date.toDateTime());
+      return BACTimeSeries.empty(diaryEntry.date.toDateTime());
     }
 
-    final drinks = diaryEntry.drinks;
+    return BACCalculator._(user, diaryEntry.drinks, diaryEntry.stomachFullness!)._run();
+  }
 
+  BACTimeSeries _run() {
     var alcoholInStomach = 0.0;
     var alcoholInSmallIntestine = 0.0;
     var alcoholInCentralCompartment = 0.0;
 
-    const timestep = Duration(minutes: 5);
     final deltaTime = (1 / 60) * timestep.inMinutes;
 
-    final startTime = drinks.map((e) => e.startTime).min;
-    final endTime = drinks
-        .map((e) => e.endTime)
-        .max
-        .add(const Duration(minutes: 30)); // add 30 minutes to make sure also the last drink is absorbed
-
     final results = <BACEntry>[];
-    for (var time = startTime;
-        time.isBefore(endTime) || alcoholInCentralCompartment / 10.0 >= Alcohol.soberLimit;
+    for (var time = _startTime;
+        time.isBefore(_endTime) || alcoholInCentralCompartment / 10.0 >= Alcohol.soberLimit;
         time = time.add(timestep)) {
       // Step 0: Calculate the amount of ingested alcohol in grams per liter of the total body water
-      final ingestedAlcohol = _calculateIngestedAlcohol(drinks, time, time.add(timestep)) / user.volumeOfDistribution;
+      final ingestedAlcohol = _calculateIngestedAlcohol(time, time.add(timestep)) / _user.volumeOfDistribution;
 
       // Step 1: Calculate the concentration of alcohol in the stomach
-      final gastricEmptying = _rateOfChangeGastricEmptying(alcoholInStomach, diaryEntry.stomachFullness!, deltaTime);
+      final gastricEmptying = _rateOfChangeGastricEmptying(alcoholInStomach, deltaTime);
       alcoholInStomach = alcoholInStomach + ingestedAlcohol - gastricEmptying;
 
       // Step 2: Calculate concentration of alcohol in the small intestine
@@ -69,11 +77,11 @@ class BACCalculator {
       results.add(BACEntry(time, alcoholInCentralCompartment / 10.0));
     }
 
-    return BACCalculationResults(results);
+    return BACTimeSeries(results);
   }
 
-  double _calculateIngestedAlcohol(List<ConsumedDrink> drinks, DateTime from, DateTime until) {
-    return drinks.where((drink) => drink.startTime.isBefore(until) && drink.endTime.isAfter(from)).map((drink) {
+  double _calculateIngestedAlcohol(DateTime from, DateTime until) {
+    return _drinks.where((drink) => drink.startTime.isBefore(until) && drink.endTime.isAfter(from)).map((drink) {
       final startTime = drink.startTime;
       final endTime = drink.endTime;
 
@@ -87,13 +95,13 @@ class BACCalculator {
     }).sum;
   }
 
-  double _rateOfChangeGastricEmptying(double alcoholInStomach, StomachFullness stomachFullness, double dt) {
-    final k1 = user.k1 * dt;
-    return (k1 * alcoholInStomach) / (1 + stomachFullness.absorptionFactor * pow(alcoholInStomach, 2));
+  double _rateOfChangeGastricEmptying(double alcoholInStomach, double dt) {
+    final k1 = _user.k1 * dt;
+    return (k1 * alcoholInStomach) / (1 + _stomachFullness.absorptionFactor * pow(alcoholInStomach, 2));
   }
 
   double _rateOfChangeAbsorption(double alcoholInSmallIntestine, double dt) {
-    final k2 = user.k2 * dt;
+    final k2 = _user.k2 * dt;
     return k2 * alcoholInSmallIntestine;
   }
 
@@ -102,6 +110,6 @@ class BACCalculator {
 
     // vMax would be between 0.5 and 2.5 g/L/h in a one-compartment model, kM would be between 0.02 and 0.1g/L
     // However, we need to use the adapted values for the model by Pieters' here
-    return (user.vMax * dt * previousBAC) / (user.kM + previousBAC);
+    return (_user.vMax * dt * previousBAC) / (_user.kM + previousBAC);
   }
 }

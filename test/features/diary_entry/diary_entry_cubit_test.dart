@@ -1,78 +1,54 @@
 import 'package:drimble/data/diary_repository.dart';
 import 'package:drimble/data/user_repository.dart';
-import 'package:drimble/domain/bac/bac_calculation_results.dart';
-import 'package:drimble/domain/diary/diary_entry.dart';
+import 'package:drimble/domain/bac/bac_time_series.dart';
+import 'package:drimble/domain/date.dart';
 import 'package:drimble/domain/diary/hangover_severity.dart';
 import 'package:drimble/domain/diary/stomach_fullness.dart';
+import 'package:drimble/domain/hangover_predictor.dart';
 import 'package:drimble/features/diary_entry/diary_entry_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../generate_entities.dart';
 import 'diary_entry_cubit_test.mocks.dart';
+import 'fake_diary_repository.dart';
 
-class FakeDiaryRepository extends Fake implements DiaryRepository {
-  final BehaviorSubject<Map<String, DiaryEntry>> _entries;
-
-  FakeDiaryRepository(DiaryEntry initial) : _entries = BehaviorSubject.seeded({initial.id!: initial});
-
-  @override
-  Future<void> saveDiaryEntry(DiaryEntry diaryEntry) async {
-    // Firebase adds an ID for documents that don't have one
-    final diaryEntryWithId = _addId(diaryEntry);
-    _entries.add(_entries.value..addEntries([MapEntry(diaryEntryWithId.id!, diaryEntryWithId)]));
-  }
-
-  @override
-  Stream<DiaryEntry> observeEntryById(String id) {
-    return _entries.stream.map((entries) => entries[id]!);
-  }
-
-  DiaryEntry _addId(DiaryEntry diaryEntry) => DiaryEntry(
-        id: diaryEntry.id ?? faker.guid.guid(),
-        date: diaryEntry.date,
-        stomachFullness: diaryEntry.stomachFullness,
-        glassesOfWater: diaryEntry.glassesOfWater,
-        drinks: List.unmodifiable(diaryEntry.drinks),
-        hangoverSeverity: diaryEntry.hangoverSeverity,
-      );
-}
-
-@GenerateNiceMocks([MockSpec<UserRepository>(), MockSpec<DiaryRepository>()])
+@GenerateNiceMocks([MockSpec<UserRepository>(), MockSpec<DiaryRepository>(), MockSpec<HangoverSeverityPredictor>()])
 void main() {
   group(DiaryEntryCubit, () {
     final mockUserRepository = MockUserRepository();
+    final mockHangoverSeverityPredictor = MockHangoverSeverityPredictor();
 
     final user = generateUser();
 
     setUp(() {
       reset(mockUserRepository);
+      reset(mockHangoverSeverityPredictor);
 
       when(mockUserRepository.loadUser()).thenAnswer((_) => Future.value(user));
     });
 
-    test('should work with empty calculation results', () async {
+    test('should work with empty bac entries', () async {
       final diaryEntry = generateDiaryEntry(id: faker.guid.guid());
       final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-      final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+      final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, mockHangoverSeverityPredictor, diaryEntry);
       await cubit.stream.first;
 
-      final emptyResults = BACCalculationResults.empty(diaryEntry.date.toDateTime());
-      expect(cubit.state.calculationResults, emptyResults);
+      final emptyResults = BACTimeSeries.empty(diaryEntry.date.toDateTime());
+      expect(cubit.state.bacEntries, emptyResults);
     });
 
     test('should calculate the BAC', () async {
       final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [generateConsumedDrink()]);
       final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-      final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
-      await cubit.stream.elementAt(1);
+      final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, mockHangoverSeverityPredictor, diaryEntry);
+      await cubit.stream.elementAt(4);
 
-      final emptyResults = BACCalculationResults.empty(diaryEntry.date.toDateTime());
-      expect(cubit.state.calculationResults, isNot(emptyResults));
+      final emptyResults = BACTimeSeries.empty(diaryEntry.date.toDateTime());
+      expect(cubit.state.bacEntries, isNot(emptyResults));
     });
 
     group('addGlassOfWater', () {
@@ -80,7 +56,12 @@ void main() {
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid());
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         await cubit.addGlassOfWater();
@@ -97,7 +78,12 @@ void main() {
         );
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         await cubit.removeGlassOfWater();
@@ -106,19 +92,43 @@ void main() {
       });
     });
 
-    group('addDrink', () {
+    group('addDrinkFromRecent', () {
       test('should create a new drink from the consumed drink', () async {
         final consumedDrink = generateConsumedDrink();
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [consumedDrink]);
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         await cubit.addDrinkFromRecent(consumedDrink);
 
         expect(cubit.state.diaryEntry.drinks.length, 2);
         expect(cubit.state.diaryEntry.drinks.last.id, isNot(consumedDrink.id));
+      });
+
+      test('should keep the same date', () async {
+        final consumedDrink = generateConsumedDrink();
+        final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [consumedDrink]);
+        final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
+
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
+        await cubit.stream.first;
+
+        await cubit.addDrinkFromRecent(consumedDrink);
+
+        expect(cubit.state.diaryEntry.drinks.length, 2);
+        expect(cubit.state.diaryEntry.drinks.last.startTime.toDate(), diaryEntry.date);
       });
     });
 
@@ -128,7 +138,12 @@ void main() {
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: [consumedDrink]);
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         await cubit.removeDrink(consumedDrink);
@@ -146,7 +161,12 @@ void main() {
         );
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         const severity = HangoverSeverity.mild;
@@ -167,7 +187,12 @@ void main() {
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: consumedDrinks);
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         expect(cubit.state.drinks, [consumedDrinks[1], consumedDrinks[2], consumedDrinks[0]]);
@@ -185,7 +210,12 @@ void main() {
         final diaryEntry = generateDiaryEntry(id: faker.guid.guid(), drinks: consumedDrinks);
         final mockDiaryRepository = FakeDiaryRepository(diaryEntry);
 
-        final cubit = DiaryEntryCubit(mockUserRepository, mockDiaryRepository, diaryEntry);
+        final cubit = DiaryEntryCubit(
+          mockUserRepository,
+          mockDiaryRepository,
+          mockHangoverSeverityPredictor,
+          diaryEntry,
+        );
         await cubit.stream.first;
 
         expect(cubit.state.recentDrinks, [consumedDrinks[2], consumedDrinks[0]]);
