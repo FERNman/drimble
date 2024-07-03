@@ -120,7 +120,7 @@ class DiaryCalendarDay extends StatelessWidget {
     } else if (diaryEntry!.isDrinkFreeDay == true) {
       return '🎉';
     } else {
-      return diaryEntry!.hangoverSeverity?.icon() ?? '🤔';
+      return diaryEntry!.hangoverSeverity?.icon() ?? '👀';
     }
   }
 

@@ -9,6 +9,7 @@ import 'diary_entry_cubit.dart';
 import 'widgets/diary_bac_chart.dart';
 import 'widgets/diary_consumed_drinks.dart';
 import 'widgets/diary_current_bac.dart';
+import 'widgets/diary_hangover_severity.dart';
 import 'widgets/diary_quick_add_drink.dart';
 import 'widgets/diary_statistics.dart';
 import 'widgets/diary_water_tracking.dart';
@@ -31,7 +32,7 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
   @override
   void initState() {
     super.initState();
-    _diaryEntryCubit = DiaryEntryCubit(context.read(), context.read(), widget.diaryEntry);
+    _diaryEntryCubit = DiaryEntryCubit(context.read(), context.read(), context.read(), widget.diaryEntry);
   }
 
   @override
@@ -39,7 +40,7 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
     super.didUpdateWidget(oldWidget);
     if (widget.diaryEntry != oldWidget.diaryEntry) {
       _diaryEntryCubit.close();
-      _diaryEntryCubit = DiaryEntryCubit(context.read(), context.read(), widget.diaryEntry);
+      _diaryEntryCubit = DiaryEntryCubit(context.read(), context.read(), context.read(), widget.diaryEntry);
     }
   }
 
@@ -55,7 +56,7 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
       value: _diaryEntryCubit,
       child: Column(
         children: [
-          _buildCurrentBAC(),
+          _buildTitle(),
           const SizedBox(height: 24),
           _buildBACChart(),
           const SizedBox(height: 24),
@@ -72,21 +73,39 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
     );
   }
 
-  Widget _buildCurrentBAC() {
-    return BlocBuilder<DiaryEntryCubit, DiaryEntryCubitState>(
-      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
-      builder: (context, state) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: DiaryCurrentBAC(
-          results: state.calculationResults,
-          diaryEntry: state.diaryEntry,
-          onSelectHangoverSeverity: () {
-            context.router.push<HangoverSeverity>(const SelectHangoverSeverityRoute()).then((value) {
-              if (value != null) {
-                context.read<DiaryEntryCubit>().setHangoverSeverity(value);
-              }
-            });
-          },
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BlocBuilder<DiaryEntryCubit, DiaryEntryCubitState>(
+              buildWhen: (previous, current) => previous.bacEntries != current.bacEntries,
+              builder: (context, state) => DiaryCurrentBAC(
+                date: state.diaryEntry.date,
+                results: state.bacEntries,
+              ),
+            ),
+            const SizedBox(height: 8),
+            BlocBuilder<DiaryEntryCubit, DiaryEntryCubitState>(
+              buildWhen: (previous, current) =>
+                  previous.diaryEntry.hangoverSeverity != current.diaryEntry.hangoverSeverity ||
+                  previous.predictedHangoverSeverity != current.predictedHangoverSeverity,
+              builder: (context, state) => DiaryHangoverSeverity(
+                date: state.diaryEntry.date,
+                trackedHangoverSeverity: state.diaryEntry.hangoverSeverity,
+                predictedHangoverSeverity: state.predictedHangoverSeverity,
+                onEnterHangoverSeverity: () {
+                  context.router.push<HangoverSeverity>(const SelectHangoverSeverityRoute()).then((value) {
+                    if (value != null) {
+                      context.read<DiaryEntryCubit>().setHangoverSeverity(value);
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -94,10 +113,10 @@ class _DiaryEntryPageState extends State<DiaryEntryPage> {
 
   Widget _buildBACChart() {
     return BlocBuilder<DiaryEntryCubit, DiaryEntryCubitState>(
-      buildWhen: (previous, current) => previous.calculationResults != current.calculationResults,
+      buildWhen: (previous, current) => previous.bacEntries != current.bacEntries,
       builder: (context, state) => DiaryBACChart(
-        results: state.calculationResults,
         date: state.diaryEntry.date,
+        results: state.bacEntries,
       ),
     );
   }

@@ -91,6 +91,43 @@ void main() {
       }, skip: 'Weird rounding error');
     });
 
+    group('drinkingDuration', () {
+      test('should return 0 if there are no drinks', () {
+        final diaryEntry = generateDiaryEntry(drinks: []);
+        expect(diaryEntry.drinkingDuration, Duration.zero);
+      });
+
+      test('should return the drinking duration as the difference between the first drink and last drink', () {
+        final diaryEntry = generateDiaryEntry(drinks: [
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 12, 0), duration: const Duration(minutes: 30)),
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 12, 30), duration: const Duration(minutes: 30)),
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 13, 0), duration: const Duration(minutes: 30)),
+        ]);
+
+        expect(diaryEntry.drinkingDuration, const Duration(hours: 1, minutes: 30));
+      });
+
+      test('should not depend on the order of the drinks', () {
+        final diaryEntry = generateDiaryEntry(drinks: [
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 13, 0), duration: const Duration(minutes: 30)),
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 12, 30), duration: const Duration(minutes: 30)),
+          generateConsumedDrink(startTime: DateTime(2021, 1, 1, 12, 0), duration: const Duration(minutes: 30)),
+        ]);
+
+        expect(diaryEntry.drinkingDuration, const Duration(hours: 1, minutes: 30));
+      });
+
+      test('should return the duration of the drink if there is only one', () {
+        final drink = generateConsumedDrink(
+          startTime: DateTime(2021, 1, 1, 12, 0),
+          duration: const Duration(minutes: 30),
+        );
+        final diaryEntry = generateDiaryEntry(drinks: [drink]);
+
+        expect(diaryEntry.drinkingDuration, drink.duration);
+      });
+    });
+
     group('addDrink', () {
       test('should add the drink to the drinks list', () {
         final diaryEntry = generateDiaryEntry(stomachFullness: StomachFullness.full);

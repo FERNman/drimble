@@ -1,4 +1,4 @@
-import 'package:drimble/domain/bac/user_bac_extensions.dart';
+import 'package:drimble/domain/bac/bac_constants.dart';
 import 'package:drimble/domain/user/gender.dart';
 import 'package:flutter_test/flutter_test.dart';
 

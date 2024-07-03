@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 /// The translations for English (`en`).
@@ -67,6 +65,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_save => 'Save';
 
   @override
+  String get common_invalidTimeFormat => 'Invalid time format';
+
+  @override
   String get remove_drink_title => 'Remove drink';
 
   @override
@@ -86,6 +87,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sign_in_continueWithoutSigningIn => 'Continue without signing in';
+
+  @override
+  String get sign_in_error => 'An error occurred while signing in.';
 
   @override
   String get onboarding_firstNameTitle => 'How can I call you?';
@@ -148,70 +152,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diary_drinkFreeDayGreatJob => 'Great job!';
 
   @override
-  String diary_reachesMaxBACAt(String bac, DateTime time) {
-    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
-    final String timeString = timeDateFormat.format(time);
-
-    return 'reaches $bac at $timeString';
-  }
-
-  @override
-  String diary_soberAt(DateTime time) {
-    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
-    final String timeString = timeDateFormat.format(time);
-
-    return 'sober at $timeString';
-  }
-
-  @override
-  String diary_soberInFuture(DateTime date, DateTime time) {
-    final intl.DateFormat dateDateFormat = intl.DateFormat.Md(localeName);
-    final String dateString = dateDateFormat.format(date);
-    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
-    final String timeString = timeDateFormat.format(time);
-
-    return 'sober on $dateString at $timeString';
-  }
-
-  @override
-  String diary_soberTomorrowAt(DateTime time) {
-    final intl.DateFormat timeDateFormat = intl.DateFormat.jm(localeName);
-    final String timeString = timeDateFormat.format(time);
-
-    return 'sober tomorrow at $timeString';
-  }
-
-  @override
-  String get diary_youreSober => 'you\'re sober! 🎉';
-
-  @override
-  String get diary_statisticsGramsOfAlcohol => 'grams of alcohol';
-
-  @override
-  String get diary_statisticsGramsOfAlcoholGuidelines => 'Aim for less than 40 grams of alcohol in one session to stay healthy';
-
-  @override
-  String diary_statisticsDrinks(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'drinks',
-      one: 'drink',
-      zero: 'drinks',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get diary_statisticsCalories => 'calories';
-
-  @override
-  String get diary_statisticsConsumedToday => 'consumed today';
-
-  @override
-  String get diary_statisticsFromAlcohol => 'from alcohol';
-
-  @override
   String get diary_consumedDrinksTitle => 'Consumed drinks';
 
   @override
@@ -227,9 +167,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diary_maxBAC => ' max';
 
   @override
-  String get todays_drinks_history => 'History';
-
-  @override
   String get add_drink_addADrink => 'Add a drink';
 
   @override
@@ -237,6 +174,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add_drink_common => 'Common';
+
+  @override
+  String get add_drink_search => 'Search...';
+
+  @override
+  String get search_drink_whatAreYouLookingFor => 'What are you looking for?';
+
+  @override
+  String get search_drink_noResults => 'We couldn\'\'t find any drinks matching your search...';
 
   @override
   String get edit_drink_youreAboutToConsume => 'You\'\'re about to consume';
@@ -337,31 +283,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_signOutDialog_confirm => 'Sign out';
 
   @override
-  String get editWeeklyAlcoholGoal_title => 'Weekly alcohol consumption';
-
-  @override
-  String get editWeeklyAlcoholGoal_description => 'Reducing your weekly alcohol consumption can help you sleep better, feel happier and be healthier overall.\nTry setting a goal that is slightly below your current consumption, and if you manage to hit it, be more ambitious next week!';
-
-  @override
-  String get editWeeklyDrinkFreeDaysGoal_title => 'Drink-free days';
-
-  @override
-  String get editWeeklyDrinkFreeDaysGoal_description => 'Drink-free days give your mind and body time to recover from the alcohol and prevent developing unhealthy habits.\nTry having at least as many drink-free days per week as days that you are drinking!';
-
-  @override
-  String get editWeeklyGoal_setGoal => 'Set goal!';
-
-  @override
   String get calendar_title => 'Calendar';
-
-  @override
-  String get add_drink_search => 'Search...';
-
-  @override
-  String get search_drink_whatAreYouLookingFor => 'What are you looking for?';
-
-  @override
-  String get search_drink_noResults => 'We couldn\'\'t find any drinks matching your search...';
 
   @override
   String get faq_title => 'FAQ';
@@ -385,9 +307,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faq_doesTheEstimatedBACCorrespondToTheActualBACText => 'No! Even though the formula used is a scientifically proven method, the estimated blood alcohol level is only an approximation. The actual blood alcohol level depends on many factors, such as the individual metabolism, the amount of food consumed, the type of alcohol consumed, etc. The estimated blood alcohol level is therefore only an approximation and should not be used as a basis for decisions that could endanger life and limb.';
 
   @override
-  String get common_invalidTimeFormat => 'Invalid time format';
-
-  @override
   String get diary_glassesOfWaterDescription => 'To avoid hangovers, consume one glass of water between every alcoholic drink.';
 
   @override
@@ -409,22 +328,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diary_ofAlcohol => 'of alcohol';
 
   @override
+  String get diary_quickAdd => 'Quick add';
+
+  @override
+  String get diary_trackYourHangover => 'Track your hangover';
+
+  @override
+  String get diary_predictingNoHangover => 'Predicting no hangover';
+
+  @override
+  String get diary_predictingMildHangover => 'Predicting a mild hangover';
+
+  @override
+  String get diary_predictingBadHangover => 'Predicting a pretty bad hangover';
+
+  @override
+  String get diary_predictingSevereHangover => 'Predicting a severe hangover';
+
+  @override
   String get select_stomach_fullness_description => 'Eating before drinking influences how fast alcohol is absorbed and metabolizes.';
 
   @override
   String get select_stomach_fullness_title => 'How much did you eat today before drinking?';
 
   @override
-  String get diary_quickAdd => 'Quick add';
+  String get track_hangover_severity_title => 'Hungover?';
 
   @override
-  String get track_hangover_severity_description => 'Rating the intensity of your hangover enables Drimble to estimate your hangover severity the next time you’re drinking.';
-
-  @override
-  String get track_hangover_severity_title => 'Do you have a hangover?';
-
-  @override
-  String get diary_trackYourHangover => 'Track your hangover';
+  String get track_hangover_severity_description => 'Rating the intensity of your hangover enables Drimble to better estimate your hangover severity the next time you’re drinking.';
 
   @override
   String get common_hangoverSeverityNone => 'No hangover 🙌🏻';
@@ -467,7 +398,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushNotification_trackHangoverSeverity_description => 'Track your hangover';
-
-  @override
-  String get sign_in_error => 'An error occurred while signing in.';
 }

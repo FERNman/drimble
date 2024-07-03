@@ -20,6 +20,16 @@ class DiaryEntry {
 
   int get calories => drinks.map((drink) => drink.calories).sum;
 
+  Duration get drinkingDuration {
+    if (drinks.isEmpty) { 
+      return Duration.zero;
+    }
+
+    final drinksByStartTime = drinks.map((e) => e.startTime).sortedBy<num>((e) => e.millisecondsSinceEpoch);
+    final drinksByEndTime = drinks.map((e) => e.endTime).sortedBy<num>((e) => e.millisecondsSinceEpoch);
+    return drinksByEndTime.last.difference(drinksByStartTime.first);
+  }
+
   DiaryEntry({
     this.id,
     required this.date,
