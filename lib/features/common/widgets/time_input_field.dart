@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../build_context_extensions.dart';
+import '../time_text_input_formatter.dart';
 
 class TimeInputField extends StatelessWidget {
-  static final _inputRegex = RegExp(r'^[0-9:\sAPM]*$', caseSensitive: false);
   static final _timespanRegex = RegExp(
       r'^\s*((?<hour12>(0?[1-9])|(1[0-2])):(?<minute12>([0-5])\d)\s*(?<modifier>[AP]M))|((?<hour24>((0?|1)\d)|(2[0-3])):(?<minute24>([0-5])\d))\s*$',
       caseSensitive: false);
@@ -25,9 +24,7 @@ class TimeInputField extends StatelessWidget {
     return TextFormField(
       initialValue: initialValue.format(context),
       keyboardType: TextInputType.datetime,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(_inputRegex),
-      ],
+      inputFormatters: [TimeTextInputFormatter()],
       validator: (value) => _timespanRegex.hasMatch(value!) ? null : context.l10n.common_invalidTimeFormat,
       decoration: decoration,
       onChanged: _onChanged,
