@@ -30,8 +30,6 @@ class HangoverSeverityPredictor {
 
   HangoverSeverity predict(DiaryEntry diaryEntry, BACEntry maxBAC) {
     final features = [
-      diaryEntry.stomachFullness!.index.toDouble(),
-      diaryEntry.drinkingDuration.inMinutes.toDouble(),
       diaryEntry.glassesOfWater.toDouble(),
       diaryEntry.gramsOfAlcohol.toDouble(),
       maxBAC.value,
@@ -47,8 +45,6 @@ class HangoverSeverityPredictor {
 
   Future<void> updatePrediction(DiaryEntry diaryEntry, BACEntry maxBAC, HangoverSeverity severity) async {
     final features = [
-      diaryEntry.stomachFullness!.index.toDouble(),
-      diaryEntry.drinkingDuration.inMinutes.toDouble(),
       diaryEntry.glassesOfWater.toDouble(),
       diaryEntry.gramsOfAlcohol.toDouble(),
       maxBAC.value,
