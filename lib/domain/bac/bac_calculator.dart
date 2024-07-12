@@ -73,7 +73,7 @@ class BACCalculator {
       final metabolism = _rateOfChangeForADHMetabolism(alcoholInCentralCompartment, deltaTime);
       alcoholInCentralCompartment = alcoholInCentralCompartment + absorption - metabolism;
 
-      // Divide by 10 to convert from g/L to g/100mL
+      // Divide by 10 to convert from %(10g/L) to g/L
       results.add(BACEntry(time, alcoholInCentralCompartment / 10.0));
     }
 

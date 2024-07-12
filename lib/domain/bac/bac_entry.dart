@@ -4,7 +4,7 @@ import '../alcohol/alcohol.dart';
 class BACEntry {
   final DateTime time;
 
-  /// In g/100mL
+  /// In g/L
   final double value;
 
   BACEntry(this.time, this.value)
