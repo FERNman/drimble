@@ -58,3 +58,11 @@ app.*.map.json
 
 # Firebase
 .emulator_cache/
+.firebaserc
+firebase_app_id_file.json
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart
+
+# Android signing
+android/key.properties
